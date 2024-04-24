@@ -1,0 +1,89 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'model.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Unit _$UnitFromJson(Map<String, dynamic> json) => Unit()
+  ..name = json['name'] as String
+  ..max = json['max'] as int
+  ..movement = json['movement'] as int
+  ..ranged = json['ranged'] as int
+  ..melee = json['melee'] as int
+  ..armor = json['armor'] as int
+  ..abilities =
+      (json['abilities'] as List<dynamic>).map((e) => e as String).toList()
+  ..keywords =
+      (json['keywords'] as List<dynamic>).map((e) => e as String).toList()
+  ..cost = json['cost'] as int
+  ..base = json['base'] as int;
+
+Map<String, dynamic> _$UnitToJson(Unit instance) => <String, dynamic>{
+      'name': instance.name,
+      'max': instance.max,
+      'movement': instance.movement,
+      'ranged': instance.ranged,
+      'melee': instance.melee,
+      'armor': instance.armor,
+      'abilities': instance.abilities,
+      'keywords': instance.keywords,
+      'cost': instance.cost,
+      'base': instance.base,
+    };
+
+Weapon _$WeaponFromJson(Map<String, dynamic> json) => Weapon()
+  ..name = json['name'] as String
+  ..cost = json['cost'] as int
+  ..limit = json['limit'] as int?;
+
+Map<String, dynamic> _$WeaponToJson(Weapon instance) => <String, dynamic>{
+      'name': instance.name,
+      'cost': instance.cost,
+      'limit': instance.limit,
+    };
+
+Armor _$ArmorFromJson(Map<String, dynamic> json) => Armor()
+  ..name = json['name'] as String
+  ..cost = json['cost'] as int;
+
+Map<String, dynamic> _$ArmorToJson(Armor instance) => <String, dynamic>{
+      'name': instance.name,
+      'cost': instance.cost,
+    };
+
+Equipment _$EquipmentFromJson(Map<String, dynamic> json) => Equipment()
+  ..name = json['name'] as String
+  ..cost = json['cost'] as int;
+
+Map<String, dynamic> _$EquipmentToJson(Equipment instance) => <String, dynamic>{
+      'name': instance.name,
+      'cost': instance.cost,
+    };
+
+Roster _$RosterFromJson(Map<String, dynamic> json) => Roster()
+  ..names = (json['names'] as List<dynamic>).map((e) => e as String).toList()
+  ..surnames =
+      (json['surnames'] as List<dynamic>).map((e) => e as String).toList()
+  ..units = (json['units'] as List<dynamic>)
+      .map((e) => Unit.fromJson(e as Map<String, dynamic>))
+      .toList()
+  ..weapons = (json['weapons'] as List<dynamic>)
+      .map((e) => Weapon.fromJson(e as Map<String, dynamic>))
+      .toList()
+  ..armor = (json['armor'] as List<dynamic>)
+      .map((e) => Armor.fromJson(e as Map<String, dynamic>))
+      .toList()
+  ..equipment = (json['equipment'] as List<dynamic>)
+      .map((e) => Equipment.fromJson(e as Map<String, dynamic>))
+      .toList();
+
+Map<String, dynamic> _$RosterToJson(Roster instance) => <String, dynamic>{
+      'names': instance.names,
+      'surnames': instance.surnames,
+      'units': instance.units.map((e) => e.toJson()).toList(),
+      'weapons': instance.weapons.map((e) => e.toJson()).toList(),
+      'armor': instance.armor.map((e) => e.toJson()).toList(),
+      'equipment': instance.equipment.map((e) => e.toJson()).toList(),
+    };

@@ -1,0 +1,310 @@
+{
+    "names": [
+        "Mortimer",
+        "Egon",
+        "Bertram",
+        "Ewald",
+        "Egbert",
+        "Oswald",
+        "Gerhardt",
+        "Anselm",
+        "Siegfried",
+        "Hubert",
+        "Wendel",
+        "Leander",
+        "Erwin",
+        "Egmont",
+        "Gottfried",
+        "Lutz",
+        "Adalbert",
+        "Sigmund",
+        "Reinhold"
+    ],
+    "surnames": [
+        "Zolner",
+        "Düster",
+        "Blutstein",
+        "Falk",
+        "Nachtigall",
+        "Schreck",
+        "Grimm",
+        "Schattenberg",
+        "Nacht",
+        "Dunkel",
+        "Finster",
+        "Nebel",
+        "Schwarz",
+        "Schatten",
+        "Nachtweide",
+        "Schattenberg",
+        "Engelbert",
+        "Dunkel",
+        "Nacht",
+        "Finsterwalde",
+        "Schwarzstein"
+    ],
+    "units": [
+        {
+            "name": "Heretic Priest",
+            "max": 1,
+            "movement": 6,
+            "ranged": 2,
+            "melee": 2,
+            "armor": 0,
+            "abilities": [
+                "Puppet Master",
+                "Tough"
+            ],
+            "keywords": [
+                "HERETIC",
+                "ELITE",
+                "THOUGH"
+            ],
+            "cost": 80,
+            "base": 32
+        },
+        {
+            "name": "Heretic Death Commando",
+            "max": 1,
+            "movement": 6,
+            "ranged": 1,
+            "melee": 2,
+            "armor": 0,
+            "abilities": [
+                "Infiltrator",
+                "Stealth Generator",
+                "Hide"
+            ],
+            "keywords": [
+                "HERETIC",
+                "ELITE",
+                "INFILTRATOR"
+            ],
+            "cost": 90,
+            "base": 32
+        },
+        {
+            "name": "Heretic Chorister",
+            "max": 1,
+            "movement": 6,
+            "ranged": -2,
+            "melee": 2,
+            "armor": 0,
+            "abilities": [
+                "Unholy Hymns",
+                "Unholy Horror"
+            ],
+            "keywords": [
+                "HERETIC",
+                "ELITE",
+                "FEAR"
+            ],
+            "cost": 65,
+            "base": 32
+        },
+        {
+            "name": "Heretic Trooper",
+            "max": 0,
+            "movement": 6,
+            "ranged": 0,
+            "melee": 0,
+            "armor": 0,
+            "abilities": [],
+            "keywords": [
+                "HERETIC"
+            ],
+            "cost": 30,
+            "base": 25
+        },
+        {
+            "name": "Anointed Heavy Infantry",
+            "max": 5,
+            "movement": 6,
+            "ranged": 1,
+            "melee": 1,
+            "armor": -2,
+            "abilities": [
+                "Strong"
+            ],
+            "keywords": [
+                "HERETIC"
+            ],
+            "cost": 95,
+            "base": 32
+        },
+        {
+            "name": "War Wolf Assault Beast",
+            "max": 1,
+            "movement": 8,
+            "ranged": 0,
+            "melee": 3,
+            "armor": -2,
+            "abilities": [
+                "Strong"
+            ],
+            "keywords": [
+                "HERETIC"
+            ],
+            "cost": 95,
+            "base": 32
+        }
+    ],
+    "weapons": [
+        {
+            "name": "Bolt Action Rifle",
+            "cost": 10
+        },
+        {
+            "name": "Semi-automatic Rifle",
+            "cost": 20
+        },
+        {
+            "name": "Automatic Rifle",
+            "cost": -3
+        },
+        {
+            "name": "Pistol",
+            "cost": 10
+        },
+        {
+            "name": "Silenced Pistol",
+            "cost": 20
+        },
+        {
+            "name": "Grenades",
+            "cost": 10
+        },
+        {
+            "name": "Gas Grenades",
+            "cost": 10
+        },
+        {
+            "name": "Incendiary Grenades",
+            "cost": 10
+        },
+        {
+            "name": "Shotgun",
+            "cost": 10
+        },
+        {
+            "name": "Automatic Shotgun",
+            "cost": 10
+        },
+        {
+            "name": "Grenade Launcher",
+            "cost": 10
+        },
+        {
+            "name": "Machine Gun",
+            "cost": 10
+        },
+        {
+            "name": "Flamethrower",
+            "cost": 10
+        },
+        {
+            "name": "Heavy Flamethrower",
+            "cost": 10
+        },
+        {
+            "name": "Anti-Material Rifle",
+            "cost": 10
+        },
+        {
+            "name": "Trench Knife",
+            "cost": 10
+        },
+        {
+            "name": "Bayonet",
+            "cost": 10
+        },
+        {
+            "name": "Trench Club",
+            "cost": 10
+        },
+        {
+            "name": "Sword/Axe",
+            "cost": 10
+        },
+        {
+            "name": "Polearm",
+            "cost": 10
+        },
+        {
+            "name": "Great Axe",
+            "cost": 10
+        },
+        {
+            "name": "Great Maul",
+            "cost": 10
+        },
+        {
+            "name": "Sacrifical Blade",
+            "cost": 10
+        },
+        {
+            "name": "Hellblade",
+            "cost": 10
+        },
+        {
+            "name": "Tartarus Claws",
+            "cost": 10
+        },
+        {
+            "name": "Blasphemous Staff",
+            "cost": 10
+        }
+    ],
+    "armor": [
+        {
+            "name": "Standard Armor",
+            "cost": 20
+        },
+        {
+            "name": "Heavy Armor",
+            "cost": 40
+        },
+        {
+            "name": "Trench Shield",
+            "cost": 40
+        }
+    ],
+    "equipment": [
+        {
+            "name": "Combat Helmet",
+            "cost": 40
+        },
+        {
+            "name": "Gas Mask",
+            "cost": 40
+        },
+        {
+            "name": "Unholy Trinket",
+            "cost": 40
+        },
+        {
+            "name": "Unholy Relic",
+            "cost": 40
+        },
+        {
+            "name": "Incendiary Bullets",
+            "cost": 40
+        },
+        {
+            "name": "Shovel",
+            "cost": 40
+        },
+        {
+            "name": "Infernal Brand Mark",
+            "cost": 5
+        },
+        {
+            "name": "Troop Flag",
+            "cost": -1
+        },
+        {
+            "name": "Hellbound Soul Contract",
+            "cost": 5
+        }
+    ]
+}
