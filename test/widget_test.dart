@@ -10,10 +10,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:tc_thing/main.dart';
 import 'package:tc_thing/model/model.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:tc_thing/warband_view.dart';
 
 typedef WL = List<WarriorModel>;
 
