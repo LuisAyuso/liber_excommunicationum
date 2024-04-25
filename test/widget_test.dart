@@ -38,11 +38,6 @@ void main() {
 
     var str = jsonEncode(r.toJson());
     debugPrint(str);
-
-    String other =
-        '{"units": [{"name": "boss", "max": 1, "movement": 6, "ranged": 1, "melee": 1, "armor": 0, "abilities": ["special"], "keywords": ["elite"], "cost": 60}], "weapons": [{"name" : "pistol", "cost":10} ]}';
-    var d = jsonDecode(other);
-    Roster.fromJson(d);
   });
 
   testWidgets('load cult list', (WidgetTester tester) async {
