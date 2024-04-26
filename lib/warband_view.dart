@@ -29,11 +29,20 @@ class WarriorModel {
     return w;
   }
 
-  int get cost =>
-      type.cost +
+  int get cost => baseCost + equipmentCost;
+  int get baseCost => type.cost;
+  int get equipmentCost =>
       weapons.fold<int>(0, (v, w) => w.cost + v) +
       armor.fold<int>(0, (v, w) => w.cost + v) +
       equipment.fold<int>(0, (v, w) => w.cost + v);
+
+  int getArmorValue(Armory armory) {
+    return type.armor +
+        armor
+            .map((a) => armory.armors.firstWhere((e) => e.name == a.name))
+            .map((a) => a.value ?? 0)
+            .fold(0, (a, b) => a + b);
+  }
 }
 
 class WarbandModel extends ChangeNotifier {
@@ -185,7 +194,7 @@ class WarbandView extends StatelessWidget {
           child: Text("${warrior.cost}"),
         ),
         SizedBox(
-          width: 260,
+          width: 240,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -206,10 +215,8 @@ class WarbandView extends StatelessWidget {
         const VerticalDivider(),
         Row(
           children: [
-            statBox('${warrior.type.movement}"', 20),
-            statBox(warrior.type.ranged, 20),
-            statBox(warrior.type.melee, 20),
-            statBox(warrior.type.armor, 20),
+            statBox("Mov:", '${warrior.type.movement}"'),
+            statBox("Armor:", warrior.getArmorValue(armory)),
           ],
         ),
         const Spacer(),
@@ -261,9 +268,6 @@ class WarbandView extends StatelessWidget {
         ),
         Row(
           children: [
-            const SizedBox(
-              width: 40,
-            ),
             DropdownMenu(
               dropdownMenuEntries: availableWeapons
                   .map<DropdownMenuEntry<String>>((WeaponUse w) =>
@@ -324,23 +328,28 @@ class WarbandView extends StatelessWidget {
   }
 
   Widget weaponLine(BuildContext context, WeaponUse w, WarriorModel warrior) {
-    //final def = getWeaponDef(w);
+    final def = getWeaponDef(w);
+    var ranged = "Ranged ${(def.ranged ?? 0) + warrior.type.ranged}";
+    var melee = "Melee ${(def.melee ?? 0) + warrior.type.melee}";
+    var injury = def.injury == null ? "" : " Injury ${def.injury ?? 0}";
     return Row(
       children: [
         const SizedBox(
           width: 40,
         ),
         SizedBox(
-          width: 260,
+          width: 240,
           child: Text(w.name),
         ),
         const Divider(),
-        Row(
-          children: [
-            statBox("-", 20),
-            statBox("-", 20),
-          ],
-        ),
+        Builder(builder: (context) {
+          if (def.canRanged && def.canMelee) {
+            return Text("$ranged $melee$injury");
+          }
+          if (def.canRanged) return Text("$ranged$injury");
+          if (def.canMelee) return Text("$melee$injury");
+          return const Text("Unknown");
+        }),
         const Spacer(),
         IconButton(
             onPressed: () {
@@ -353,22 +362,19 @@ class WarbandView extends StatelessWidget {
   }
 
   Widget armorLine(BuildContext context, ArmorUse a, WarriorModel warrior) {
-    //final def = getArmorDef(a);
+    final def = getArmorDef(a);
     return Row(
       children: [
         const SizedBox(
           width: 40,
         ),
         SizedBox(
-          width: 260,
+          width: 240,
           child: Text(a.name),
         ),
         const Divider(),
         Row(
-          children: [
-            statBox("-", 20),
-            statBox("-", 20),
-          ],
+          children: [Text("${def.value ?? 0}")],
         ),
         const Spacer(),
         IconButton(
@@ -389,15 +395,8 @@ class WarbandView extends StatelessWidget {
           width: 40,
         ),
         SizedBox(
-          width: 260,
+          width: 240,
           child: Text(e.name),
-        ),
-        const Divider(),
-        Row(
-          children: [
-            statBox("-", 20),
-            statBox("-", 20),
-          ],
         ),
         const Spacer(),
         IconButton(
@@ -418,13 +417,14 @@ class WarbandView extends StatelessWidget {
       armory.equipments.firstWhere((def) => def.name == w.name);
 }
 
-Widget statBox<T>(T stat, double size) {
-  return SizedBox(
-    width: 24,
-    child: Text(
-      textAlign: TextAlign.end,
-      "$stat",
-      style: TextStyle(fontSize: size),
-    ),
+Widget statBox<T>(String name, T stat) {
+  return Column(
+    children: [
+      Text(name),
+      Text(
+        textAlign: TextAlign.end,
+        "$stat",
+      ),
+    ],
   );
 }
