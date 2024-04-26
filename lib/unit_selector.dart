@@ -4,6 +4,13 @@ import 'package:provider/provider.dart';
 import 'package:tc_thing/model/model.dart';
 import 'package:tc_thing/warband_view.dart';
 
+String makeName(List<String> names, List<String> surnames) {
+  final random = Random();
+  final name = names[random.nextInt(names.length)];
+  final surname = surnames[random.nextInt(surnames.length)];
+  return "$name $surname";
+}
+
 class UnitSelector extends StatelessWidget {
   const UnitSelector({super.key, required this.roster});
   final Roster roster;
@@ -19,13 +26,6 @@ class UnitSelector extends StatelessWidget {
             itemCount: roster.units.length),
       ),
     );
-  }
-
-  String makeName(List<String> names, List<String> surnames) {
-    final random = Random();
-    final name = names[random.nextInt(names.length)];
-    final surname = surnames[random.nextInt(surnames.length)];
-    return "$name $surname";
   }
 
   Widget makeUnitEntry(BuildContext context, Unit unit, Roster r, int idx) {

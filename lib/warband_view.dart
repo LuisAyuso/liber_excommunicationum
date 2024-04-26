@@ -21,6 +21,14 @@ class WarriorModel {
   List<EquipmentUse> equipment = [];
   final int bucket;
 
+  WarriorModel copyWith({required String name, required int newUid}) {
+    var w = WarriorModel(name: name, uid: newUid, type: type, bucket: bucket);
+    w.weapons = List.of(weapons);
+    w.armor = List.of(armor);
+    w.equipment = List.of(equipment);
+    return w;
+  }
+
   int get cost =>
       type.cost +
       weapons.fold<int>(0, (v, w) => w.cost + v) +
@@ -48,6 +56,11 @@ class WarbandModel extends ChangeNotifier {
 
   WarriorModel getUID(int uid) {
     return _items.firstWhere((w) => w.uid == uid);
+  }
+
+  void removeUID(int uid) {
+    _items.removeWhere((w) => w.uid == uid);
+    notifyListeners();
   }
 
   void clear() {
@@ -110,10 +123,11 @@ class WarbandView extends StatelessWidget {
     final pistols = weapons.fold(0, (v, w) => v + (w.isPistol ? 1 : 0));
     final firearms = weapons.fold(0, (v, w) => v + ((w.isFirearm) ? 1 : 0));
     final melee = weapons.fold(0, (v, w) => v + (w.isMeleeWeapon ? 1 : 0));
-    final allowPistol = pistols < 2 || (firearms == 1 && pistols < 1);
+
+    final allowPistol =
+        (firearms == 0 && pistols < 2) || (firearms == 1 && pistols < 1);
     final allowMelee =
         armours.where((a) => a.isShield).isEmpty ? melee <= 2 : melee <= 1;
-
     final freeHands = 2 -
         weapons.where((w) => w.isMeleeWeapon).fold(0, (v, w) => v + w.hands);
 
@@ -124,7 +138,7 @@ class WarbandView extends StatelessWidget {
 // - one single-handed melee weapon and a trench shield OR
 // - two single-handed melee weapons.
 
-    final available = roster.weapons.where((weapon) {
+    final availableWeapons = roster.weapons.where((weapon) {
       final def = getWeaponDef(weapon);
       if (def.isPistol && allowPistol) return true;
       if (def.isFirearm && firearms < 1) return true;
@@ -134,49 +148,101 @@ class WarbandView extends StatelessWidget {
       return false;
     });
 
+    final bodyArmour = armours.where((a) => a.isArmour).isNotEmpty;
+    final shield = armours.where((a) => a.isShield).isNotEmpty;
+
+    final availableArmors = roster.armor.where((armour) {
+      final def = getArmorDef(armour);
+      if (def.isArmour && bodyArmour) return false;
+      if (def.isShield && shield) return false;
+      return true;
+    });
+
+    final availableEquipment = roster.equipment.where((e) {
+      return true;
+    });
+
     return ExpansionTile(
       tilePadding: EdgeInsets.zero,
-      title: Row(
-        children: [
-          SizedBox(
-            width: 40,
-            child: Text("${warrior.cost}"),
-          ),
-          SizedBox(
-            width: 260,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  warrior.name,
-                  style: const TextStyle(
-                      fontFamily: "CloisterBlack",
-                      fontWeight: FontWeight.w400,
-                      fontSize: 24,
-                      color: Color.fromARGB(255, 167, 51, 30)),
-                ),
-                Text(
-                  warrior.type.name,
-                )
-              ],
-            ),
-          ),
-          const Divider(),
-          Row(
+      title: Row(children: [
+        SizedBox(
+          width: 40,
+          child: Text("${warrior.cost}"),
+        ),
+        SizedBox(
+          width: 260,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              statBox('${warrior.type.movement}"', 20),
-              statBox(warrior.type.ranged, 20),
-              statBox(warrior.type.melee, 20),
-              statBox(warrior.type.armor, 20),
+              Text(
+                warrior.name,
+                style: const TextStyle(
+                    fontFamily: "CloisterBlack",
+                    fontWeight: FontWeight.w400,
+                    fontSize: 24,
+                    color: Color.fromARGB(255, 167, 51, 30)),
+              ),
+              Text(
+                warrior.type.name,
+              )
             ],
-          )
-        ],
-      ),
+          ),
+        ),
+        const VerticalDivider(),
+        Row(
+          children: [
+            statBox('${warrior.type.movement}"', 20),
+            statBox(warrior.type.ranged, 20),
+            statBox(warrior.type.melee, 20),
+            statBox(warrior.type.armor, 20),
+          ],
+        ),
+        Spacer(),
+        Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+          Row(
+            children: warrior.weapons
+                .map<Widget>(
+                  (w) => Chip(
+                    label: Text(w.name),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16)),
+                  ),
+                )
+                .toList(),
+          ),
+          Row(
+            children: warrior.armor
+                    .map<Widget>(
+                      (a) => Chip(
+                        label: Text(a.name),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16)),
+                      ),
+                    )
+                    .toList() +
+                warrior.equipment
+                    .map<Widget>(
+                      (e) => Chip(
+                        label: Text(e.name),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16)),
+                      ),
+                    )
+                    .toList(),
+          ),
+        ]),
+      ]),
       children: [
         Column(
           children: warrior.weapons
-              .map<Widget>((w) => weaponLine(context, w, warrior))
-              .toList(),
+                  .map<Widget>((w) => weaponLine(context, w, warrior))
+                  .toList() +
+              warrior.armor
+                  .map<Widget>((a) => armorLine(context, a, warrior))
+                  .toList() +
+              warrior.equipment
+                  .map<Widget>((e) => equipmentLine(context, e, warrior))
+                  .toList(),
         ),
         Row(
           children: [
@@ -184,7 +250,7 @@ class WarbandView extends StatelessWidget {
               width: 40,
             ),
             DropdownMenu(
-              dropdownMenuEntries: available
+              dropdownMenuEntries: availableWeapons
                   .map<DropdownMenuEntry<String>>((WeaponUse w) =>
                       DropdownMenuEntry(value: w.name, label: w.name))
                   .toList(),
@@ -193,6 +259,48 @@ class WarbandView extends StatelessWidget {
                 context.read<WarbandModel>().getUID(warrior.uid).weapons.add(w);
                 context.read<WarbandModel>().invalidate();
               },
+            ),
+            DropdownMenu(
+              dropdownMenuEntries: availableArmors
+                  .map<DropdownMenuEntry<String>>((ArmorUse w) =>
+                      DropdownMenuEntry(value: w.name, label: w.name))
+                  .toList(),
+              onSelected: (armour) {
+                final a = roster.armor.firstWhere((w) => w.name == armour);
+                context.read<WarbandModel>().getUID(warrior.uid).armor.add(a);
+                context.read<WarbandModel>().invalidate();
+              },
+            ),
+            DropdownMenu(
+              dropdownMenuEntries: availableEquipment
+                  .map<DropdownMenuEntry<String>>((EquipmentUse w) =>
+                      DropdownMenuEntry(value: w.name, label: w.name))
+                  .toList(),
+              onSelected: (e) {
+                final equip = roster.equipment.firstWhere((w) => w.name == e);
+                context
+                    .read<WarbandModel>()
+                    .getUID(warrior.uid)
+                    .equipment
+                    .add(equip);
+                context.read<WarbandModel>().invalidate();
+              },
+            ),
+            const Spacer(),
+            IconButton(
+              onPressed: () {
+                var wbm = context.read<WarbandModel>();
+                wbm.add(warrior.copyWith(
+                    name: makeName(roster.names, roster.surnames),
+                    newUid: wbm.nextUID()));
+              },
+              icon: const Icon(Icons.copy),
+            ),
+            IconButton(
+              onPressed: () {
+                context.read<WarbandModel>().removeUID(warrior.uid);
+              },
+              icon: const Icon(Icons.delete),
             )
           ],
         ),
@@ -215,10 +323,74 @@ class WarbandView extends StatelessWidget {
         Row(
           children: [
             statBox("-", 20),
-            statBox("1", 20),
             statBox("-", 20),
           ],
-        )
+        ),
+        const Spacer(),
+        IconButton(
+            onPressed: () {
+              warrior.weapons.removeWhere((d) => w.name == d.name);
+              context.read<WarbandModel>().invalidate();
+            },
+            icon: const Icon(Icons.delete))
+      ],
+    );
+  }
+
+  Widget armorLine(BuildContext context, ArmorUse a, WarriorModel warrior) {
+    final def = getArmorDef(a);
+    return Row(
+      children: [
+        const SizedBox(
+          width: 40,
+        ),
+        SizedBox(
+          width: 260,
+          child: Text(a.name),
+        ),
+        const Divider(),
+        Row(
+          children: [
+            statBox("-", 20),
+            statBox("-", 20),
+          ],
+        ),
+        const Spacer(),
+        IconButton(
+            onPressed: () {
+              warrior.armor.removeWhere((d) => a.name == d.name);
+              context.read<WarbandModel>().invalidate();
+            },
+            icon: const Icon(Icons.delete))
+      ],
+    );
+  }
+
+  Widget equipmentLine(
+      BuildContext context, EquipmentUse e, WarriorModel warrior) {
+    return Row(
+      children: [
+        const SizedBox(
+          width: 40,
+        ),
+        SizedBox(
+          width: 260,
+          child: Text(e.name),
+        ),
+        const Divider(),
+        Row(
+          children: [
+            statBox("-", 20),
+            statBox("-", 20),
+          ],
+        ),
+        const Spacer(),
+        IconButton(
+            onPressed: () {
+              warrior.equipment.removeWhere((d) => e.name == d.name);
+              context.read<WarbandModel>().invalidate();
+            },
+            icon: const Icon(Icons.delete))
       ],
     );
   }

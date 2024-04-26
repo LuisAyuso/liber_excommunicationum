@@ -103,6 +103,7 @@ class Armor {
   List<String>? special = [];
 
   bool get isShield => name.contains("Shield");
+  bool get isArmour => name.contains("Armour");
   factory Armor.fromJson(Map<String, dynamic> json) => _$ArmorFromJson(json);
   Map<String, dynamic> toJson() => _$ArmorToJson(this);
 }
