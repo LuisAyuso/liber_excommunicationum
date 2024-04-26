@@ -16,9 +16,9 @@ class WarriorModel {
   String name = "Generated name?";
   final int uid;
   final Unit type;
-  List<Weapon> weapons = [];
-  List<Armor> armor = [];
-  List<Equipment> equipment = [];
+  List<WeaponUse> weapons = [];
+  List<ArmorUse> armor = [];
+  List<EquipmentUse> equipment = [];
   final int bucket;
 
   int get cost =>
@@ -54,12 +54,21 @@ class WarbandModel extends ChangeNotifier {
     _items.clear();
     notifyListeners();
   }
+
+  void invalidate() {
+    notifyListeners();
+  }
 }
 
 class WarbandView extends StatelessWidget {
-  const WarbandView({super.key, required this.title, required this.roster});
+  const WarbandView(
+      {super.key,
+      required this.title,
+      required this.roster,
+      required this.armory});
   final String title;
   final Roster roster;
+  final Armory armory;
 
   @override
   Widget build(BuildContext context) {
@@ -96,6 +105,35 @@ class WarbandView extends StatelessWidget {
   }
 
   Widget warriorLine(BuildContext context, WarriorModel warrior) {
+    final weapons = warrior.weapons.map((w) => getWeaponDef(w));
+    final armours = warrior.armor.map((a) => getArmorDef(a));
+    final pistols = weapons.fold(0, (v, w) => v + (w.isPistol ? 1 : 0));
+    final firearms = weapons.fold(0, (v, w) => v + ((w.isFirearm) ? 1 : 0));
+    final melee = weapons.fold(0, (v, w) => v + (w.isMeleeWeapon ? 1 : 0));
+    final allowPistol = pistols < 2 || (firearms == 1 && pistols < 1);
+    final allowMelee =
+        armours.where((a) => a.isShield).isEmpty ? melee <= 2 : melee <= 1;
+
+    final freeHands = 2 -
+        weapons.where((w) => w.isMeleeWeapon).fold(0, (v, w) => v + w.hands);
+
+// - One firearm and one pistol OR
+// - two pistols.
+// In addition, they may carry:
+// - One two-handed melee weapon OR
+// - one single-handed melee weapon and a trench shield OR
+// - two single-handed melee weapons.
+
+    final available = roster.weapons.where((weapon) {
+      final def = getWeaponDef(weapon);
+      if (def.isPistol && allowPistol) return true;
+      if (def.isFirearm && firearms < 1) return true;
+      if (def.isMeleeWeapon && allowMelee) {
+        return freeHands >= def.hands;
+      }
+      return false;
+    });
+
     return ExpansionTile(
       tilePadding: EdgeInsets.zero,
       title: Row(
@@ -136,7 +174,9 @@ class WarbandView extends StatelessWidget {
       ),
       children: [
         Column(
-          children: warrior.weapons.map<Widget>((w) => Text(w.name)).toList(),
+          children: warrior.weapons
+              .map<Widget>((w) => weaponLine(context, w, warrior))
+              .toList(),
         ),
         Row(
           children: [
@@ -144,13 +184,14 @@ class WarbandView extends StatelessWidget {
               width: 40,
             ),
             DropdownMenu(
-              dropdownMenuEntries: roster.weapons
-                  .map<DropdownMenuEntry<String>>((Weapon w) =>
+              dropdownMenuEntries: available
+                  .map<DropdownMenuEntry<String>>((WeaponUse w) =>
                       DropdownMenuEntry(value: w.name, label: w.name))
                   .toList(),
               onSelected: (weapon) {
-                var w = roster.weapons.firstWhere((w) => w.name == weapon);
+                final w = roster.weapons.firstWhere((w) => w.name == weapon);
                 context.read<WarbandModel>().getUID(warrior.uid).weapons.add(w);
+                context.read<WarbandModel>().invalidate();
               },
             )
           ],
@@ -158,6 +199,36 @@ class WarbandView extends StatelessWidget {
       ],
     );
   }
+
+  Widget weaponLine(BuildContext context, WeaponUse w, WarriorModel warrior) {
+    final def = getWeaponDef(w);
+    return Row(
+      children: [
+        const SizedBox(
+          width: 40,
+        ),
+        SizedBox(
+          width: 260,
+          child: Text(w.name),
+        ),
+        const Divider(),
+        Row(
+          children: [
+            statBox("-", 20),
+            statBox("1", 20),
+            statBox("-", 20),
+          ],
+        )
+      ],
+    );
+  }
+
+  Weapon getWeaponDef(WeaponUse w) =>
+      armory.weapons.firstWhere((def) => def.name == w.name);
+  Armor getArmorDef(ArmorUse w) =>
+      armory.armors.firstWhere((def) => def.name == w.name);
+  Equipment getEquipmentDef(EquipmentUse w) =>
+      armory.equipments.firstWhere((def) => def.name == w.name);
 }
 
 Widget statBox<T>(T stat, double size) {

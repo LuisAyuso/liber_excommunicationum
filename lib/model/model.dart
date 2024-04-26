@@ -22,38 +22,40 @@ class Unit {
 }
 
 @JsonSerializable(explicitToJson: true)
-class Weapon {
-  Weapon();
+class WeaponUse {
+  WeaponUse();
 
   String name = "";
   int cost = 0;
   int? limit = 0;
 
-  factory Weapon.fromJson(Map<String, dynamic> json) => _$WeaponFromJson(json);
-  Map<String, dynamic> toJson() => _$WeaponToJson(this);
+  factory WeaponUse.fromJson(Map<String, dynamic> json) =>
+      _$WeaponUseFromJson(json);
+  Map<String, dynamic> toJson() => _$WeaponUseToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
-class Armor {
-  Armor();
+class ArmorUse {
+  ArmorUse();
 
   String name = "";
   int cost = 0;
 
-  factory Armor.fromJson(Map<String, dynamic> json) => _$ArmorFromJson(json);
-  Map<String, dynamic> toJson() => _$ArmorToJson(this);
+  factory ArmorUse.fromJson(Map<String, dynamic> json) =>
+      _$ArmorUseFromJson(json);
+  Map<String, dynamic> toJson() => _$ArmorUseToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
-class Equipment {
-  Equipment();
+class EquipmentUse {
+  EquipmentUse();
 
   String name = "";
   int cost = 0;
 
-  factory Equipment.fromJson(Map<String, dynamic> json) =>
-      _$EquipmentFromJson(json);
-  Map<String, dynamic> toJson() => _$EquipmentToJson(this);
+  factory EquipmentUse.fromJson(Map<String, dynamic> json) =>
+      _$EquipmentUseFromJson(json);
+  Map<String, dynamic> toJson() => _$EquipmentUseToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -63,10 +65,68 @@ class Roster {
   List<String> names = [];
   List<String> surnames = [];
   List<Unit> units = [];
-  List<Weapon> weapons = [];
-  List<Armor> armor = [];
-  List<Equipment> equipment = [];
+  List<WeaponUse> weapons = [];
+  List<ArmorUse> armor = [];
+  List<EquipmentUse> equipment = [];
 
   factory Roster.fromJson(Map<String, dynamic> json) => _$RosterFromJson(json);
   Map<String, dynamic> toJson() => _$RosterToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class Weapon {
+  Weapon();
+  String name = "";
+  int hands = 1;
+  int? range;
+  int? ranged;
+  int? melee;
+  int? injury;
+  List<String>? keywords;
+
+  bool get canMelee => melee != null;
+  bool get canRanged => ranged != null;
+  bool get isPistol => name.contains("Pistol");
+  bool get isFirearm => canRanged && !name.contains("Pistol");
+  bool get isMeleeWeapon => !canRanged && canMelee;
+  bool get isRifle => name.contains("Rifle");
+
+  factory Weapon.fromJson(Map<String, dynamic> json) => _$WeaponFromJson(json);
+  Map<String, dynamic> toJson() => _$WeaponToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class Armor {
+  Armor();
+  String name = "";
+  int? value;
+  List<String>? special = [];
+
+  bool get isShield => name.contains("Shield");
+  factory Armor.fromJson(Map<String, dynamic> json) => _$ArmorFromJson(json);
+  Map<String, dynamic> toJson() => _$ArmorToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class Equipment {
+  Equipment();
+
+  String name = "";
+  List<String> special = [];
+
+  factory Equipment.fromJson(Map<String, dynamic> json) =>
+      _$EquipmentFromJson(json);
+  Map<String, dynamic> toJson() => _$EquipmentToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class Armory {
+  Armory();
+
+  List<Weapon> weapons = [];
+  List<Armor> armors = [];
+  List<Equipment> equipments = [];
+
+  factory Armory.fromJson(Map<String, dynamic> json) => _$ArmoryFromJson(json);
+  Map<String, dynamic> toJson() => _$ArmoryToJson(this);
 }

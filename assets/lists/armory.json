@@ -1,0 +1,345 @@
+{
+    "weapons": [
+        {
+            "name": "Pistol/Revolver",
+            "hands": 1,
+            "range": 12,
+            "ranged": 0,
+            "melee": 0
+        },
+        {
+            "name": "Automatic Pistol",
+            "hands": 1,
+            "range": 12,
+            "ranged": 0,
+            "melee": 0,
+            "injury": -1,
+            "keywords": [
+                "Assault"
+            ]
+        },
+        {
+            "name": "Silenced Pistol",
+            "hands": 1,
+            "range": 12,
+            "ranged": 0,
+            "melee": 0,
+            "keywords": [
+                "Assault"
+            ]
+        },
+        {
+            "name": "Bolt Action Rifle",
+            "hands": 2,
+            "range": 24,
+            "ranged": 0
+        },
+        {
+            "name": "Semi-automatic Rifle",
+            "hands": 2,
+            "range": 24,
+            "ranged": 0,
+            "keywords": [
+                "Assault"
+            ]
+        },
+        {
+            "name": "Automatic Rifle",
+            "hands": 2,
+            "range": 24,
+            "ranged": 0,
+            "keywords": [
+                "Assault"
+            ]
+        },
+        {
+            "name": "Jezzail",
+            "hands": 2,
+            "range": 18,
+            "ranged": 0
+        },
+        {
+            "name": "Shotgun",
+            "hands": 2,
+            "range": 24,
+            "ranged": 1,
+            "injury": -1
+        },
+        {
+            "name": "Automatic Shotgun",
+            "hands": 2,
+            "range": 24,
+            "ranged": 0,
+            "injury": -1,
+            "keywords": [
+                "Assault"
+            ]
+        },
+        {
+            "name": "Submachine Gun",
+            "hands": 2,
+            "range": 16,
+            "ranged": 0,
+            "keywords": [
+                "Assault"
+            ]
+        },
+        {
+            "name": "Musket",
+            "hands": 2,
+            "range": 18,
+            "ranged": 0,
+            "injury": -1,
+            "keywords": [
+                "Risky"
+            ]
+        },
+        {
+            "name": "Musket",
+            "hands": 2,
+            "range": 18,
+            "ranged": 0,
+            "keywords": [
+                "Risky"
+            ]
+        },
+        {
+            "name": "Sniper Rifle",
+            "hands": 2,
+            "range": 48,
+            "ranged": 1,
+            "keywords": [
+                "Risky",
+                "Critical"
+            ]
+        },
+        {
+            "name": "Grenades",
+            "hands": 0,
+            "range": 8,
+            "ranged": 0,
+            "keywords": [
+                "Assault",
+                "Shrapnel"
+            ]
+        },
+        {
+            "name": "Incendiary Grenades",
+            "hands": 0,
+            "range": 8,
+            "ranged": 0,
+            "keywords": [
+                "Assault",
+                "Fire"
+            ]
+        },
+        {
+            "name": "Gas Grenades",
+            "hands": 0,
+            "range": 8,
+            "ranged": 0,
+            "injury": -1,
+            "keywords": [
+                "Assault",
+                "Gas"
+            ]
+        },
+        {
+            "name": "Grenade Launcher",
+            "hands": 2,
+            "range": 36,
+            "ranged": 0,
+            "keywords": [
+                "Shrapnel",
+                "Heavy"
+            ]
+        },
+        {
+            "name": "Satchel Charge",
+            "hands": 0,
+            "range": 6,
+            "ranged": 0,
+            "injury": 1,
+            "keywords": [
+                "Heavy",
+                "Consumable"
+            ]
+        },
+        {
+            "name": "Molotov Cocktail",
+            "hands": 0,
+            "range": 6,
+            "ranged": 0,
+            "injury": -1,
+            "keywords": [
+                "Fire",
+                "Assault"
+            ]
+        },
+        {
+            "name": "Anti-Material Rifle",
+            "hands": 2,
+            "range": 36,
+            "ranged": 0,
+            "injury": 1,
+            "keywords": [
+                "Heavy",
+                "Critical"
+            ]
+        },
+        {
+            "name": "Machine Gun",
+            "hands": 2,
+            "range": 36,
+            "ranged": 0,
+            "keywords": [
+                "Heavy"
+            ]
+        },
+        {
+            "name": "Flamethrower",
+            "hands": 2,
+            "range": 8,
+            "ranged": 0,
+            "keywords": [
+                "Fire"
+            ]
+        },
+        {
+            "name": "Heavy Flamethrower",
+            "hands": 2,
+            "range": 10,
+            "ranged": 0,
+            "keywords": [
+                "Heavy",
+                "Fire"
+            ]
+        },
+        {
+            "name": "Knife/Dagger",
+            "hands": 1,
+            "melee": -1
+        },
+        {
+            "name": "Trench Club",
+            "hands": 1,
+            "melee": 0
+        },
+        {
+            "name": "Sword/Axe",
+            "hands": 1,
+            "melee": 0,
+            "keywords": [
+                "Critical"
+            ]
+        },
+        {
+            "name": "Bayonet",
+            "hands": 1,
+            "melee": 0
+        },
+        {
+            "name": "Sacrificial Knife",
+            "hands": 1,
+            "melee": 0,
+            "injury": 2,
+            "keywords": [
+                "Risky"
+            ]
+        },
+        {
+            "name": "Blasphemous Staff",
+            "hands": 1,
+            "melee": 0,
+            "keywords": [
+                "Fire",
+                "Risky"
+            ]
+        },
+        {
+            "name": "Hellblade",
+            "hands": 2,
+            "melee": 0,
+            "injury": 1,
+            "keywords": [
+                "Fire"
+            ]
+        },
+        {
+            "name": "Tartarus Claws",
+            "hands": 2,
+            "melee": 0
+        },
+        {
+            "name": "Anti-Tank Hammer",
+            "hands": 2,
+            "melee": 0,
+            "injury": 1,
+            "keywords": [
+                "Risky",
+                "Critical"
+            ]
+        },
+        {
+            "name": "Trench Polearm",
+            "hands": 2,
+            "melee": 0
+        },
+        {
+            "name": "Scourge/Battle Whip/Flail",
+            "hands": 1,
+            "melee": 1
+        },
+        {
+            "name": "Double-Handed Blunt Weapon",
+            "hands": 2,
+            "melee": 0,
+            "injury": 1,
+            "keywords": [
+                "Heavy"
+            ]
+        },
+        {
+            "name": "Great Sword/Axe",
+            "hands": 2,
+            "melee": 0,
+            "injury": 1,
+            "keywords": [
+                "Critical",
+                "Heavy"
+            ]
+        },
+        {
+            "name": "Misericordia",
+            "hands": 1,
+            "melee": 0
+        }
+    ],
+    "armors": [
+        {
+            "name": "Trench Shield",
+            "value": -1
+        },
+        {
+            "name": "Standard Armour",
+            "value": -1
+        },
+        {
+            "name": "Heavy Armour",
+            "value": -2
+        },
+        {
+            "name": "Machine Armour",
+            "value": -3
+        },
+        {
+            "name": "Holy Icon Shield",
+            "value": -1
+        },
+        {
+            "name": "Holy Icon Armor",
+            "value": -1
+        }
+    ],
+    "equipments": []
+}

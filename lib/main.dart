@@ -35,24 +35,34 @@ class MyHomePage extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => WarbandModel(),
       builder: (context, _) => FutureBuilder(
-        future: loadRoster(context),
-        builder: (context, roster) {
-          if (roster.hasError) {
+        future: loadJson(context),
+        builder: (context, future) {
+          if (future.hasError) {
             return const Text("Failed to load roster");
           }
-          if (!roster.hasData) {
+          if (!future.hasData) {
             return const CircularProgressIndicator();
           }
-          return WarbandView(title: "Warband!", roster: roster.data!);
+          var (roster, armory) = future.data!;
+          return WarbandView(
+            title: "Warband!",
+            roster: roster,
+            armory: armory,
+          );
         },
       ),
     );
   }
 
-  Future<Roster> loadRoster(context) async {
+  Future<(Roster, Armory)> loadJson(context) async {
     var data = await DefaultAssetBundle.of(context)
         .loadString("assets/lists/cult.json");
-    var d = jsonDecode(data);
-    return Roster.fromJson(d);
+    final r = Roster.fromJson(jsonDecode(data));
+
+    data = await DefaultAssetBundle.of(context)
+        .loadString("assets/lists/armory.json");
+    final a = Armory.fromJson(jsonDecode(data));
+
+    return (r, a);
   }
 }
