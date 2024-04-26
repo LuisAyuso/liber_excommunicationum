@@ -235,7 +235,7 @@
         },
         {
             "name": "Bayonet",
-            "hands": 1,
+            "hands": 2,
             "melee": 0
         },
         {

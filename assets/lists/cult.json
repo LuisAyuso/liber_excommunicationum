@@ -300,7 +300,7 @@
     "equipment": [
         {
             "name": "Combat Helmet",
-            "cost": 40
+            "cost": 5
         },
         {
             "name": "Gas Mask",
@@ -308,19 +308,19 @@
         },
         {
             "name": "Unholy Trinket",
-            "cost": 40
+            "cost": 15
         },
         {
             "name": "Unholy Relic",
-            "cost": 40
+            "cost": 30
         },
         {
             "name": "Incendiary Bullets",
-            "cost": 40
+            "cost": 15
         },
         {
             "name": "Shovel",
-            "cost": 40
+            "cost": 5
         },
         {
             "name": "Infernal Brand Mark",
