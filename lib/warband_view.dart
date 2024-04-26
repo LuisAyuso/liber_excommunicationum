@@ -197,7 +197,7 @@ class WarbandView extends StatelessWidget {
             statBox(warrior.type.armor, 20),
           ],
         ),
-        Spacer(),
+        const Spacer(),
         Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
           Row(
             children: warrior.weapons
@@ -309,7 +309,7 @@ class WarbandView extends StatelessWidget {
   }
 
   Widget weaponLine(BuildContext context, WeaponUse w, WarriorModel warrior) {
-    final def = getWeaponDef(w);
+    //final def = getWeaponDef(w);
     return Row(
       children: [
         const SizedBox(
@@ -338,7 +338,7 @@ class WarbandView extends StatelessWidget {
   }
 
   Widget armorLine(BuildContext context, ArmorUse a, WarriorModel warrior) {
-    final def = getArmorDef(a);
+    //final def = getArmorDef(a);
     return Row(
       children: [
         const SizedBox(
