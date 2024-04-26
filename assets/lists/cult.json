@@ -1,5 +1,5 @@
 {
-    "names": [
+    "namesM": [
         "Mortimer",
         "Egon",
         "Bertram",
@@ -19,6 +19,28 @@
         "Adalbert",
         "Sigmund",
         "Reinhold"
+    ],
+    "namesF": [
+        "Brunhilde",
+        "Gertrude",
+        "Hilde",
+        "Adelheid",
+        "Ottilie",
+        "Greta",
+        "Helga",
+        "Ingrid",
+        "Liesel",
+        "Irma",
+        "Lieselotte",
+        "Dagmar",
+        "Ingeborg",
+        "Gisela",
+        "Erika",
+        "Ilse",
+        "Frieda",
+        "Theodora",
+        "Hannelore",
+        "Agathe"
     ],
     "surnames": [
         "Zolner",
@@ -175,6 +197,23 @@
             ],
             "cost": 95,
             "base": 32
+        },
+        {
+            "name": "Artillery Witches",
+            "max": 2,
+            "movement": 6,
+            "ranged": 0,
+            "melee": -1,
+            "armor": 0,
+            "abilities": [
+                "Infernal Bomb",
+                "Artificial Life"
+            ],
+            "keywords": [
+                "HERETIC"
+            ],
+            "cost": 90,
+            "base": 25
         }
     ],
     "weapons": [
@@ -196,7 +235,10 @@
         },
         {
             "name": "Silenced Pistol",
-            "cost": 20
+            "cost": 20,
+            "keywordFilter": [
+                "ELITE"
+            ]
         },
         {
             "name": "Grenades",
@@ -220,11 +262,13 @@
         },
         {
             "name": "Grenade Launcher",
-            "cost": 50
+            "cost": 50,
+            "limit": 1
         },
         {
             "name": "Machine Gun",
-            "cost": 60
+            "cost": 60,
+            "limit": 1
         },
         {
             "name": "Flamethrower",
@@ -232,11 +276,13 @@
         },
         {
             "name": "Heavy Flamethrower",
-            "cost": 55
+            "cost": 55,
+            "limit": 2
         },
         {
             "name": "Anti-Material Rifle",
-            "cost": -3
+            "cost": -3,
+            "limit": 1
         },
         {
             "name": "Knife/Dagger",
@@ -268,7 +314,10 @@
         },
         {
             "name": "Sacrificial Knife",
-            "cost": 25
+            "cost": 25,
+            "keywordFilter": [
+                "ELITE"
+            ]
         },
         {
             "name": "Hellblade",
@@ -280,7 +329,10 @@
         },
         {
             "name": "Blasphemous Staff",
-            "cost": -2
+            "cost": -2,
+            "keywordFilter": [
+                "ELITE"
+            ]
         }
     ],
     "armor": [
@@ -290,7 +342,10 @@
         },
         {
             "name": "Heavy Armour",
-            "cost": 40
+            "cost": 40,
+            "keywordFilter": [
+                "ELITE"
+            ]
         },
         {
             "name": "Trench Shield",
@@ -308,7 +363,10 @@
         },
         {
             "name": "Unholy Trinket",
-            "cost": 15
+            "cost": 15,
+            "keywords": [
+                "CONSUMABLE"
+            ]
         },
         {
             "name": "Unholy Relic",
@@ -316,7 +374,10 @@
         },
         {
             "name": "Incendiary Bullets",
-            "cost": 15
+            "cost": 15,
+            "keywords": [
+                "CONSUMABLE"
+            ]
         },
         {
             "name": "Shovel",
@@ -332,7 +393,8 @@
         },
         {
             "name": "Hellbound Soul Contract",
-            "cost": 5
+            "cost": 5,
+            "limit": 3
         }
     ]
 }

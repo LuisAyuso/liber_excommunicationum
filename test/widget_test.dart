@@ -18,6 +18,7 @@ import 'package:tc_thing/warband_view.dart';
 typedef WL = List<WarriorModel>;
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   test('roster serialization', () {
     var r = Roster();
     var boss = Unit();
@@ -40,24 +41,25 @@ void main() {
     debugPrint(str);
   });
 
-  testWidgets('load armory', (WidgetTester tester) async {
+  test('load armory', () async {
     String data = await rootBundle.loadString('assets/lists/armory.json');
     var armory = Armory.fromJson(jsonDecode(data));
     debugPrint(armory.weapons.map((w) => w.name).toList().toString());
     debugPrint(armory.armors.map((w) => w.name).toList().toString());
     debugPrint(armory.equipments.map((w) => w.name).toList().toString());
+    expect(armory.weapons, isNotEmpty);
+    expect(armory.armors, isNotEmpty);
   });
 
-  testWidgets('load cult list', (WidgetTester tester) async {
+  test('load cult list', () async {
     String data = await rootBundle.loadString('assets/lists/armory.json');
     var armory = Armory.fromJson(jsonDecode(data));
     expect(armory.weapons, isNotEmpty);
     expect(armory.armors, isNotEmpty);
-    //expect(armory.equipments, isNotEmpty);
 
     data = await rootBundle.loadString('assets/lists/cult.json');
     var roster = Roster.fromJson(jsonDecode(data));
-    debugPrint(roster.units.length.toString());
+    //debugPrint(roster.units.length.toString());
 
     expect(roster.weapons, isNotEmpty);
     expect(roster.units, isNotEmpty);
@@ -74,6 +76,13 @@ void main() {
       debugPrint(a.name);
       Armor? found = armory.armors
           .map<Armor?>((b) => b)
+          .firstWhere((b) => b!.name == a.name, orElse: () => null);
+      expect(found, isNotNull, reason: a.name);
+    }
+    for (var a in roster.equipment) {
+      debugPrint(a.name);
+      Equipment? found = armory.equipments
+          .map<Equipment?>((b) => b)
           .firstWhere((b) => b!.name == a.name, orElse: () => null);
       expect(found, isNotNull, reason: a.name);
     }

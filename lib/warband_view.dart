@@ -139,12 +139,19 @@ class WarbandView extends StatelessWidget {
 // - two single-handed melee weapons.
 
     final availableWeapons = roster.weapons.where((weapon) {
+      for (var keyword in warrior.type.keywords) {
+        if (weapon.keywordFilter.where((kw) => kw == keyword).isNotEmpty) {
+          return false;
+        }
+      }
+
       final def = getWeaponDef(weapon);
       if (def.isPistol && allowPistol) return true;
       if (def.isFirearm && firearms < 1) return true;
       if (def.isMeleeWeapon && allowMelee) {
         return freeHands >= def.hands;
       }
+
       return false;
     });
 
@@ -155,10 +162,18 @@ class WarbandView extends StatelessWidget {
       final def = getArmorDef(armour);
       if (def.isArmour && bodyArmour) return false;
       if (def.isShield && shield) return false;
+
       return true;
     });
 
     final availableEquipment = roster.equipment.where((e) {
+      debugPrint(e.name);
+      final eq = getEquipmentDef(e);
+      if (!eq.isConsumable &&
+          warrior.equipment.where((e) => e.name == eq.name).isNotEmpty) {
+        return false;
+      }
+
       return true;
     });
 
@@ -291,7 +306,7 @@ class WarbandView extends StatelessWidget {
               onPressed: () {
                 var wbm = context.read<WarbandModel>();
                 wbm.add(warrior.copyWith(
-                    name: makeName(roster.names, roster.surnames),
+                    name: makeName(roster.namesM, roster.surnames),
                     newUid: wbm.nextUID()));
               },
               icon: const Icon(Icons.copy),

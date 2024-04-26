@@ -341,5 +341,74 @@
             "value": -1
         }
     ],
-    "equipments": []
+    "equipments": [
+        {
+            "name": "Combat Helmet"
+        },
+        {
+            "name": "Iron Capirote"
+        },
+        {
+            "name": "Medi-kit"
+        },
+        {
+            "name": "Gas Mask"
+        },
+        {
+            "name": "Holy Relic"
+        },
+        {
+            "name": "Armor-Piercing Bullets",
+            "consumable": true
+        },
+        {
+            "name": "Dum-Dum Bullets",
+            "consumable": true
+        },
+        {
+            "name": "Incendiary Bullets",
+            "consumable": true
+        },
+        {
+            "name": "Tracer Bullets",
+            "consumable": true
+        },
+        {
+            "name": "Sniper Scope"
+        },
+        {
+            "name": "Shovel"
+        },
+        {
+            "name": "Troop Flag"
+        },
+        {
+            "name": "Martyrdom Pills"
+        },
+        {
+            "name": "Unholy Trinket",
+            "consumable": true
+        },
+        {
+            "name": "Unholy Relic"
+        },
+        {
+            "name": "Blessed Icon"
+        },
+        {
+            "name": "Infernal Brand Mark"
+        },
+        {
+            "name": "Field Shrine"
+        },
+        {
+            "name": "Hellbound Soul Contract"
+        },
+        {
+            "name": "Binoculars"
+        },
+        {
+            "name": "Musical Instrument"
+        }
+    ]
 }

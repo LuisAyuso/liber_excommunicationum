@@ -35,13 +35,11 @@ Map<String, dynamic> _$UnitToJson(Unit instance) => <String, dynamic>{
 
 WeaponUse _$WeaponUseFromJson(Map<String, dynamic> json) => WeaponUse()
   ..name = json['name'] as String
-  ..cost = json['cost'] as int
-  ..limit = json['limit'] as int?;
+  ..cost = json['cost'] as int;
 
 Map<String, dynamic> _$WeaponUseToJson(WeaponUse instance) => <String, dynamic>{
       'name': instance.name,
       'cost': instance.cost,
-      'limit': instance.limit,
     };
 
 ArmorUse _$ArmorUseFromJson(Map<String, dynamic> json) => ArmorUse()
@@ -64,7 +62,8 @@ Map<String, dynamic> _$EquipmentUseToJson(EquipmentUse instance) =>
     };
 
 Roster _$RosterFromJson(Map<String, dynamic> json) => Roster()
-  ..names = (json['names'] as List<dynamic>).map((e) => e as String).toList()
+  ..namesM = (json['namesM'] as List<dynamic>).map((e) => e as String).toList()
+  ..namesF = (json['namesF'] as List<dynamic>).map((e) => e as String).toList()
   ..surnames =
       (json['surnames'] as List<dynamic>).map((e) => e as String).toList()
   ..units = (json['units'] as List<dynamic>)
@@ -81,7 +80,8 @@ Roster _$RosterFromJson(Map<String, dynamic> json) => Roster()
       .toList();
 
 Map<String, dynamic> _$RosterToJson(Roster instance) => <String, dynamic>{
-      'names': instance.names,
+      'namesM': instance.namesM,
+      'namesF': instance.namesF,
       'surnames': instance.surnames,
       'units': instance.units.map((e) => e.toJson()).toList(),
       'weapons': instance.weapons.map((e) => e.toJson()).toList(),
@@ -123,12 +123,11 @@ Map<String, dynamic> _$ArmorToJson(Armor instance) => <String, dynamic>{
 
 Equipment _$EquipmentFromJson(Map<String, dynamic> json) => Equipment()
   ..name = json['name'] as String
-  ..special =
-      (json['special'] as List<dynamic>).map((e) => e as String).toList();
+  ..consumable = json['consumable'] as bool?;
 
 Map<String, dynamic> _$EquipmentToJson(Equipment instance) => <String, dynamic>{
       'name': instance.name,
-      'special': instance.special,
+      'consumable': instance.consumable,
     };
 
 Armory _$ArmoryFromJson(Map<String, dynamic> json) => Armory()

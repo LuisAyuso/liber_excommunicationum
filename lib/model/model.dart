@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:json_annotation/json_annotation.dart';
 
 part 'model.g.dart';
@@ -27,7 +29,13 @@ class WeaponUse {
 
   String name = "";
   int cost = 0;
-  int? limit = 0;
+
+  List<String>? _keywordFilter;
+  UnmodifiableListView<String> get keywordFilter =>
+      UnmodifiableListView(_keywordFilter ?? []);
+
+  int? _limit;
+  int get limit => _limit ?? double.maxFinite.toInt();
 
   factory WeaponUse.fromJson(Map<String, dynamic> json) =>
       _$WeaponUseFromJson(json);
@@ -41,6 +49,13 @@ class ArmorUse {
   String name = "";
   int cost = 0;
 
+  int? _limit;
+  int get limit => _limit ?? double.maxFinite.toInt();
+
+  List<String>? _keywordFilter;
+  UnmodifiableListView<String> get keywordFilter =>
+      UnmodifiableListView(_keywordFilter ?? []);
+
   factory ArmorUse.fromJson(Map<String, dynamic> json) =>
       _$ArmorUseFromJson(json);
   Map<String, dynamic> toJson() => _$ArmorUseToJson(this);
@@ -53,6 +68,13 @@ class EquipmentUse {
   String name = "";
   int cost = 0;
 
+  int? _limit;
+  int get limit => _limit ?? double.maxFinite.toInt();
+
+  List<String>? _keywordFilter;
+  UnmodifiableListView<String> get keywordFilter =>
+      UnmodifiableListView(_keywordFilter ?? []);
+
   factory EquipmentUse.fromJson(Map<String, dynamic> json) =>
       _$EquipmentUseFromJson(json);
   Map<String, dynamic> toJson() => _$EquipmentUseToJson(this);
@@ -62,7 +84,8 @@ class EquipmentUse {
 class Roster {
   Roster();
 
-  List<String> names = [];
+  List<String> namesM = [];
+  List<String> namesF = [];
   List<String> surnames = [];
   List<Unit> units = [];
   List<WeaponUse> weapons = [];
@@ -113,7 +136,9 @@ class Equipment {
   Equipment();
 
   String name = "";
-  List<String> special = [];
+  bool? consumable;
+
+  bool get isConsumable => consumable ?? false;
 
   factory Equipment.fromJson(Map<String, dynamic> json) =>
       _$EquipmentFromJson(json);

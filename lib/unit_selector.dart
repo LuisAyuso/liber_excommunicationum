@@ -54,7 +54,7 @@ class UnitSelector extends StatelessWidget {
           if (enabled) {
             var wb = context.read<WarbandModel>();
             wb.add(WarriorModel(
-                name: makeName(r.names, r.surnames),
+                name: makeName(r.namesM, r.surnames),
                 uid: wb.nextUID(),
                 type: unit,
                 bucket: idx));
