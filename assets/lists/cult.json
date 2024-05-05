@@ -107,7 +107,12 @@
             "cost": {
                 "ducats": 90
             },
-            "base": 32
+            "base": 32,
+            "rangedWeaponFilter": {
+                "whitelist": [
+                    "Silenced Pistol"
+                ]
+            }
         },
         {
             "name": "Heretic Chorister",
@@ -216,7 +221,19 @@
             "cost": {
                 "ducats": 95
             },
-            "base": 32
+            "base": 32,
+            "rangedWeaponFilter": {
+                "none": true
+            },
+            "meleeWeaponFilter": {
+                "none": true
+            },
+            "armourFilter": {
+                "none": true
+            },
+            "equipmentFilter": {
+                "none": true
+            }
         },
         {
             "name": "Artillery Witches",
@@ -235,7 +252,19 @@
             "cost": {
                 "ducats": 90
             },
-            "base": 25
+            "base": 25,
+            "rangedWeaponFilter": {
+                "none": true
+            },
+            "meleeWeaponFilter": {
+                "none": true
+            },
+            "armourFilter": {
+                "none": true
+            },
+            "equipmentFilter": {
+                "none": true
+            }
         }
     ],
     "weapons": [
@@ -268,14 +297,16 @@
             "cost": {
                 "ducats": 20
             },
-            "keywordFilter": [
-                "ELITE"
-            ]
+            "keywordFilter": {
+                "whitelist": [
+                    "ELITE"
+                ]
+            }
         },
         {
             "name": "Grenades",
             "cost": {
-                "ducats": 10
+                "ducats": 5
             }
         },
         {
@@ -291,15 +322,21 @@
             }
         },
         {
+            "name": "Submachine Gun",
+            "cost": {
+                "glory": 2
+            }
+        },
+        {
             "name": "Shotgun",
             "cost": {
-                "ducats": 20
+                "ducats": 15
             }
         },
         {
             "name": "Automatic Shotgun",
             "cost": {
-                "ducats": 25
+                "ducats": 20
             }
         },
         {
@@ -339,64 +376,73 @@
         {
             "name": "Knife/Dagger",
             "cost": {
-                "ducats": 3
+                "ducats": 1
             }
         },
         {
             "name": "Bayonet",
             "cost": {
-                "ducats": 3
+                "ducats": 2
             }
         },
         {
             "name": "Trench Club",
             "cost": {
-                "ducats": 4
+                "ducats": 3
             }
         },
         {
             "name": "Sword/Axe",
             "cost": {
-                "ducats": 5
+                "ducats": 4
             }
         },
         {
             "name": "Trench Polearm",
             "cost": {
-                "ducats": 10
+                "ducats": 7
             }
         },
         {
             "name": "Great Sword/Axe",
             "cost": {
-                "ducats": 17
+                "ducats": 15
             }
         },
         {
             "name": "Double-Handed Blunt Weapon",
             "cost": {
-                "ducats": 15
+                "ducats": 12
             }
         },
         {
             "name": "Sacrificial Knife",
             "cost": {
-                "ducats": 25
+                "ducats": 23
             },
-            "keywordFilter": [
-                "ELITE"
-            ]
+            "limit": 2,
+            "keywordFilter": {
+                "whitelist": [
+                    "ELITE"
+                ]
+            }
         },
         {
             "name": "Hellblade",
+            "limit": 2,
             "cost": {
-                "ducats": 2
+                "glory": 2
             }
         },
         {
             "name": "Tartarus Claws",
             "cost": {
-                "ducats": 30
+                "ducats": 25
+            },
+            "unitNameFilter": {
+                "whitelist": [
+                    "Heretic Death Commando"
+                ]
             }
         },
         {
@@ -404,9 +450,11 @@
             "cost": {
                 "glory": 2
             },
-            "keywordFilter": [
-                "ELITE"
-            ]
+            "keywordFilter": {
+                "whitelist": [
+                    "ELITE"
+                ]
+            }
         }
     ],
     "armor": [
@@ -421,14 +469,16 @@
             "cost": {
                 "ducats": 40
             },
-            "keywordFilter": [
-                "ELITE"
-            ]
+            "keywordFilter": {
+                "whitelist": [
+                    "ELITE"
+                ]
+            }
         },
         {
             "name": "Trench Shield",
             "cost": {
-                "ducats": 5
+                "ducats": 15
             }
         }
     ],
@@ -492,7 +542,14 @@
             "cost": {
                 "ducats": 5
             },
-            "limit": 3
+            "limit": 3,
+            "unitNameFilter": {
+                "whitelist": [
+                    "Heretic Trooper",
+                    "Legionnaire Melee",
+                    "Legionnaire Ranged"
+                ]
+            }
         }
     ]
 }

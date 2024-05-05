@@ -58,7 +58,7 @@ class WarriorModel {
 
   void populateBuiltInArmour(Armory armory) {
     for (var item in type.builtInItems ?? []) {
-      final candidates = armory.armors.where((a) => a.name == item);
+      final candidates = armory.armours.where((a) => a.name == item);
       if (candidates.length > 1) {
         throw Exception(
             "failed to find weapon named $item, more than one match");
@@ -85,7 +85,7 @@ class WarriorModel {
   int getArmorValue(Armory armory) {
     return type.armor +
         armor
-            .map((a) => armory.armors.firstWhere((e) => e.name == a.name))
+            .map((a) => armory.armours.firstWhere((e) => e.name == a.name))
             .map((a) => a.value ?? 0)
             .fold(0, (a, b) => a + b);
   }
@@ -213,13 +213,27 @@ class _WarbandViewState extends State<WarbandView> {
 // - two single-handed melee weapons.
 
     final availableWeapons = widget.roster.weapons.where((weapon) {
-      for (var keyword in warrior.type.keywords) {
-        if (weapon.getKeywordFilter.where((kw) => kw == keyword).isNotEmpty) {
-          return false;
-        }
+      final def = getWeaponDef(weapon);
+
+      if (def.canMelee &&
+          !warrior.type.getMeleeWeaponFilter.isAllowed(weapon.name)) {
+        return false;
       }
 
-      final def = getWeaponDef(weapon);
+      if (def.canRanged &&
+          !warrior.type.getRangedWeaponFilter.isAllowed(weapon.name)) {
+        return false;
+      }
+
+      if (!weapon.getUnitNameFilter.isAllowed(warrior.type.name)) {
+        return false;
+      }
+
+      if (!warrior.type.keywords.fold(false,
+          (v, keyword) => v || weapon.getKeywordFilter.isAllowed(keyword))) {
+        return false;
+      }
+
       if (def.isPistol && allowPistol) return true;
       if (def.isFirearm && firearms < 1) return true;
       if (def.isMeleeWeapon && allowMelee) {
@@ -232,7 +246,20 @@ class _WarbandViewState extends State<WarbandView> {
     final bodyArmour = armours.where((a) => a.isArmour).isNotEmpty;
     final shield = armours.where((a) => a.isShield).isNotEmpty;
 
-    final availableArmors = widget.roster.armor.where((armour) {
+    final availablearmours = widget.roster.armor.where((armour) {
+      if (!warrior.type.getArmourFilter.isAllowed(armour.name)) {
+        return false;
+      }
+
+      if (!armour.getUnitNameFilter.isAllowed(warrior.type.name)) {
+        return false;
+      }
+
+      if (!warrior.type.keywords.fold(false,
+          (v, keyword) => v || armour.getKeywordFilter.isAllowed(keyword))) {
+        return false;
+      }
+
       final def = getArmorDef(armour);
       if (def.isArmour && bodyArmour) return false;
       if (def.isShield && shield) return false;
@@ -240,11 +267,23 @@ class _WarbandViewState extends State<WarbandView> {
       return true;
     });
 
-    final availableEquipment = widget.roster.equipment.where((e) {
-      debugPrint(e.name);
-      final eq = getEquipmentDef(e);
-      if (!eq.isConsumable &&
-          warrior.equipment.where((e) => e.name == eq.name).isNotEmpty) {
+    final availableEquipment = widget.roster.equipment.where((equip) {
+      if (!warrior.type.getEquipmentFilter.isAllowed(equip.name)) {
+        return false;
+      }
+
+      if (!equip.getUnitNameFilter.isAllowed(warrior.type.name)) {
+        return false;
+      }
+
+      if (!warrior.type.keywords.fold(false,
+          (v, keyword) => v || equip.getKeywordFilter.isAllowed(keyword))) {
+        return false;
+      }
+
+      final def = getEquipmentDef(equip);
+      if (!def.isConsumable &&
+          warrior.equipment.where((e) => e.name == def.name).isNotEmpty) {
         return false;
       }
 
@@ -350,7 +389,7 @@ class _WarbandViewState extends State<WarbandView> {
                     },
                   ),
                   DropdownMenu(
-                    dropdownMenuEntries: availableArmors
+                    dropdownMenuEntries: availablearmours
                         .map<DropdownMenuEntry<String>>((ArmorUse w) =>
                             DropdownMenuEntry(value: w.name, label: w.name))
                         .toList(),
@@ -497,7 +536,7 @@ class _WarbandViewState extends State<WarbandView> {
       widget.armory.weapons.firstWhere((def) => def.name == w.name);
 
   Armor getArmorDef(ArmorUse w) =>
-      widget.armory.armors.firstWhere((def) => def.name == w.name);
+      widget.armory.armours.firstWhere((def) => def.name == w.name);
 
   Equipment getEquipmentDef(EquipmentUse w) =>
       widget.armory.equipments.firstWhere((def) => def.name == w.name);

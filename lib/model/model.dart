@@ -5,6 +5,38 @@ import 'package:json_annotation/json_annotation.dart';
 part 'model.g.dart';
 
 @JsonSerializable()
+class Filter {
+  Filter({this.whitelist, this.blacklist, this.none});
+
+  bool? none = false;
+  List<String>? whitelist;
+  List<String>? blacklist;
+
+  factory Filter.whitelist(List<String> list) => Filter(whitelist: list);
+  factory Filter.blacklist(List<String> list) => Filter(blacklist: list);
+  factory Filter.none() => Filter(none: true);
+  factory Filter.any() => Filter();
+
+  bool isAllowed(String name) {
+    if (none ?? false) {
+      return false;
+    }
+
+    bool allowed = true;
+    if (whitelist != null) {
+      allowed = allowed && whitelist!.where((str) => str == name).isNotEmpty;
+    }
+    if (blacklist != null) {
+      allowed = allowed && blacklist!.where((str) => str == name).isEmpty;
+    }
+    return allowed;
+  }
+
+  factory Filter.fromJson(Map<String, dynamic> json) => _$FilterFromJson(json);
+  Map<String, dynamic> toJson() => _$FilterToJson(this);
+}
+
+@JsonSerializable()
 class Currency {
   Currency({int? ducats, int? glory})
       : _ducats = ducats,
@@ -47,14 +79,22 @@ class Unit {
   Currency cost = Currency(ducats: 0);
   int base = 25;
   List<String>? builtInItems = [];
+  Filter? rangedWeaponFilter;
+  Filter get getRangedWeaponFilter => rangedWeaponFilter ?? Filter();
+  Filter? meleeWeaponFilter;
+  Filter get getMeleeWeaponFilter => meleeWeaponFilter ?? Filter();
+  Filter? armourFilter;
+  Filter get getArmourFilter => armourFilter ?? Filter();
+  Filter? equipmentFilter;
+  Filter get getEquipmentFilter => equipmentFilter ?? Filter();
 
   factory Unit.fromJson(Map<String, dynamic> json) => _$UnitFromJson(json);
   Map<String, dynamic> toJson() => _$UnitToJson(this);
 }
 
 abstract class ItemUse {
-  UnmodifiableListView<String> get getUnitNameFilter;
-  UnmodifiableListView<String> get getKeywordFilter;
+  Filter get getUnitNameFilter;
+  Filter get getKeywordFilter;
   bool get isBuiltIn;
   Currency get getCost;
 }
@@ -69,15 +109,12 @@ class WeaponUse extends ItemUse {
   Currency cost = Currency(ducats: 0);
   bool? builtIn;
 
-  List<String>? unitNameFilter;
+  Filter? unitNameFilter;
   @override
-  UnmodifiableListView<String> get getUnitNameFilter =>
-      UnmodifiableListView(unitNameFilter ?? []);
-
-  List<String>? keywordFilter;
+  Filter get getUnitNameFilter => unitNameFilter ?? Filter();
+  Filter? keywordFilter;
   @override
-  UnmodifiableListView<String> get getKeywordFilter =>
-      UnmodifiableListView(keywordFilter ?? []);
+  Filter get getKeywordFilter => keywordFilter ?? Filter();
 
   @override
   bool get isBuiltIn => builtIn ?? false;
@@ -108,15 +145,12 @@ class ArmorUse extends ItemUse {
   int? _limit;
   int get limit => _limit ?? double.maxFinite.toInt();
 
-  List<String>? unitNameFilter;
+  Filter? unitNameFilter;
   @override
-  UnmodifiableListView<String> get getUnitNameFilter =>
-      UnmodifiableListView(unitNameFilter ?? []);
-
-  List<String>? keywordFilter;
+  Filter get getUnitNameFilter => unitNameFilter ?? Filter();
+  Filter? keywordFilter;
   @override
-  UnmodifiableListView<String> get getKeywordFilter =>
-      UnmodifiableListView(keywordFilter ?? []);
+  Filter get getKeywordFilter => keywordFilter ?? Filter();
 
   @override
   bool get isBuiltIn => builtIn ?? false;
@@ -144,15 +178,12 @@ class EquipmentUse extends ItemUse {
   int? _limit;
   int get limit => _limit ?? double.maxFinite.toInt();
 
-  List<String>? unitNameFilter;
+  Filter? unitNameFilter;
   @override
-  UnmodifiableListView<String> get getUnitNameFilter =>
-      UnmodifiableListView(unitNameFilter ?? []);
-
-  List<String>? keywordFilter;
+  Filter get getUnitNameFilter => unitNameFilter ?? Filter();
+  Filter? keywordFilter;
   @override
-  UnmodifiableListView<String> get getKeywordFilter =>
-      UnmodifiableListView(keywordFilter ?? []);
+  Filter get getKeywordFilter => keywordFilter ?? Filter();
 
   @override
   bool get isBuiltIn => builtIn ?? false;
@@ -255,7 +286,7 @@ class Armory {
   Armory();
 
   List<Weapon> weapons = [];
-  List<Armor> armors = [];
+  List<Armor> armours = [];
   List<Equipment> equipments = [];
 
   factory Armory.fromJson(Map<String, dynamic> json) => _$ArmoryFromJson(json);

@@ -40,6 +40,29 @@ void main() {
     expect(d2.glory, 23);
   });
 
+  test('filters', () {
+    var f1 = Filter.blacklist(["a", "b", "c"]);
+    expect(f1.isAllowed("a"), false);
+    expect(f1.isAllowed("b"), false);
+    expect(f1.isAllowed("c"), false);
+    expect(f1.isAllowed("aaa"), true);
+    expect(f1.isAllowed("d"), true);
+
+    var f2 = Filter.whitelist(["a", "b", "c"]);
+    expect(f2.isAllowed("a"), true);
+    expect(f2.isAllowed("b"), true);
+    expect(f2.isAllowed("c"), true);
+    expect(f2.isAllowed("aaa"), false);
+    expect(f2.isAllowed("d"), false);
+
+    var f3 = Filter.none();
+    expect(f3.isAllowed("a"), false);
+    expect(f3.isAllowed("b"), false);
+    expect(f3.isAllowed("c"), false);
+    expect(f3.isAllowed("aaa"), false);
+    expect(f3.isAllowed("d"), false);
+  });
+
   test('roster serialization', () {
     var r = Roster();
     var boss = Unit();
@@ -66,17 +89,17 @@ void main() {
     String data = await rootBundle.loadString('assets/lists/armory.json');
     var armory = Armory.fromJson(jsonDecode(data));
     debugPrint(armory.weapons.map((w) => w.name).toList().toString());
-    debugPrint(armory.armors.map((w) => w.name).toList().toString());
+    debugPrint(armory.armours.map((w) => w.name).toList().toString());
     debugPrint(armory.equipments.map((w) => w.name).toList().toString());
     expect(armory.weapons, isNotEmpty);
-    expect(armory.armors, isNotEmpty);
+    expect(armory.armours, isNotEmpty);
   });
 
   test('load cult list', () async {
     String data = await rootBundle.loadString('assets/lists/armory.json');
     var armory = Armory.fromJson(jsonDecode(data));
     expect(armory.weapons, isNotEmpty);
-    expect(armory.armors, isNotEmpty);
+    expect(armory.armours, isNotEmpty);
 
     data = await rootBundle.loadString('assets/lists/cult.json');
     var roster = Roster.fromJson(jsonDecode(data));
@@ -95,7 +118,7 @@ void main() {
     }
     for (var a in roster.armor) {
       debugPrint(a.name);
-      Armor? found = armory.armors
+      Armor? found = armory.armours
           .map<Armor?>((b) => b)
           .firstWhere((b) => b!.name == a.name, orElse: () => null);
       expect(found, isNotNull, reason: a.name);
