@@ -223,6 +223,11 @@ class Roster {
   List<ArmorUse> armor = [];
   List<EquipmentUse> equipment = [];
 
+  List<ItemUse> get items =>
+      weapons.map<ItemUse>((e) => e).toList() +
+      armor.map<ItemUse>((e) => e).toList() +
+      equipment.map<ItemUse>((e) => e).toList();
+
   factory Roster.fromJson(Map<String, dynamic> json) => _$RosterFromJson(json);
   Map<String, dynamic> toJson() => _$RosterToJson(this);
 }

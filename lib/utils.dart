@@ -14,3 +14,18 @@ class MyContent extends StatelessWidget {
     ]);
   }
 }
+
+const Color tcRed = Color.fromARGB(255, 167, 51, 30);
+
+const TextStyle gothRed24 = TextStyle(
+  fontFamily: "CloisterBlack",
+  fontWeight: FontWeight.w400,
+  fontSize: 24,
+  color: tcRed,
+);
+
+const TextStyle gothBlack20 = TextStyle(
+  fontFamily: "CloisterBlack",
+  fontWeight: FontWeight.w400,
+  fontSize: 20,
+);

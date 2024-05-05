@@ -197,16 +197,25 @@
             "melee": 1,
             "armor": 0,
             "abilities": [
-                "Blessed Stigmata",
-                "Agile"
+                "Catherine Wheel",
+                "Bonebreaker Mace",
+                "Tough",
+                "Fear",
+                "Broken on the Wheel"
             ],
             "keywords": [
-                "PILGRIM"
+                "PILGRIM",
+                "FEAR",
+                "TOUGH"
             ],
             "cost": {
-                "ducats": 50
+                "ducats": 140
             },
             "base": 50,
+            "builtInItems": [
+                "Heavy Armour",
+                "Combat Helmet"
+            ],
             "rangedWeaponFilter": {
                 "none": true
             },

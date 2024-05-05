@@ -22,12 +22,16 @@ Roster management
 - [ ] Weapon limits
   - [ ] by troop type
   - [ ] by keyword
+- [ ] List Roster
+- [ ] List Equipment
+- [ ] Add minimum unit count
+- [ ] Hide consumed units
 
 - [ ] Card carousel
 
 ### Lists:
 - [x] Cult
-- [ ] Pilgrims
+- [x] Pilgrims
 - [ ] Califate
 - [ ] Plage
 - [ ] Antioch

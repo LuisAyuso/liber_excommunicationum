@@ -213,15 +213,21 @@
             "melee": 3,
             "armor": -2,
             "abilities": [
-                "Strong"
+                "Tough",
+                "Loping Dash",
+                "Terrifying",
+                "Chainmaw",
+                "Shredding Claws"
             ],
             "keywords": [
-                "HERETIC"
+                "HERETIC",
+                "FEAR",
+                "THOUGH"
             ],
             "cost": {
-                "ducats": 95
+                "ducats": 140
             },
-            "base": 32,
+            "base": 50,
             "rangedWeaponFilter": {
                 "none": true
             },

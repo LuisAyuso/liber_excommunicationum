@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tc_thing/model/model.dart';
+import 'package:tc_thing/roster_preview.dart';
 import 'package:tc_thing/utils.dart';
 
 import 'unit_selector.dart';
@@ -160,6 +161,12 @@ class _WarbandViewState extends State<WarbandView> {
             CurrencyWidget(cost: context.watch<WarbandModel>().cost),
             Text(widget.title),
             const Spacer(),
+            InkWell(
+              child: const Icon(Icons.note),
+              onTap: () => openRosterPreview(context),
+            ),
+            const VerticalDivider(),
+            const Text("Edit:"),
             Switch(value: _editMode, onChanged: (v) => edit = v)
           ]),
         ),
@@ -177,6 +184,16 @@ class _WarbandViewState extends State<WarbandView> {
                 child: const Icon(Icons.add),
               )
             : null,
+      ),
+    );
+  }
+
+  void openRosterPreview(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            RosterPreview(roster: widget.roster, armory: widget.armory),
       ),
     );
   }
@@ -304,14 +321,7 @@ class _WarbandViewState extends State<WarbandView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                warrior.name,
-                style: const TextStyle(
-                    fontFamily: "CloisterBlack",
-                    fontWeight: FontWeight.w400,
-                    fontSize: 24,
-                    color: Color.fromARGB(255, 167, 51, 30)),
-              ),
+              Text(warrior.name, style: gothRed24),
               Text(
                 warrior.type.name,
               )
@@ -329,33 +339,15 @@ class _WarbandViewState extends State<WarbandView> {
         Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
           Row(
             children: warrior.weapons
-                .map<Widget>(
-                  (w) => Chip(
-                    label: Text(w.name),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16)),
-                  ),
-                )
+                .map<Widget>((w) => ItemChip(name: w.name))
                 .toList(),
           ),
           Row(
             children: warrior.armor
-                    .map<Widget>(
-                      (a) => Chip(
-                        label: Text(a.name),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16)),
-                      ),
-                    )
+                    .map<Widget>((w) => ItemChip(name: w.name))
                     .toList() +
                 warrior.equipment
-                    .map<Widget>(
-                      (e) => Chip(
-                        label: Text(e.name),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16)),
-                      ),
-                    )
+                    .map<Widget>((w) => ItemChip(name: w.name))
                     .toList(),
           ),
         ]),
@@ -463,8 +455,8 @@ class _WarbandViewState extends State<WarbandView> {
 
   Widget weaponLine(BuildContext context, WeaponUse w, WarriorModel warrior) {
     final def = getWeaponDef(w);
-    var ranged = "Ranged ${(def.ranged ?? 0) + warrior.type.ranged}";
-    var melee = "Melee ${(def.melee ?? 0) + warrior.type.melee}";
+    var ranged = rangedToString(def, warrior, "Ranged ");
+    var melee = meleeToString(def, warrior, "Melee ");
     var injury = def.injury == null ? "" : " Injury ${def.injury ?? 0}";
     return Row(
       children: [
@@ -571,6 +563,19 @@ class _WarbandViewState extends State<WarbandView> {
       widget.armory.equipments.firstWhere((def) => def.name == w.name);
 }
 
+class ItemChip extends StatelessWidget {
+  const ItemChip({super.key, required this.name});
+  final String name;
+
+  @override
+  Widget build(BuildContext context) {
+    return Chip(
+      label: Text(name),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    );
+  }
+}
+
 class CurrencyWidget extends StatelessWidget {
   const CurrencyWidget(
       {super.key,
@@ -635,7 +640,7 @@ class CurrencyWidget extends StatelessWidget {
         const Icon(
           Icons.star,
           size: 40,
-          color: Color.fromARGB(255, 167, 51, 30),
+          color: tcRed,
         ),
         Text(
           "${_cost.glory}",
@@ -659,4 +664,25 @@ Widget statBox<T>(String name, T stat) {
       ),
     ],
   );
+}
+
+String bonus(int v) {
+  final sign = v > 0 ? "+" : "";
+  return "$sign$v";
+}
+
+String rangedToString(Weapon def, WarriorModel warrior, String prefix) {
+  if (def.ranged == null) {
+    return "-";
+  }
+  final value = bonus(def.ranged! + warrior.type.ranged);
+  return "$prefix $value";
+}
+
+String meleeToString(Weapon def, WarriorModel warrior, String prefix) {
+  if (def.melee == null) {
+    return "-";
+  }
+  final value = bonus(def.melee! + warrior.type.melee);
+  return "$prefix $value";
 }
