@@ -14,8 +14,10 @@ Roster management
 - [x] Edit mode - play mode
 - [ ] List variations
 - [ ] List-dependent armory
+- [ ] Unit-dependent armory: blacklist, whitelist
+- [ ] Default armory: non removable
 - [ ] Unit alternatives
-- [ ] Two currencies system
+- [x] Two currencies system
 - [ ] Weapon limits
   - [ ] by troop type
   - [ ] by keyword

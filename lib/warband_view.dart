@@ -29,12 +29,12 @@ class WarriorModel {
     return w;
   }
 
-  int get cost => baseCost + equipmentCost;
-  int get baseCost => type.cost;
-  int get equipmentCost =>
-      weapons.fold<int>(0, (v, w) => w.cost + v) +
-      armor.fold<int>(0, (v, w) => w.cost + v) +
-      equipment.fold<int>(0, (v, w) => w.cost + v);
+  Currency get totalCost => baseCost + equipmentCost;
+  Currency get baseCost => type.cost;
+  Currency get equipmentCost =>
+      weapons.fold<Currency>(Currency.free(), (v, w) => w.cost + v) +
+      armor.fold<Currency>(Currency.free(), (v, w) => w.cost + v) +
+      equipment.fold<Currency>(Currency.free(), (v, w) => w.cost + v);
 
   int getArmorValue(Armory armory) {
     return type.armor +
@@ -51,7 +51,8 @@ class WarbandModel extends ChangeNotifier {
 
   UnmodifiableListView<WarriorModel> get items => UnmodifiableListView(_items);
   int get length => _items.length;
-  int get cost => _items.fold<int>(0, (v, w) => v + w.cost);
+  Currency get cost =>
+      _items.fold<Currency>(Currency.free(), (v, w) => v + w.totalCost);
 
   void add(WarriorModel item) {
     _items.add(item);
@@ -108,7 +109,8 @@ class _WarbandViewState extends State<WarbandView> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Row(children: [
-          Text("${context.watch<WarbandModel>().cost} ${widget.title}"),
+          CostWidget(cost: context.watch<WarbandModel>().cost),
+          Text(widget.title),
           const Spacer(),
           Switch(value: _editMode, onChanged: (v) => edit = v)
         ]),
@@ -206,9 +208,8 @@ class _WarbandViewState extends State<WarbandView> {
     return ExpansionTile(
       tilePadding: EdgeInsets.zero,
       title: Row(children: [
-        SizedBox(
-          width: 40,
-          child: Text("${warrior.cost}"),
+        CostWidget(
+          cost: warrior.totalCost,
         ),
         SizedBox(
           width: 240,
@@ -454,6 +455,61 @@ class _WarbandViewState extends State<WarbandView> {
 
   Equipment getEquipmentDef(EquipmentUse w) =>
       widget.armory.equipments.firstWhere((def) => def.name == w.name);
+}
+
+class CostWidget extends StatelessWidget {
+  const CostWidget(
+      {super.key, required Currency cost, double? width, double? height})
+      : _cost = cost,
+        _width = width ?? 60,
+        _height = height ?? 60;
+
+  final double _width;
+  final double _height;
+  final Currency _cost;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: _width,
+      height: _height,
+      child: Stack(children: [
+        _cost.glory > 0
+            ? Positioned(bottom: 0, right: 0, child: gloryValue())
+            : const SizedBox(),
+        _cost.ducats > 0
+            ? Center(
+                child: Text(
+                  "${_cost.ducats}",
+                  style: const TextStyle(
+                    fontFamily: "CloisterBlack",
+                    fontWeight: FontWeight.w600,
+                    fontSize: 28,
+                    color: Color.fromARGB(255, 32, 31, 31),
+                  ),
+                ),
+              )
+            : const SizedBox(),
+      ]),
+    );
+  }
+
+  Widget gloryValue() => Stack(alignment: Alignment.center, children: [
+        const Icon(
+          Icons.star,
+          size: 40,
+          color: Color.fromARGB(255, 167, 51, 30),
+        ),
+        Text(
+          "${_cost.glory}",
+          style: const TextStyle(
+            fontFamily: "CloisterBlack",
+            fontWeight: FontWeight.w400,
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+      ]);
 }
 
 Widget statBox<T>(String name, T stat) {

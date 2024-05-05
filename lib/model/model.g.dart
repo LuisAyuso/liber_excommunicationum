@@ -6,6 +6,16 @@ part of 'model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+Currency _$CurrencyFromJson(Map<String, dynamic> json) => Currency(
+      ducats: json['ducats'] as int?,
+      glory: json['glory'] as int?,
+    );
+
+Map<String, dynamic> _$CurrencyToJson(Currency instance) => <String, dynamic>{
+      'glory': instance.glory,
+      'ducats': instance.ducats,
+    };
+
 Unit _$UnitFromJson(Map<String, dynamic> json) => Unit()
   ..name = json['name'] as String
   ..max = json['max'] as int
@@ -17,7 +27,7 @@ Unit _$UnitFromJson(Map<String, dynamic> json) => Unit()
       (json['abilities'] as List<dynamic>).map((e) => e as String).toList()
   ..keywords =
       (json['keywords'] as List<dynamic>).map((e) => e as String).toList()
-  ..cost = json['cost'] as int
+  ..cost = Currency.fromJson(json['cost'] as Map<String, dynamic>)
   ..base = json['base'] as int;
 
 Map<String, dynamic> _$UnitToJson(Unit instance) => <String, dynamic>{
@@ -35,30 +45,30 @@ Map<String, dynamic> _$UnitToJson(Unit instance) => <String, dynamic>{
 
 WeaponUse _$WeaponUseFromJson(Map<String, dynamic> json) => WeaponUse()
   ..name = json['name'] as String
-  ..cost = json['cost'] as int;
+  ..cost = Currency.fromJson(json['cost'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$WeaponUseToJson(WeaponUse instance) => <String, dynamic>{
       'name': instance.name,
-      'cost': instance.cost,
+      'cost': instance.cost.toJson(),
     };
 
 ArmorUse _$ArmorUseFromJson(Map<String, dynamic> json) => ArmorUse()
   ..name = json['name'] as String
-  ..cost = json['cost'] as int;
+  ..cost = Currency.fromJson(json['cost'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$ArmorUseToJson(ArmorUse instance) => <String, dynamic>{
       'name': instance.name,
-      'cost': instance.cost,
+      'cost': instance.cost.toJson(),
     };
 
 EquipmentUse _$EquipmentUseFromJson(Map<String, dynamic> json) => EquipmentUse()
   ..name = json['name'] as String
-  ..cost = json['cost'] as int;
+  ..cost = Currency.fromJson(json['cost'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$EquipmentUseToJson(EquipmentUse instance) =>
     <String, dynamic>{
       'name': instance.name,
-      'cost': instance.cost,
+      'cost': instance.cost.toJson(),
     };
 
 Roster _$RosterFromJson(Map<String, dynamic> json) => Roster()

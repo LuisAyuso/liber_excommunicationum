@@ -82,7 +82,9 @@
                 "ELITE",
                 "THOUGH"
             ],
-            "cost": 80,
+            "cost": {
+                "ducats": 80
+            },
             "base": 32
         },
         {
@@ -102,7 +104,9 @@
                 "ELITE",
                 "INFILTRATOR"
             ],
-            "cost": 90,
+            "cost": {
+                "ducats": 90
+            },
             "base": 32
         },
         {
@@ -121,7 +125,9 @@
                 "ELITE",
                 "FEAR"
             ],
-            "cost": 65,
+            "cost": {
+                "ducats": 65
+            },
             "base": 32
         },
         {
@@ -135,7 +141,9 @@
             "keywords": [
                 "HERETIC"
             ],
-            "cost": 30,
+            "cost": {
+                "ducats": 30
+            },
             "base": 25
         },
         {
@@ -149,7 +157,9 @@
             "keywords": [
                 "HERETIC"
             ],
-            "cost": 40,
+            "cost": {
+                "ducats": 40
+            },
             "base": 25
         },
         {
@@ -163,7 +173,9 @@
             "keywords": [
                 "HERETIC"
             ],
-            "cost": 40,
+            "cost": {
+                "ducats": 40
+            },
             "base": 25
         },
         {
@@ -179,7 +191,9 @@
             "keywords": [
                 "HERETIC"
             ],
-            "cost": 95,
+            "cost": {
+                "ducats": 95
+            },
             "base": 32
         },
         {
@@ -195,7 +209,9 @@
             "keywords": [
                 "HERETIC"
             ],
-            "cost": 95,
+            "cost": {
+                "ducats": 95
+            },
             "base": 32
         },
         {
@@ -212,124 +228,178 @@
             "keywords": [
                 "HERETIC"
             ],
-            "cost": 90,
+            "cost": {
+                "ducats": 90
+            },
             "base": 25
         }
     ],
     "weapons": [
         {
             "name": "Bolt Action Rifle",
-            "cost": 10
+            "cost": {
+                "ducats": 10
+            }
         },
         {
             "name": "Semi-automatic Rifle",
-            "cost": 20
+            "cost": {
+                "ducats": 20
+            }
         },
         {
             "name": "Automatic Rifle",
-            "cost": -3
+            "cost": {
+                "glory": 3
+            }
         },
         {
             "name": "Pistol/Revolver",
-            "cost": 10
+            "cost": {
+                "ducats": 10
+            }
         },
         {
             "name": "Silenced Pistol",
-            "cost": 20,
+            "cost": {
+                "ducats": 20
+            },
             "keywordFilter": [
                 "ELITE"
             ]
         },
         {
             "name": "Grenades",
-            "cost": 10
+            "cost": {
+                "ducats": 10
+            }
         },
         {
             "name": "Gas Grenades",
-            "cost": 10
+            "cost": {
+                "ducats": 10
+            }
         },
         {
             "name": "Incendiary Grenades",
-            "cost": 10
+            "cost": {
+                "ducats": 10
+            }
         },
         {
             "name": "Shotgun",
-            "cost": 20
+            "cost": {
+                "ducats": 20
+            }
         },
         {
             "name": "Automatic Shotgun",
-            "cost": 25
+            "cost": {
+                "ducats": 25
+            }
         },
         {
             "name": "Grenade Launcher",
-            "cost": 50,
+            "cost": {
+                "ducats": 50
+            },
             "limit": 1
         },
         {
             "name": "Machine Gun",
-            "cost": 60,
+            "cost": {
+                "ducats": 60
+            },
             "limit": 1
         },
         {
             "name": "Flamethrower",
-            "cost": 40
+            "cost": {
+                "ducats": 40
+            }
         },
         {
             "name": "Heavy Flamethrower",
-            "cost": 55,
+            "cost": {
+                "ducats": 55
+            },
             "limit": 2
         },
         {
             "name": "Anti-Material Rifle",
-            "cost": -3,
+            "cost": {
+                "glory": 3
+            },
             "limit": 1
         },
         {
             "name": "Knife/Dagger",
-            "cost": 3
+            "cost": {
+                "ducats": 3
+            }
         },
         {
             "name": "Bayonet",
-            "cost": 3
+            "cost": {
+                "ducats": 3
+            }
         },
         {
             "name": "Trench Club",
-            "cost": 4
+            "cost": {
+                "ducats": 4
+            }
         },
         {
             "name": "Sword/Axe",
-            "cost": 5
+            "cost": {
+                "ducats": 5
+            }
         },
         {
             "name": "Trench Polearm",
-            "cost": 10
+            "cost": {
+                "ducats": 10
+            }
         },
         {
             "name": "Great Sword/Axe",
-            "cost": 17
+            "cost": {
+                "ducats": 17
+            }
         },
         {
             "name": "Double-Handed Blunt Weapon",
-            "cost": 15
+            "cost": {
+                "ducats": 15
+            }
         },
         {
             "name": "Sacrificial Knife",
-            "cost": 25,
+            "cost": {
+                "ducats": 25
+            },
             "keywordFilter": [
                 "ELITE"
             ]
         },
         {
             "name": "Hellblade",
-            "cost": 2
+            "cost": {
+                "ducats": 2
+            }
         },
         {
             "name": "Tartarus Claws",
-            "cost": 30
+            "cost": {
+                "ducats": 30
+            }
         },
         {
             "name": "Blasphemous Staff",
-            "cost": -2,
+            "cost": {
+                "glory": 2
+            },
             "keywordFilter": [
                 "ELITE"
             ]
@@ -338,62 +408,86 @@
     "armor": [
         {
             "name": "Standard Armour",
-            "cost": 20
+            "cost": {
+                "ducats": 20
+            }
         },
         {
             "name": "Heavy Armour",
-            "cost": 40,
+            "cost": {
+                "ducats": 40
+            },
             "keywordFilter": [
                 "ELITE"
             ]
         },
         {
             "name": "Trench Shield",
-            "cost": 5
+            "cost": {
+                "ducats": 5
+            }
         }
     ],
     "equipment": [
         {
             "name": "Combat Helmet",
-            "cost": 5
+            "cost": {
+                "ducats": 5
+            }
         },
         {
             "name": "Gas Mask",
-            "cost": 5
+            "cost": {
+                "ducats": 5
+            }
         },
         {
             "name": "Unholy Trinket",
-            "cost": 15,
+            "cost": {
+                "ducats": 15
+            },
             "keywords": [
                 "CONSUMABLE"
             ]
         },
         {
             "name": "Unholy Relic",
-            "cost": 30
+            "cost": {
+                "ducats": 30
+            }
         },
         {
             "name": "Incendiary Bullets",
-            "cost": 15,
+            "cost": {
+                "ducats": 15
+            },
             "keywords": [
                 "CONSUMABLE"
             ]
         },
         {
             "name": "Shovel",
-            "cost": 5
+            "cost": {
+                "ducats": 5
+            }
         },
         {
             "name": "Infernal Brand Mark",
-            "cost": 5
+            "cost": {
+                "ducats": 5
+            }
         },
         {
             "name": "Troop Flag",
-            "cost": -1
+            "cost": {
+                "glory": 1
+            }
         },
         {
             "name": "Hellbound Soul Contract",
-            "cost": 5,
+            "cost": {
+                "ducats": 5
+            },
             "limit": 3
         }
     ]

@@ -5,6 +5,34 @@ import 'package:json_annotation/json_annotation.dart';
 part 'model.g.dart';
 
 @JsonSerializable()
+class Currency {
+  Currency({int? ducats, int? glory})
+      : _ducats = ducats,
+        _glory = glory;
+
+  final int? _ducats;
+  final int? _glory;
+
+  bool get isGlory => _glory != null;
+  bool get isDucats => _ducats != null;
+
+  int get glory => _glory ?? 0;
+  int get ducats => _ducats ?? 0;
+
+  factory Currency.free() => Currency(ducats: 0);
+  factory Currency.ducats(int v) => Currency(ducats: v);
+  factory Currency.glory(int v) => Currency(glory: v);
+
+  Currency operator +(Currency other) {
+    return Currency(ducats: ducats + other.ducats, glory: glory + other.glory);
+  }
+
+  factory Currency.fromJson(Map<String, dynamic> json) =>
+      _$CurrencyFromJson(json);
+  Map<String, dynamic> toJson() => _$CurrencyToJson(this);
+}
+
+@JsonSerializable()
 class Unit {
   Unit();
 
@@ -16,7 +44,7 @@ class Unit {
   int armor = 0;
   List<String> abilities = [];
   List<String> keywords = [];
-  int cost = 0;
+  Currency cost = Currency(ducats: 0);
   int base = 25;
 
   factory Unit.fromJson(Map<String, dynamic> json) => _$UnitFromJson(json);
@@ -28,7 +56,7 @@ class WeaponUse {
   WeaponUse();
 
   String name = "";
-  int cost = 0;
+  Currency cost = Currency(ducats: 0);
 
   List<String>? _keywordFilter;
   UnmodifiableListView<String> get keywordFilter =>
@@ -47,7 +75,7 @@ class ArmorUse {
   ArmorUse();
 
   String name = "";
-  int cost = 0;
+  Currency cost = Currency.free();
 
   int? _limit;
   int get limit => _limit ?? double.maxFinite.toInt();
@@ -66,7 +94,7 @@ class EquipmentUse {
   EquipmentUse();
 
   String name = "";
-  int cost = 0;
+  Currency cost = Currency.free();
 
   int? _limit;
   int get limit => _limit ?? double.maxFinite.toInt();

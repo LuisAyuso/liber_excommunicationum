@@ -19,6 +19,27 @@ typedef WL = List<WarriorModel>;
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  test('currency', () {
+    var d = Currency.ducats(1);
+    var str = jsonEncode(d.toJson());
+    debugPrint(str);
+
+    var s1 = '{"ducats": 43}';
+    var d1 = Currency.fromJson(jsonDecode(s1));
+    expect(d1.isDucats, true);
+    expect(d1.isGlory, false);
+    expect(d1.ducats, 43);
+    expect(d1.glory, 0);
+
+    var s2 = '{"glory": 23}';
+    var d2 = Currency.fromJson(jsonDecode(s2));
+    expect(d2.isDucats, false);
+    expect(d2.isGlory, true);
+    expect(d2.ducats, 0);
+    expect(d2.glory, 23);
+  });
+
   test('roster serialization', () {
     var r = Roster();
     var boss = Unit();
@@ -30,10 +51,10 @@ void main() {
     boss.armor = 0;
     boss.abilities = ["special"];
     boss.keywords = ["elite"];
-    boss.cost = 60;
+    boss.cost = Currency(ducats: 60);
     var w = WeaponUse();
     w.name = "gun";
-    w.cost = 10;
+    w.cost = Currency(ducats: 10);
     r.units = [boss];
     r.weapons = [w];
 
@@ -69,7 +90,7 @@ void main() {
     for (var w in roster.weapons) {
       Weapon? found = armory.weapons
           .map<Weapon?>((w) => w)
-          .firstWhere((weapDef) => weapDef!.name == w.name, orElse: () => null);
+          .firstWhere((def) => def!.name == w.name, orElse: () => null);
       expect(found, isNotNull, reason: w.name);
     }
     for (var a in roster.armor) {
