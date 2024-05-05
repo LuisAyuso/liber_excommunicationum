@@ -172,22 +172,24 @@ class _WarbandViewState extends State<WarbandView> {
             itemCount: context.watch<WarbandModel>().length),
         floatingActionButton: _editMode
             ? FloatingActionButton(
-                onPressed: () {
-                  var value = context.read<WarbandModel>();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ChangeNotifierProvider.value(
-                          value: value,
-                          builder: (context, child) => UnitSelector(
-                              roster: widget.roster, armory: widget.armory)),
-                    ),
-                  );
-                },
-                tooltip: 'Increment',
+                onPressed: () => openUnitSelection(context),
+                tooltip: 'Add Unit',
                 child: const Icon(Icons.add),
               )
             : null,
+      ),
+    );
+  }
+
+  void openUnitSelection(BuildContext context) {
+    var value = context.read<WarbandModel>();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChangeNotifierProvider.value(
+            value: value,
+            builder: (context, child) =>
+                UnitSelector(roster: widget.roster, armory: widget.armory)),
       ),
     );
   }
