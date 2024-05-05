@@ -17,19 +17,61 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Trench Crusade',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const WarbandChooser(),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
+class WarbandChooser extends StatelessWidget {
+  const WarbandChooser({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: GridView.count(
+        crossAxisCount: 2, // Number of columns in the grid
+        children: [
+          warbandButton(context, "Heretic Cult", "assets/lists/cult.json"),
+          warbandButton(
+              context, "Trench Pilgrims", "assets/lists/trench_pilgrims.json"),
+        ],
+      ),
+    );
+  }
+
+  Widget warbandButton(BuildContext context, String name, String asset) {
+    return InkWell(
+      onTap: () {
+        debugPrint('Button tapped: $name');
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (ctx) => WarbandPage(asset: asset)),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(16),
+        child: Center(
+          child: Text(
+            name,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class WarbandPage extends StatelessWidget {
+  const WarbandPage({super.key, required this.asset});
+  final String asset;
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -55,8 +97,7 @@ class MyHomePage extends StatelessWidget {
   }
 
   Future<(Roster, Armory)> loadJson(context) async {
-    var data = await DefaultAssetBundle.of(context)
-        .loadString("assets/lists/cult.json");
+    var data = await DefaultAssetBundle.of(context).loadString(asset);
     final r = Roster.fromJson(jsonDecode(data));
 
     data = await DefaultAssetBundle.of(context)

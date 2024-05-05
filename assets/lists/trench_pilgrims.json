@@ -1,0 +1,460 @@
+{
+    "namesM": [
+        "Cain",
+        "Judas",
+        "Absalom",
+        "Saul",
+        "Herod",
+        "Ahab",
+        "Jezebel",
+        "Belial",
+        "Balaam",
+        "Haman"
+    ],
+    "namesF": [
+        "Brunhilde"
+    ],
+    "surnames": [
+        "Zolner",
+        "Düster",
+        "Blutstein",
+        "Falk",
+        "Nachtigall",
+        "Schreck",
+        "Grimm",
+        "Schattenberg",
+        "Nacht",
+        "Dunkel",
+        "Finster",
+        "Nebel",
+        "Schwarz",
+        "Schatten",
+        "Nachtweide",
+        "Schattenberg",
+        "Engelbert",
+        "Dunkel",
+        "Nacht",
+        "Finsterwalde",
+        "Schwarzstein"
+    ],
+    "units": [
+        {
+            "name": "War Prophet",
+            "max": 1,
+            "movement": 6,
+            "ranged": 2,
+            "melee": 2,
+            "armor": 0,
+            "abilities": [
+                "Loudspeakers",
+                "Memento Mori",
+                "Laying on Hands"
+            ],
+            "keywords": [
+                "PILGRIM",
+                "ELITE"
+            ],
+            "cost": {
+                "ducats": 80
+            },
+            "base": 32
+        },
+        {
+            "name": "Castigator",
+            "max": 1,
+            "movement": 6,
+            "ranged": 1,
+            "melee": 1,
+            "armor": 0,
+            "abilities": [
+                "Enforced Orthodoxy",
+                "Whip of God"
+            ],
+            "keywords": [
+                "PILGRIM",
+                "ELITE"
+            ],
+            "cost": {
+                "ducats": 50
+            },
+            "base": 32
+        },
+        {
+            "name": "Communicant",
+            "max": 1,
+            "movement": 6,
+            "ranged": -3,
+            "melee": 2,
+            "armor": 0,
+            "abilities": [
+                "The Communicant Cross"
+            ],
+            "keywords": [
+                "PILGRIM",
+                "ELITE",
+                "STRONG",
+                "TOUGH"
+            ],
+            "cost": {
+                "ducats": 100
+            },
+            "base": 40
+        },
+        {
+            "name": "Trench Pilgrim",
+            "max": 0,
+            "movement": 6,
+            "ranged": 0,
+            "melee": 0,
+            "armor": 0,
+            "abilities": [
+                "Resurrection"
+            ],
+            "keywords": [
+                "PILGRIM"
+            ],
+            "cost": {
+                "ducats": 30
+            },
+            "base": 25
+        },
+        {
+            "name": "Martyr Penitent",
+            "max": 0,
+            "movement": 6,
+            "ranged": 0,
+            "melee": 1,
+            "armor": 0,
+            "abilities": [],
+            "keywords": [
+                "PILGRIM"
+            ],
+            "cost": {
+                "ducats": 45
+            },
+            "base": 25
+        },
+        {
+            "name": "Ecclesiastic Prisoners",
+            "max": 0,
+            "movement": 6,
+            "ranged": 0,
+            "melee": -1,
+            "armor": 0,
+            "abilities": [
+                "Martyrdom Device",
+                "Mad Dash"
+            ],
+            "keywords": [
+                "PILGRIM"
+            ],
+            "cost": {
+                "ducats": 55
+            },
+            "base": 25,
+            "rangedWeaponFilter": {
+                "none": true
+            },
+            "meleeWeaponFilter": {
+                "none": true
+            },
+            "armourFilter": {
+                "none": true
+            },
+            "equipmentFilter": {
+                "none": true
+            }
+        },
+        {
+            "name": "Stigmatic Nuns",
+            "max": 4,
+            "movement": 8,
+            "ranged": 1,
+            "melee": 1,
+            "armor": 0,
+            "abilities": [
+                "Blessed Stigmata",
+                "Agile"
+            ],
+            "keywords": [
+                "PILGRIM"
+            ],
+            "cost": {
+                "ducats": 50
+            },
+            "base": 25,
+            "rangedWeaponFilter": {
+                "whitelist": [
+                    "Automatic Pistol"
+                ]
+            }
+        },
+        {
+            "name": "Anchorite Shrine",
+            "max": 1,
+            "movement": 6,
+            "ranged": 0,
+            "melee": 1,
+            "armor": 0,
+            "abilities": [
+                "Blessed Stigmata",
+                "Agile"
+            ],
+            "keywords": [
+                "PILGRIM"
+            ],
+            "cost": {
+                "ducats": 50
+            },
+            "base": 50,
+            "rangedWeaponFilter": {
+                "none": true
+            },
+            "meleeWeaponFilter": {
+                "none": true
+            },
+            "armourFilter": {
+                "none": true
+            },
+            "equipmentFilter": {
+                "none": true
+            }
+        }
+    ],
+    "weapons": [
+        {
+            "name": "Bolt Action Rifle",
+            "cost": {
+                "ducats": 10
+            }
+        },
+        {
+            "name": "Semi-automatic Rifle",
+            "cost": {
+                "ducats": 20
+            }
+        },
+        {
+            "name": "Pistol/Revolver",
+            "cost": {
+                "ducats": 10
+            },
+            "limit": 2
+        },
+        {
+            "name": "Automatic Pistol",
+            "cost": {
+                "ducats": 20
+            },
+            "limit": 2
+        },
+        {
+            "name": "Molotov Cocktail",
+            "cost": {
+                "ducats": 5
+            }
+        },
+        {
+            "name": "Incendiary Grenades",
+            "cost": {
+                "ducats": 10
+            }
+        },
+        {
+            "name": "Submachine Gun",
+            "cost": {
+                "glory": 2
+            },
+            "limit": 4
+        },
+        {
+            "name": "Musket",
+            "cost": {
+                "ducats": 5
+            }
+        },
+        {
+            "name": "Shotgun",
+            "cost": {
+                "ducats": 15
+            }
+        },
+        {
+            "name": "Flamethrower",
+            "cost": {
+                "ducats": 40
+            }
+        },
+        {
+            "name": "Machine Gun",
+            "cost": {
+                "glory": 3
+            }
+        },
+        {
+            "name": "Knife/Dagger",
+            "cost": {
+                "ducats": 1
+            }
+        },
+        {
+            "name": "Bayonet",
+            "cost": {
+                "ducats": 2
+            }
+        },
+        {
+            "name": "Trench Club",
+            "cost": {
+                "ducats": 3
+            }
+        },
+        {
+            "name": "Sword/Axe",
+            "cost": {
+                "ducats": 4
+            }
+        },
+        {
+            "name": "Flail/Scourge",
+            "cost": {
+                "ducats": 4
+            }
+        },
+        {
+            "name": "Trench Polearm",
+            "cost": {
+                "ducats": 7
+            }
+        },
+        {
+            "name": "Great Sword/Axe",
+            "cost": {
+                "ducats": 12
+            }
+        },
+        {
+            "name": "Double-Handed Blunt Weapon",
+            "cost": {
+                "ducats": 12
+            }
+        },
+        {
+            "name": "Anti-Tank Hammer",
+            "cost": {
+                "ducats": 35
+            },
+            "keywordFilter": {
+                "whitelist": [
+                    "ELITE"
+                ]
+            }
+        },
+        {
+            "name": "Misericordia",
+            "cost": {
+                "ducats": 15
+            },
+            "limit": 1
+        }
+    ],
+    "armor": [
+        {
+            "name": "Standard Armour",
+            "cost": {
+                "ducats": 20
+            }
+        },
+        {
+            "name": "Heavy Armour",
+            "cost": {
+                "ducats": 40
+            },
+            "keywordFilter": {
+                "whitelist": [
+                    "ELITE"
+                ]
+            }
+        },
+        {
+            "name": "Trench Shield",
+            "cost": {
+                "ducats": 15
+            }
+        },
+        {
+            "name": "Holy Icon Shield",
+            "cost": {
+                "glory": 2
+            }
+        }
+    ],
+    "equipment": [
+        {
+            "name": "Iron Capirote",
+            "cost": {
+                "ducats": 7
+            }
+        },
+        {
+            "name": "Gas Mask",
+            "cost": {
+                "ducats": 5
+            }
+        },
+        {
+            "name": "Blessed Icon",
+            "cost": {
+                "ducats": 15
+            }
+        },
+        {
+            "name": "Holy Relic",
+            "cost": {
+                "glory": 2
+            },
+            "keywordFilter": {
+                "whitelist": [
+                    "ELITE"
+                ]
+            }
+        },
+        {
+            "name": "Troop Flag",
+            "cost": {
+                "glory": 1
+            },
+            "limit": 1
+        },
+        {
+            "name": "Medi-Kit",
+            "cost": {
+                "ducats": 10
+            }
+        },
+        {
+            "name": "Musical Instrument",
+            "cost": {
+                "ducats": 15
+            },
+            "limit": 1,
+            "keywordFilter": {
+                "blacklist": [
+                    "ELITE"
+                ]
+            }
+        },
+        {
+            "name": "Incendiary Bullets",
+            "cost": {
+                "ducats": 15
+            }
+        },
+        {
+            "name": "Martyrdom Pills",
+            "cost": {
+                "ducats": 15
+            }
+        }
+    ]
+}

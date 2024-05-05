@@ -131,4 +131,40 @@ void main() {
       expect(found, isNotNull, reason: a.name);
     }
   });
+  test('load trench pilgrims list', () async {
+    String data = await rootBundle.loadString('assets/lists/armory.json');
+    var armory = Armory.fromJson(jsonDecode(data));
+    expect(armory.weapons, isNotEmpty);
+    expect(armory.armours, isNotEmpty);
+
+    data = await rootBundle.loadString('assets/lists/trench_pilgrims.json');
+    var roster = Roster.fromJson(jsonDecode(data));
+    //debugPrint(roster.units.length.toString());
+
+    expect(roster.weapons, isNotEmpty);
+    expect(roster.units, isNotEmpty);
+    expect(roster.armor, isNotEmpty);
+    expect(roster.equipment, isNotEmpty);
+
+    for (var w in roster.weapons) {
+      Weapon? found = armory.weapons
+          .map<Weapon?>((w) => w)
+          .firstWhere((def) => def!.name == w.name, orElse: () => null);
+      expect(found, isNotNull, reason: w.name);
+    }
+    for (var a in roster.armor) {
+      debugPrint(a.name);
+      Armor? found = armory.armours
+          .map<Armor?>((b) => b)
+          .firstWhere((b) => b!.name == a.name, orElse: () => null);
+      expect(found, isNotNull, reason: a.name);
+    }
+    for (var a in roster.equipment) {
+      debugPrint(a.name);
+      Equipment? found = armory.equipments
+          .map<Equipment?>((b) => b)
+          .firstWhere((b) => b!.name == a.name, orElse: () => null);
+      expect(found, isNotNull, reason: a.name);
+    }
+  });
 }

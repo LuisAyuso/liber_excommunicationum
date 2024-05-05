@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'model.g.dart';
@@ -88,7 +89,12 @@ class Unit {
   Filter? equipmentFilter;
   Filter get getEquipmentFilter => equipmentFilter ?? Filter();
 
-  factory Unit.fromJson(Map<String, dynamic> json) => _$UnitFromJson(json);
+  factory Unit.fromJson(Map<String, dynamic> json) {
+    for (var e in json.entries) {
+      debugPrint("${e.key} : ${e.value}");
+    }
+    return _$UnitFromJson(json);
+  }
   Map<String, dynamic> toJson() => _$UnitToJson(this);
 }
 

@@ -313,6 +313,11 @@
             "name": "Misericordia",
             "hands": 1,
             "melee": 0
+        },
+        {
+            "name": "Flail/Scourge",
+            "hands": 1,
+            "melee": 1
         }
     ],
     "armours": [
@@ -349,7 +354,7 @@
             "name": "Iron Capirote"
         },
         {
-            "name": "Medi-kit"
+            "name": "Medi-Kit"
         },
         {
             "name": "Gas Mask"
