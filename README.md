@@ -15,7 +15,7 @@ Roster management
 - [ ] List variations
 - [ ] List-dependent armory
 - [ ] Unit-dependent armory: blacklist, whitelist
-- [ ] Default armory: non removable
+- [x] Default armory: non removable
 - [ ] Unit alternatives
 - [x] Two currencies system
 - [ ] Weapon limits

@@ -46,24 +46,49 @@ class Unit {
   List<String> keywords = [];
   Currency cost = Currency(ducats: 0);
   int base = 25;
+  List<String>? builtInItems = [];
 
   factory Unit.fromJson(Map<String, dynamic> json) => _$UnitFromJson(json);
   Map<String, dynamic> toJson() => _$UnitToJson(this);
 }
 
+abstract class ItemUse {
+  UnmodifiableListView<String> get getUnitNameFilter;
+  UnmodifiableListView<String> get getKeywordFilter;
+  bool get isBuiltIn;
+  Currency get getCost;
+}
+
 @JsonSerializable(explicitToJson: true)
-class WeaponUse {
-  WeaponUse();
+class WeaponUse extends ItemUse {
+  WeaponUse({String? name, bool? builtIn})
+      : name = name ?? "",
+        builtIn = builtIn ?? false;
 
   String name = "";
   Currency cost = Currency(ducats: 0);
+  bool? builtIn;
 
-  List<String>? _keywordFilter;
-  UnmodifiableListView<String> get keywordFilter =>
-      UnmodifiableListView(_keywordFilter ?? []);
+  List<String>? unitNameFilter;
+  @override
+  UnmodifiableListView<String> get getUnitNameFilter =>
+      UnmodifiableListView(unitNameFilter ?? []);
+
+  List<String>? keywordFilter;
+  @override
+  UnmodifiableListView<String> get getKeywordFilter =>
+      UnmodifiableListView(keywordFilter ?? []);
+
+  @override
+  bool get isBuiltIn => builtIn ?? false;
 
   int? _limit;
   int get limit => _limit ?? double.maxFinite.toInt();
+
+  @override
+  Currency get getCost {
+    return cost;
+  }
 
   factory WeaponUse.fromJson(Map<String, dynamic> json) =>
       _$WeaponUseFromJson(json);
@@ -71,18 +96,35 @@ class WeaponUse {
 }
 
 @JsonSerializable(explicitToJson: true)
-class ArmorUse {
-  ArmorUse();
+class ArmorUse extends ItemUse {
+  ArmorUse({String? name, bool? builtIn})
+      : name = name ?? "",
+        builtIn = builtIn ?? false;
 
   String name = "";
   Currency cost = Currency.free();
+  bool? builtIn;
 
   int? _limit;
   int get limit => _limit ?? double.maxFinite.toInt();
 
-  List<String>? _keywordFilter;
-  UnmodifiableListView<String> get keywordFilter =>
-      UnmodifiableListView(_keywordFilter ?? []);
+  List<String>? unitNameFilter;
+  @override
+  UnmodifiableListView<String> get getUnitNameFilter =>
+      UnmodifiableListView(unitNameFilter ?? []);
+
+  List<String>? keywordFilter;
+  @override
+  UnmodifiableListView<String> get getKeywordFilter =>
+      UnmodifiableListView(keywordFilter ?? []);
+
+  @override
+  bool get isBuiltIn => builtIn ?? false;
+
+  @override
+  Currency get getCost {
+    return cost;
+  }
 
   factory ArmorUse.fromJson(Map<String, dynamic> json) =>
       _$ArmorUseFromJson(json);
@@ -90,18 +132,35 @@ class ArmorUse {
 }
 
 @JsonSerializable(explicitToJson: true)
-class EquipmentUse {
-  EquipmentUse();
+class EquipmentUse extends ItemUse {
+  EquipmentUse({String? name, bool? builtIn})
+      : name = name ?? "",
+        builtIn = builtIn ?? false;
 
   String name = "";
   Currency cost = Currency.free();
+  bool? builtIn;
 
   int? _limit;
   int get limit => _limit ?? double.maxFinite.toInt();
 
-  List<String>? _keywordFilter;
-  UnmodifiableListView<String> get keywordFilter =>
-      UnmodifiableListView(_keywordFilter ?? []);
+  List<String>? unitNameFilter;
+  @override
+  UnmodifiableListView<String> get getUnitNameFilter =>
+      UnmodifiableListView(unitNameFilter ?? []);
+
+  List<String>? keywordFilter;
+  @override
+  UnmodifiableListView<String> get getKeywordFilter =>
+      UnmodifiableListView(keywordFilter ?? []);
+
+  @override
+  bool get isBuiltIn => builtIn ?? false;
+
+  @override
+  Currency get getCost {
+    return cost;
+  }
 
   factory EquipmentUse.fromJson(Map<String, dynamic> json) =>
       _$EquipmentUseFromJson(json);
@@ -124,8 +183,12 @@ class Roster {
   Map<String, dynamic> toJson() => _$RosterToJson(this);
 }
 
+abstract class Item {
+  UnmodifiableListView<String> get getKeywords;
+}
+
 @JsonSerializable(explicitToJson: true)
-class Weapon {
+class Weapon extends Item {
   Weapon();
   String name = "";
   int hands = 1;
@@ -142,16 +205,25 @@ class Weapon {
   bool get isMeleeWeapon => !canRanged && canMelee;
   bool get isRifle => name.contains("Rifle");
 
+  @override
+  UnmodifiableListView<String> get getKeywords =>
+      UnmodifiableListView(keywords ?? []);
+
   factory Weapon.fromJson(Map<String, dynamic> json) => _$WeaponFromJson(json);
   Map<String, dynamic> toJson() => _$WeaponToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
-class Armor {
+class Armor extends Item {
   Armor();
   String name = "";
   int? value;
   List<String>? special = [];
+  List<String>? keywords = [];
+
+  @override
+  UnmodifiableListView<String> get getKeywords =>
+      UnmodifiableListView(keywords ?? []);
 
   bool get isShield => name.contains("Shield");
   bool get isArmour => name.contains("Armour");
@@ -160,13 +232,18 @@ class Armor {
 }
 
 @JsonSerializable(explicitToJson: true)
-class Equipment {
+class Equipment extends Item {
   Equipment();
 
   String name = "";
   bool? consumable;
+  List<String>? keywords = [];
 
   bool get isConsumable => consumable ?? false;
+
+  @override
+  UnmodifiableListView<String> get getKeywords =>
+      UnmodifiableListView(keywords ?? []);
 
   factory Equipment.fromJson(Map<String, dynamic> json) =>
       _$EquipmentFromJson(json);

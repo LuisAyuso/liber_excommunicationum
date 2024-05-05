@@ -184,7 +184,7 @@
             "movement": 6,
             "ranged": 1,
             "melee": 1,
-            "armor": -2,
+            "armor": 0,
             "abilities": [
                 "Strong"
             ],
@@ -194,7 +194,11 @@
             "cost": {
                 "ducats": 95
             },
-            "base": 32
+            "base": 32,
+            "builtInItems": [
+                "Heavy Armour",
+                "Infernal Brand Mark"
+            ]
         },
         {
             "name": "War Wolf Assault Beast",

@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,8 +13,9 @@ String makeName(List<String> names, List<String> surnames) {
 }
 
 class UnitSelector extends StatelessWidget {
-  const UnitSelector({super.key, required this.roster});
+  const UnitSelector({super.key, required this.roster, required this.armory});
   final Roster roster;
+  final Armory armory;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +59,8 @@ class UnitSelector extends StatelessWidget {
                 name: makeName(r.namesM, r.surnames),
                 uid: wb.nextUID(),
                 type: unit,
-                bucket: idx));
+                bucket: idx,
+                armory: armory));
             Navigator.pop(context);
           }
         },

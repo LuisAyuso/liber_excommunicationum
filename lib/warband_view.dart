@@ -11,8 +11,16 @@ class WarriorModel {
       {String? name,
       required this.uid,
       required this.type,
-      required this.bucket})
-      : name = name ?? "Generated";
+      required this.bucket,
+      Armory? armory})
+      : name = name ?? "Generated" {
+    if (armory != null) {
+      populateBuiltInWeapons(armory);
+      populateBuiltInArmour(armory);
+      populateBuiltInEquipment(armory);
+    }
+  }
+
   String name = "Generated name?";
   final int uid;
   final Unit type;
@@ -35,6 +43,44 @@ class WarriorModel {
       weapons.fold<Currency>(Currency.free(), (v, w) => w.cost + v) +
       armor.fold<Currency>(Currency.free(), (v, w) => w.cost + v) +
       equipment.fold<Currency>(Currency.free(), (v, w) => w.cost + v);
+
+  void populateBuiltInWeapons(Armory armory) {
+    for (var item in type.builtInItems ?? []) {
+      final candidates = armory.weapons.where((w) => w.name == item);
+      if (candidates.length > 1) {
+        Exception("failed to find weapon named $item, more than one match");
+      }
+      if (candidates.length == 1) {
+        weapons.add(WeaponUse(name: item, builtIn: true));
+      }
+    }
+  }
+
+  void populateBuiltInArmour(Armory armory) {
+    for (var item in type.builtInItems ?? []) {
+      final candidates = armory.armors.where((a) => a.name == item);
+      if (candidates.length > 1) {
+        throw Exception(
+            "failed to find weapon named $item, more than one match");
+      }
+      if (candidates.length == 1) {
+        armor.add(ArmorUse(name: item, builtIn: true));
+      }
+    }
+  }
+
+  void populateBuiltInEquipment(Armory armory) {
+    for (var item in type.builtInItems ?? []) {
+      final candidates = armory.equipments.where((e) => e.name == item);
+      if (candidates.length > 1) {
+        throw Exception(
+            "failed to find weapon named $item, more than one match");
+      }
+      if (candidates.length == 1) {
+        equipment.add(EquipmentUse(name: item, builtIn: true));
+      }
+    }
+  }
 
   int getArmorValue(Armory armory) {
     return type.armor +
@@ -133,8 +179,8 @@ class _WarbandViewState extends State<WarbandView> {
                   MaterialPageRoute(
                     builder: (context) => ChangeNotifierProvider.value(
                         value: value,
-                        builder: (context, child) =>
-                            UnitSelector(roster: widget.roster)),
+                        builder: (context, child) => UnitSelector(
+                            roster: widget.roster, armory: widget.armory)),
                   ),
                 );
               },
@@ -168,7 +214,7 @@ class _WarbandViewState extends State<WarbandView> {
 
     final availableWeapons = widget.roster.weapons.where((weapon) {
       for (var keyword in warrior.type.keywords) {
-        if (weapon.keywordFilter.where((kw) => kw == keyword).isNotEmpty) {
+        if (weapon.getKeywordFilter.where((kw) => kw == keyword).isNotEmpty) {
           return false;
         }
       }
@@ -383,7 +429,7 @@ class _WarbandViewState extends State<WarbandView> {
           return const Text("Unknown");
         }),
         const Spacer(),
-        _editMode
+        _editMode && !w.isBuiltIn
             ? IconButton(
                 onPressed: () {
                   warrior.weapons.removeWhere((d) => w.name == d.name);
@@ -411,7 +457,7 @@ class _WarbandViewState extends State<WarbandView> {
           children: [Text("${def.value ?? 0}")],
         ),
         const Spacer(),
-        _editMode
+        _editMode && !a.isBuiltIn
             ? IconButton(
                 onPressed: () {
                   warrior.armor.removeWhere((d) => a.name == d.name);
@@ -435,7 +481,7 @@ class _WarbandViewState extends State<WarbandView> {
           child: Text(e.name),
         ),
         const Spacer(),
-        _editMode
+        _editMode && !e.isBuiltIn
             ? IconButton(
                 onPressed: () {
                   warrior.equipment.removeWhere((d) => e.name == d.name);
