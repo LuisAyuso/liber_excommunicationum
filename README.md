@@ -1,16 +1,30 @@
 # tc_thing
 
-A new Flutter project.
+Roster management
 
-## Getting Started
+### UI
+- [ ] Back from unit selector
+- [ ] Layout and scroll
 
-This project is a starting point for a Flutter application.
+### Refactors
+- [ ] Move filter logic to model, keep frontend business-logic-free
 
-A few resources to get you started if this is your first Flutter project:
+## features
+- [ ] Unit preview
+- [ ] Edit mode - play mode
+- [ ] List variations
+- [ ] List-dependent armory
+- [ ] Unit alternatives
+- [ ] Two currencies system
+- [ ] Weapon limits
+  - [ ] by troop type
+  - [ ] by keyword
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- [ ] Card carousel
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Lists:
+- Cult
+- Pilgrims
+- Califate
+- Plage
+- Antioch
