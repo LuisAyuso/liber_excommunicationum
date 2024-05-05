@@ -45,3 +45,5 @@ app.*.map.json
 # clangd cache
 .cache
 
+# firebase hosting
+hosting.*.cache
