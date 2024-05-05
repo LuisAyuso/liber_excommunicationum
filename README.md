@@ -3,8 +3,8 @@
 Roster management
 
 ### UI
-- [ ] Back from unit selector
-- [ ] Layout and scroll
+- [x] Back from unit selector
+- [ ] Problem with width, lines too long. Too much info.
 
 ### Refactors
 - [ ] Move filter logic to model, keep frontend business-logic-free

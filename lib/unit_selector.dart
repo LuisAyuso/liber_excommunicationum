@@ -19,6 +19,10 @@ class UnitSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text("Choose an Unit"),
+      ),
       body: Center(
         child: ListView.separated(
             itemBuilder: (context, idx) =>
