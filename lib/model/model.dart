@@ -99,6 +99,7 @@ class Unit {
 }
 
 abstract class ItemUse {
+  String get getName;
   Filter get getUnitNameFilter;
   Filter get getKeywordFilter;
   bool get isBuiltIn;
@@ -112,6 +113,8 @@ class WeaponUse extends ItemUse {
         builtIn = builtIn ?? false;
 
   String name = "";
+  @override
+  String get getName => name;
   Currency cost = Currency(ducats: 0);
   bool? builtIn;
 
@@ -145,6 +148,8 @@ class ArmorUse extends ItemUse {
         builtIn = builtIn ?? false;
 
   String name = "";
+  @override
+  String get getName => name;
   Currency cost = Currency.free();
   bool? builtIn;
 
@@ -178,6 +183,8 @@ class EquipmentUse extends ItemUse {
         builtIn = builtIn ?? false;
 
   String name = "";
+  @override
+  String get getName => name;
   Currency cost = Currency.free();
   bool? builtIn;
 

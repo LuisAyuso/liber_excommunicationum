@@ -49,9 +49,7 @@ class UnitSelector extends StatelessWidget {
 
       return InkWell(
         child: ListTile(
-          leading: CircleAvatar(
-            child: CostWidget(cost: unit.cost),
-          ),
+          leading: CurrencyWidget(cost: unit.cost, simultaneous: false),
           title: Text(unit.name),
           subtitle: Text(unit.name),
           trailing: unit.max == 0

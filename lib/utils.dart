@@ -5,9 +5,12 @@ class MyContent extends StatelessWidget {
   final Widget child;
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-          constraints: const BoxConstraints(maxWidth: 960), child: child),
-    );
+    return Stack(children: [
+      Container(color: const Color.fromARGB(255, 56, 56, 59)),
+      Center(
+        child: Container(
+            constraints: const BoxConstraints(maxWidth: 960), child: child),
+      ),
+    ]);
   }
 }
