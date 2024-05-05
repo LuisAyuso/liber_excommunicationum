@@ -11,7 +11,7 @@ Roster management
 
 ## features
 - [ ] Unit preview
-- [ ] Edit mode - play mode
+- [x] Edit mode - play mode
 - [ ] List variations
 - [ ] List-dependent armory
 - [ ] Unit alternatives

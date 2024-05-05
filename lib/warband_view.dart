@@ -82,7 +82,7 @@ class WarbandModel extends ChangeNotifier {
   }
 }
 
-class WarbandView extends StatelessWidget {
+class WarbandView extends StatefulWidget {
   const WarbandView(
       {super.key,
       required this.title,
@@ -93,11 +93,25 @@ class WarbandView extends StatelessWidget {
   final Armory armory;
 
   @override
+  State<WarbandView> createState() => _WarbandViewState();
+}
+
+class _WarbandViewState extends State<WarbandView> {
+  bool _editMode = true;
+  set edit(bool v) {
+    setState(() => _editMode = v);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("${context.watch<WarbandModel>().cost} $title"),
+        title: Row(children: [
+          Text("${context.watch<WarbandModel>().cost} ${widget.title}"),
+          const Spacer(),
+          Switch(value: _editMode, onChanged: (v) => edit = v)
+        ]),
       ),
       body: Center(
         child: ListView.separated(
@@ -108,21 +122,24 @@ class WarbandView extends StatelessWidget {
             separatorBuilder: (context, idx) => const Divider(),
             itemCount: context.watch<WarbandModel>().length),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          var value = context.read<WarbandModel>();
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ChangeNotifierProvider.value(
-                  value: value,
-                  builder: (context, child) => UnitSelector(roster: roster)),
-            ),
-          );
-        },
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: _editMode
+          ? FloatingActionButton(
+              onPressed: () {
+                var value = context.read<WarbandModel>();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChangeNotifierProvider.value(
+                        value: value,
+                        builder: (context, child) =>
+                            UnitSelector(roster: widget.roster)),
+                  ),
+                );
+              },
+              tooltip: 'Increment',
+              child: const Icon(Icons.add),
+            )
+          : null,
     );
   }
 
@@ -147,7 +164,7 @@ class WarbandView extends StatelessWidget {
 // - one single-handed melee weapon and a trench shield OR
 // - two single-handed melee weapons.
 
-    final availableWeapons = roster.weapons.where((weapon) {
+    final availableWeapons = widget.roster.weapons.where((weapon) {
       for (var keyword in warrior.type.keywords) {
         if (weapon.keywordFilter.where((kw) => kw == keyword).isNotEmpty) {
           return false;
@@ -167,7 +184,7 @@ class WarbandView extends StatelessWidget {
     final bodyArmour = armours.where((a) => a.isArmour).isNotEmpty;
     final shield = armours.where((a) => a.isShield).isNotEmpty;
 
-    final availableArmors = roster.armor.where((armour) {
+    final availableArmors = widget.roster.armor.where((armour) {
       final def = getArmorDef(armour);
       if (def.isArmour && bodyArmour) return false;
       if (def.isShield && shield) return false;
@@ -175,7 +192,7 @@ class WarbandView extends StatelessWidget {
       return true;
     });
 
-    final availableEquipment = roster.equipment.where((e) {
+    final availableEquipment = widget.roster.equipment.where((e) {
       debugPrint(e.name);
       final eq = getEquipmentDef(e);
       if (!eq.isConsumable &&
@@ -216,7 +233,7 @@ class WarbandView extends StatelessWidget {
         Row(
           children: [
             statBox("Mov:", '${warrior.type.movement}"'),
-            statBox("Armor:", warrior.getArmorValue(armory)),
+            statBox("Armor:", warrior.getArmorValue(widget.armory)),
           ],
         ),
         const Spacer(),
@@ -266,63 +283,77 @@ class WarbandView extends StatelessWidget {
                   .map<Widget>((e) => equipmentLine(context, e, warrior))
                   .toList(),
         ),
-        Row(
-          children: [
-            DropdownMenu(
-              dropdownMenuEntries: availableWeapons
-                  .map<DropdownMenuEntry<String>>((WeaponUse w) =>
-                      DropdownMenuEntry(value: w.name, label: w.name))
-                  .toList(),
-              onSelected: (weapon) {
-                final w = roster.weapons.firstWhere((w) => w.name == weapon);
-                context.read<WarbandModel>().getUID(warrior.uid).weapons.add(w);
-                context.read<WarbandModel>().invalidate();
-              },
-            ),
-            DropdownMenu(
-              dropdownMenuEntries: availableArmors
-                  .map<DropdownMenuEntry<String>>((ArmorUse w) =>
-                      DropdownMenuEntry(value: w.name, label: w.name))
-                  .toList(),
-              onSelected: (armour) {
-                final a = roster.armor.firstWhere((w) => w.name == armour);
-                context.read<WarbandModel>().getUID(warrior.uid).armor.add(a);
-                context.read<WarbandModel>().invalidate();
-              },
-            ),
-            DropdownMenu(
-              dropdownMenuEntries: availableEquipment
-                  .map<DropdownMenuEntry<String>>((EquipmentUse w) =>
-                      DropdownMenuEntry(value: w.name, label: w.name))
-                  .toList(),
-              onSelected: (e) {
-                final equip = roster.equipment.firstWhere((w) => w.name == e);
-                context
-                    .read<WarbandModel>()
-                    .getUID(warrior.uid)
-                    .equipment
-                    .add(equip);
-                context.read<WarbandModel>().invalidate();
-              },
-            ),
-            const Spacer(),
-            IconButton(
-              onPressed: () {
-                var wbm = context.read<WarbandModel>();
-                wbm.add(warrior.copyWith(
-                    name: makeName(roster.namesM, roster.surnames),
-                    newUid: wbm.nextUID()));
-              },
-              icon: const Icon(Icons.copy),
-            ),
-            IconButton(
-              onPressed: () {
-                context.read<WarbandModel>().removeUID(warrior.uid);
-              },
-              icon: const Icon(Icons.delete),
-            )
-          ],
-        ),
+        _editMode
+            ? Row(
+                children: [
+                  DropdownMenu(
+                    dropdownMenuEntries: availableWeapons
+                        .map<DropdownMenuEntry<String>>((WeaponUse w) =>
+                            DropdownMenuEntry(value: w.name, label: w.name))
+                        .toList(),
+                    onSelected: (weapon) {
+                      final w = widget.roster.weapons
+                          .firstWhere((w) => w.name == weapon);
+                      context
+                          .read<WarbandModel>()
+                          .getUID(warrior.uid)
+                          .weapons
+                          .add(w);
+                      context.read<WarbandModel>().invalidate();
+                    },
+                  ),
+                  DropdownMenu(
+                    dropdownMenuEntries: availableArmors
+                        .map<DropdownMenuEntry<String>>((ArmorUse w) =>
+                            DropdownMenuEntry(value: w.name, label: w.name))
+                        .toList(),
+                    onSelected: (armour) {
+                      final a = widget.roster.armor
+                          .firstWhere((w) => w.name == armour);
+                      context
+                          .read<WarbandModel>()
+                          .getUID(warrior.uid)
+                          .armor
+                          .add(a);
+                      context.read<WarbandModel>().invalidate();
+                    },
+                  ),
+                  DropdownMenu(
+                    dropdownMenuEntries: availableEquipment
+                        .map<DropdownMenuEntry<String>>((EquipmentUse w) =>
+                            DropdownMenuEntry(value: w.name, label: w.name))
+                        .toList(),
+                    onSelected: (e) {
+                      final equip = widget.roster.equipment
+                          .firstWhere((w) => w.name == e);
+                      context
+                          .read<WarbandModel>()
+                          .getUID(warrior.uid)
+                          .equipment
+                          .add(equip);
+                      context.read<WarbandModel>().invalidate();
+                    },
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    onPressed: () {
+                      var wbm = context.read<WarbandModel>();
+                      wbm.add(warrior.copyWith(
+                          name: makeName(
+                              widget.roster.namesM, widget.roster.surnames),
+                          newUid: wbm.nextUID()));
+                    },
+                    icon: const Icon(Icons.copy),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      context.read<WarbandModel>().removeUID(warrior.uid);
+                    },
+                    icon: const Icon(Icons.delete),
+                  )
+                ],
+              )
+            : const SizedBox()
       ],
     );
   }
@@ -351,12 +382,14 @@ class WarbandView extends StatelessWidget {
           return const Text("Unknown");
         }),
         const Spacer(),
-        IconButton(
-            onPressed: () {
-              warrior.weapons.removeWhere((d) => w.name == d.name);
-              context.read<WarbandModel>().invalidate();
-            },
-            icon: const Icon(Icons.delete))
+        _editMode
+            ? IconButton(
+                onPressed: () {
+                  warrior.weapons.removeWhere((d) => w.name == d.name);
+                  context.read<WarbandModel>().invalidate();
+                },
+                icon: const Icon(Icons.delete))
+            : const SizedBox()
       ],
     );
   }
@@ -377,12 +410,14 @@ class WarbandView extends StatelessWidget {
           children: [Text("${def.value ?? 0}")],
         ),
         const Spacer(),
-        IconButton(
-            onPressed: () {
-              warrior.armor.removeWhere((d) => a.name == d.name);
-              context.read<WarbandModel>().invalidate();
-            },
-            icon: const Icon(Icons.delete))
+        _editMode
+            ? IconButton(
+                onPressed: () {
+                  warrior.armor.removeWhere((d) => a.name == d.name);
+                  context.read<WarbandModel>().invalidate();
+                },
+                icon: const Icon(Icons.delete))
+            : const SizedBox()
       ],
     );
   }
@@ -399,22 +434,26 @@ class WarbandView extends StatelessWidget {
           child: Text(e.name),
         ),
         const Spacer(),
-        IconButton(
-            onPressed: () {
-              warrior.equipment.removeWhere((d) => e.name == d.name);
-              context.read<WarbandModel>().invalidate();
-            },
-            icon: const Icon(Icons.delete))
+        _editMode
+            ? IconButton(
+                onPressed: () {
+                  warrior.equipment.removeWhere((d) => e.name == d.name);
+                  context.read<WarbandModel>().invalidate();
+                },
+                icon: const Icon(Icons.delete))
+            : const SizedBox()
       ],
     );
   }
 
   Weapon getWeaponDef(WeaponUse w) =>
-      armory.weapons.firstWhere((def) => def.name == w.name);
+      widget.armory.weapons.firstWhere((def) => def.name == w.name);
+
   Armor getArmorDef(ArmorUse w) =>
-      armory.armors.firstWhere((def) => def.name == w.name);
+      widget.armory.armors.firstWhere((def) => def.name == w.name);
+
   Equipment getEquipmentDef(EquipmentUse w) =>
-      armory.equipments.firstWhere((def) => def.name == w.name);
+      widget.armory.equipments.firstWhere((def) => def.name == w.name);
 }
 
 Widget statBox<T>(String name, T stat) {
