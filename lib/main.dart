@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:tc_thing/model/model.dart';
+import 'package:tc_thing/utils.dart';
 
 import 'warband_view.dart';
 
@@ -31,14 +32,16 @@ class WarbandChooser extends StatelessWidget {
   const WarbandChooser({super.key});
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: GridView.count(
-        crossAxisCount: 2, // Number of columns in the grid
-        children: [
-          warbandButton(context, "Heretic Cult", "assets/lists/cult.json"),
-          warbandButton(
-              context, "Trench Pilgrims", "assets/lists/trench_pilgrims.json"),
-        ],
+    return MyContent(
+      child: Scaffold(
+        body: GridView.count(
+          crossAxisCount: 2, // Number of columns in the grid
+          children: [
+            warbandButton(context, "Heretic Cult", "assets/lists/cult.json"),
+            warbandButton(context, "Trench Pilgrims",
+                "assets/lists/trench_pilgrims.json"),
+          ],
+        ),
       ),
     );
   }

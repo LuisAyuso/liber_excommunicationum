@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tc_thing/model/model.dart';
+import 'package:tc_thing/utils.dart';
 import 'package:tc_thing/warband_view.dart';
 
 String makeName(List<String> names, List<String> surnames) {
@@ -18,17 +19,19 @@ class UnitSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Choose an Unit"),
-      ),
-      body: Center(
-        child: ListView.separated(
-            itemBuilder: (context, idx) =>
-                makeUnitEntry(context, roster.units[idx], roster, idx),
-            separatorBuilder: (context, idx) => const Divider(),
-            itemCount: roster.units.length),
+    return MyContent(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: const Text("Choose an Unit"),
+        ),
+        body: Center(
+          child: ListView.separated(
+              itemBuilder: (context, idx) =>
+                  makeUnitEntry(context, roster.units[idx], roster, idx),
+              separatorBuilder: (context, idx) => const Divider(),
+              itemCount: roster.units.length),
+        ),
       ),
     );
   }

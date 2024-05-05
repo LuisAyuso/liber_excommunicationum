@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tc_thing/model/model.dart';
+import 'package:tc_thing/utils.dart';
 
 import 'unit_selector.dart';
 
@@ -151,43 +152,43 @@ class _WarbandViewState extends State<WarbandView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Row(children: [
-          CostWidget(cost: context.watch<WarbandModel>().cost),
-          Text(widget.title),
-          const Spacer(),
-          Switch(value: _editMode, onChanged: (v) => edit = v)
-        ]),
-      ),
-      body: Center(
-        child: ListView.separated(
+    return MyContent(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: Row(children: [
+            CostWidget(cost: context.watch<WarbandModel>().cost),
+            Text(widget.title),
+            const Spacer(),
+            Switch(value: _editMode, onChanged: (v) => edit = v)
+          ]),
+        ),
+        body: ListView.separated(
             itemBuilder: (context, idx) {
               var warrior = context.read<WarbandModel>().items[idx];
               return warriorLine(context, warrior);
             },
             separatorBuilder: (context, idx) => const Divider(),
             itemCount: context.watch<WarbandModel>().length),
+        floatingActionButton: _editMode
+            ? FloatingActionButton(
+                onPressed: () {
+                  var value = context.read<WarbandModel>();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChangeNotifierProvider.value(
+                          value: value,
+                          builder: (context, child) => UnitSelector(
+                              roster: widget.roster, armory: widget.armory)),
+                    ),
+                  );
+                },
+                tooltip: 'Increment',
+                child: const Icon(Icons.add),
+              )
+            : null,
       ),
-      floatingActionButton: _editMode
-          ? FloatingActionButton(
-              onPressed: () {
-                var value = context.read<WarbandModel>();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ChangeNotifierProvider.value(
-                        value: value,
-                        builder: (context, child) => UnitSelector(
-                            roster: widget.roster, armory: widget.armory)),
-                  ),
-                );
-              },
-              tooltip: 'Increment',
-              child: const Icon(Icons.add),
-            )
-          : null,
     );
   }
 
