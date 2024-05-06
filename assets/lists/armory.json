@@ -5,17 +5,26 @@
             "hands": 1,
             "range": 12,
             "ranged": 0,
-            "melee": 0
+            "melee": true,
+            "modifiers": []
         },
         {
             "name": "Automatic Pistol",
             "hands": 1,
             "range": 12,
             "ranged": 0,
-            "melee": 0,
-            "injury": -1,
+            "melee": true,
             "keywords": [
-                "Assault"
+                "ASSAULT"
+            ],
+            "modifiers": [
+                {
+                    "injury": -1
+                },
+                {
+                    "attacks": 2,
+                    "extra": "ranged"
+                }
             ]
         },
         {
@@ -23,16 +32,23 @@
             "hands": 1,
             "range": 12,
             "ranged": 0,
-            "melee": 0,
+            "melee": true,
             "keywords": [
-                "Assault"
+                "ASSAULT"
+            ],
+            "modifiers": [
+                {
+                    "hit": 1,
+                    "extra": "in Cover"
+                }
             ]
         },
         {
             "name": "Bolt Action Rifle",
             "hands": 2,
             "range": 24,
-            "ranged": 0
+            "ranged": 0,
+            "modifiers": []
         },
         {
             "name": "Semi-automatic Rifle",
@@ -40,8 +56,9 @@
             "range": 24,
             "ranged": 0,
             "keywords": [
-                "Assault"
-            ]
+                "ASSAULT"
+            ],
+            "modifiers": []
         },
         {
             "name": "Automatic Rifle",
@@ -49,275 +66,355 @@
             "range": 24,
             "ranged": 0,
             "keywords": [
-                "Assault"
-            ]
+                "ASSAULT"
+            ],
+            "modifiers": []
         },
         {
             "name": "Jezzail",
             "hands": 2,
             "range": 18,
-            "ranged": 0
+            "modifiers": []
         },
         {
             "name": "Shotgun",
             "hands": 2,
             "range": 24,
-            "ranged": 1,
-            "injury": -1
+            "modifiers": [
+                {
+                    "hit": 1
+                },
+                {
+                    "injury": -1,
+                    "extra": "at long range"
+                }
+            ]
         },
         {
             "name": "Automatic Shotgun",
             "hands": 2,
             "range": 24,
-            "ranged": 0,
-            "injury": -1,
             "keywords": [
-                "Assault"
+                "ASSAULT"
+            ],
+            "modifiers": [
+                {
+                    "hit": 1
+                },
+                {
+                    "injury": -1,
+                    "extra": "at long range"
+                }
             ]
         },
         {
             "name": "Submachine Gun",
             "hands": 2,
             "range": 16,
-            "ranged": 0,
             "keywords": [
-                "Assault"
+                "ASSAULT"
+            ],
+            "modifiers": [
+                {
+                    "attacks": 2
+                }
             ]
         },
         {
             "name": "Musket",
             "hands": 2,
             "range": 18,
-            "ranged": 0,
-            "injury": -1,
             "keywords": [
-                "Risky"
-            ]
-        },
-        {
-            "name": "Musket",
-            "hands": 2,
-            "range": 18,
-            "ranged": 0,
-            "keywords": [
-                "Risky"
+                "RISKY"
+            ],
+            "modifiers": [
+                {
+                    "injury": -1
+                }
             ]
         },
         {
             "name": "Sniper Rifle",
             "hands": 2,
             "range": 48,
-            "ranged": 1,
             "keywords": [
-                "Risky",
-                "Critical"
+                "RISKY",
+                "CRITICAL"
+            ],
+            "modifiers": [
+                {
+                    "hit": 1
+                }
             ]
         },
         {
             "name": "Grenades",
             "hands": 0,
             "range": 8,
-            "ranged": 0,
             "keywords": [
-                "Assault",
-                "Shrapnel"
-            ]
+                "ASSAULT",
+                "SHRAPNEL"
+            ],
+            "modifiers": []
         },
         {
             "name": "Incendiary Grenades",
             "hands": 0,
             "range": 8,
-            "ranged": 0,
             "keywords": [
-                "Assault",
-                "Fire"
-            ]
+                "ASSAULT",
+                "FIRE"
+            ],
+            "modifiers": []
         },
         {
             "name": "Gas Grenades",
             "hands": 0,
             "range": 8,
-            "ranged": 0,
-            "injury": -1,
             "keywords": [
-                "Assault",
-                "Gas"
+                "ASSAULT",
+                "GAS"
+            ],
+            "modifiers": [
+                {
+                    "injury": -1
+                }
             ]
         },
         {
             "name": "Grenade Launcher",
             "hands": 2,
             "range": 36,
-            "ranged": 0,
             "keywords": [
-                "Shrapnel",
-                "Heavy"
+                "SHRAPNEL",
+                "HEAVY"
+            ],
+            "modifiers": [
+                {
+                    "extra": "Ignore Cover"
+                }
             ]
         },
         {
             "name": "Satchel Charge",
             "hands": 0,
             "range": 6,
-            "ranged": 0,
-            "injury": 1,
             "keywords": [
-                "Heavy",
-                "Consumable"
+                "HEAVY",
+                "CONSUMABLE"
+            ],
+            "modifiers": [
+                {
+                    "injury": 1
+                }
             ]
         },
         {
             "name": "Molotov Cocktail",
             "hands": 0,
             "range": 6,
-            "ranged": 0,
-            "injury": -1,
             "keywords": [
-                "Fire",
-                "Assault"
+                "FIRE",
+                "ASSAULT"
+            ],
+            "modifiers": [
+                {
+                    "injury": -1
+                }
             ]
         },
         {
             "name": "Anti-Material Rifle",
             "hands": 2,
             "range": 36,
-            "ranged": 0,
-            "injury": 1,
             "keywords": [
-                "Heavy",
-                "Critical"
+                "HEAVY",
+                "CRITICAL"
+            ],
+            "modifiers": [
+                {
+                    "injury": 1
+                },
+                {
+                    "extra": "Ignore Armour"
+                }
             ]
         },
         {
             "name": "Machine Gun",
             "hands": 2,
             "range": 36,
-            "ranged": 0,
             "keywords": [
-                "Heavy"
+                "HEAVY"
+            ],
+            "modifiers": [
+                {
+                    "attacks": 3
+                }
             ]
         },
         {
             "name": "Flamethrower",
             "hands": 2,
             "range": 8,
-            "ranged": 0,
             "keywords": [
-                "Fire"
+                "FIRE"
+            ],
+            "modifiers": [
+                {
+                    "injury": -1
+                }
             ]
         },
         {
             "name": "Heavy Flamethrower",
             "hands": 2,
             "range": 10,
-            "ranged": 0,
             "keywords": [
-                "Heavy",
-                "Fire"
-            ]
+                "HEAVY",
+                "FIRE"
+            ],
+            "modifiers": []
         },
         {
             "name": "Knife/Dagger",
             "hands": 1,
-            "melee": -1
+            "modifiers": [
+                {
+                    "hit": -1
+                }
+            ]
         },
         {
             "name": "Trench Club",
             "hands": 1,
-            "melee": 0
+            "modifiers": []
         },
         {
             "name": "Sword/Axe",
             "hands": 1,
-            "melee": 0,
             "keywords": [
-                "Critical"
-            ]
+                "CRITICAL"
+            ],
+            "modifiers": []
         },
         {
             "name": "Bayonet",
             "hands": 2,
-            "melee": 0
+            "modifiers": []
         },
         {
             "name": "Sacrificial Knife",
             "hands": 1,
-            "melee": 0,
-            "injury": 2,
             "keywords": [
-                "Risky"
+                "RISKY"
+            ],
+            "modifiers": [
+                {
+                    "extra": "+2 on Injury results"
+                }
             ]
         },
         {
             "name": "Blasphemous Staff",
             "hands": 1,
-            "melee": 0,
             "keywords": [
-                "Fire",
-                "Risky"
-            ]
+                "FIRE",
+                "RISKY"
+            ],
+            "modifiers": []
         },
         {
             "name": "Hellblade",
             "hands": 2,
-            "melee": 0,
-            "injury": 1,
             "keywords": [
-                "Fire"
+                "FIRE"
+            ],
+            "modifiers": [
+                {
+                    "injury": 1
+                }
             ]
         },
         {
             "name": "Tartarus Claws",
             "hands": 2,
-            "melee": 0
+            "modifiers": []
         },
         {
             "name": "Anti-Tank Hammer",
             "hands": 2,
-            "melee": 0,
-            "injury": 1,
             "keywords": [
-                "Risky",
-                "Critical"
+                "RISKY",
+                "CRITICAL"
+            ],
+            "modifiers": [
+                {
+                    "injury": 1
+                }
             ]
         },
         {
             "name": "Trench Polearm",
             "hands": 2,
-            "melee": 0
+            "modifiers": [
+                {
+                    "hit": 1,
+                    "extra": "for Chargers"
+                }
+            ]
         },
         {
             "name": "Scourge/Battle Whip/Flail",
             "hands": 1,
-            "melee": 1
+            "modifiers": [
+                {
+                    "hit": 1
+                }
+            ]
         },
         {
             "name": "Double-Handed Blunt Weapon",
             "hands": 2,
-            "melee": 0,
-            "injury": 1,
             "keywords": [
-                "Heavy"
+                "HEAVY"
+            ],
+            "modifiers": [
+                {
+                    "injury": 1
+                }
             ]
         },
         {
             "name": "Great Sword/Axe",
             "hands": 2,
-            "melee": 0,
-            "injury": 1,
             "keywords": [
-                "Critical",
-                "Heavy"
+                "HEAVY",
+                "CRITICAL"
+            ],
+            "modifiers": [
+                {
+                    "injury": 1
+                }
             ]
         },
         {
             "name": "Misericordia",
             "hands": 1,
-            "melee": 0
+            "modifiers": [
+                {
+                    "extra": "Ignore Armour of downed"
+                }
+            ]
         },
         {
             "name": "Flail/Scourge",
             "hands": 1,
-            "melee": 1
+            "modifiers": [
+                {
+                    "hit": 1
+                }
+            ]
         }
     ],
     "armours": [

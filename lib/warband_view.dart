@@ -461,9 +461,9 @@ class _WarbandViewState extends State<WarbandView> {
 
   Widget weaponLine(BuildContext context, WeaponUse w, WarriorModel warrior) {
     final def = getWeaponDef(w);
-    var ranged = rangedToString(def, warrior, "Ranged ");
-    var melee = meleeToString(def, warrior, "Melee ");
-    var injury = def.injury == null ? "" : " Injury ${def.injury ?? 0}";
+//    var ranged = rangedToString(def, warrior, "Ranged ");
+//    var melee = meleeToString(def, warrior, "Melee ");
+//    var injury = def.injury == null ? "" : " Injury ${def.injury ?? 0}";
     return Row(
       children: [
         SizedBox(
@@ -478,14 +478,7 @@ class _WarbandViewState extends State<WarbandView> {
           child: Text(w.name),
         ),
         const Divider(),
-        Builder(builder: (context) {
-          if (def.canRanged && def.canMelee) {
-            return Text("$ranged $melee$injury");
-          }
-          if (def.canRanged) return Text("$ranged$injury");
-          if (def.canMelee) return Text("$melee$injury");
-          return const Text("Unknown");
-        }),
+        Text(def.getModifiersString),
         const Spacer(),
         _editMode && !w.isBuiltIn
             ? IconButton(
@@ -516,7 +509,7 @@ class _WarbandViewState extends State<WarbandView> {
         ),
         const Divider(),
         Row(
-          children: [Text("${def.value ?? 0}")],
+          children: [Text("Armour: ${def.value ?? 0}")],
         ),
         const Spacer(),
         _editMode && !a.isBuiltIn
@@ -670,25 +663,4 @@ Widget statBox<T>(String name, T stat) {
       ),
     ],
   );
-}
-
-String bonus(int v) {
-  final sign = v > 0 ? "+" : "";
-  return "$sign$v";
-}
-
-String rangedToString(Weapon def, WarriorModel warrior, String prefix) {
-  if (def.ranged == null) {
-    return "-";
-  }
-  final value = bonus(def.ranged! + warrior.type.ranged);
-  return "$prefix $value";
-}
-
-String meleeToString(Weapon def, WarriorModel warrior, String prefix) {
-  if (def.melee == null) {
-    return "-";
-  }
-  final value = bonus(def.melee! + warrior.type.melee);
-  return "$prefix $value";
 }

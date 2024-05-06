@@ -242,23 +242,54 @@ abstract class Item {
   UnmodifiableListView<String> get getKeywords;
 }
 
+String bonus(int v) {
+  final sign = v > 0 ? "+" : "";
+  return "$sign$v";
+}
+
+@JsonSerializable(explicitToJson: true)
+class Modifier {
+  Modifier({this.hit, this.injury, this.extra});
+
+  int? attacks;
+  int? hit;
+  int? injury;
+  String? extra;
+
+  @override
+  String toString() {
+    final suffix = extra == null ? "" : " $extra";
+    if (attacks != null) return "$attacks Attacks$suffix";
+    if (hit != null) return "${bonus(hit!)} to Hit$suffix";
+    if (injury != null) return "${bonus(injury!)} to Injury$suffix";
+    return extra ?? "";
+  }
+
+  factory Modifier.fromJson(Map<String, dynamic> json) =>
+      _$ModifierFromJson(json);
+  Map<String, dynamic> toJson() => _$ModifierToJson(this);
+}
+
 @JsonSerializable(explicitToJson: true)
 class Weapon extends Item {
   Weapon();
   String name = "";
   int hands = 1;
   int? range;
-  int? ranged;
-  int? melee;
-  int? injury;
+  bool? melee;
   List<String>? keywords;
+  List<Modifier> modifiers = [];
 
-  bool get canMelee => melee != null;
-  bool get canRanged => ranged != null;
+  bool get canMelee => range == null || (melee ?? false);
+  bool get canRanged => range != null;
   bool get isPistol => name.contains("Pistol");
   bool get isFirearm => canRanged && !name.contains("Pistol");
   bool get isMeleeWeapon => !canRanged && canMelee;
   bool get isRifle => name.contains("Rifle");
+  String get getModifiersString => modifiers.fold<String>("", (v, m) {
+        if (v == "") return m.toString();
+        return "$v; ${m.toString()}";
+      });
 
   @override
   UnmodifiableListView<String> get getKeywords =>

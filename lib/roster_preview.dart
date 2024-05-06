@@ -38,16 +38,6 @@ class RosterPreview extends StatelessWidget {
 
   Widget weaponDescription(WeaponUse weapon) {
     final def = armory.findWeapon(weapon.name);
-
-    final melee = def.melee != null && def.melee! > 0
-        ? "${bonus(def.melee!)}D to hit"
-        : "";
-    final ranged = def.ranged != null && def.ranged! > 0
-        ? "${bonus(def.ranged!)}D to hit"
-        : "";
-
-    final modifiers = "$melee $ranged";
-
     return Column(
       children: [
         Row(
@@ -76,7 +66,7 @@ class RosterPreview extends StatelessWidget {
                 Text("${weapon.cost}"),
                 Text("${def.hands}-handed"),
                 def.range != null ? Text('${def.range}"') : const Text("Melee"),
-                Text(modifiers),
+                Text(def.getModifiersString),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: (def.keywords ?? [])

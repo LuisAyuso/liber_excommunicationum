@@ -29,12 +29,11 @@ Roster management
 - [ ] Yeoman bolt-rifle requirement
 - [ ] Combat engineer armor
 - [ ] Machine armour limits
-
-- [ ] Card carousel
+- [ ] Either list units base modifier, or add them to weapons as before
 
 ### Lists:
 - [x] Cult
 - [x] Pilgrims
 - [ ] Califate
 - [ ] Plage
-- [ ] Antioch
+- [x] Antioch
