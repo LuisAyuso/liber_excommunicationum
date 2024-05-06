@@ -73,7 +73,7 @@
             "movement": 6,
             "ranged": 2,
             "melee": 2,
-            "armor": 0,
+            "armour": 0,
             "abilities": [
                 "Puppet Master",
                 "Tough"
@@ -94,7 +94,7 @@
             "movement": 6,
             "ranged": 1,
             "melee": 2,
-            "armor": 0,
+            "armour": 0,
             "abilities": [
                 "Infiltrator",
                 "Stealth Generator",
@@ -121,7 +121,7 @@
             "movement": 6,
             "ranged": -2,
             "melee": 2,
-            "armor": 0,
+            "armour": 0,
             "abilities": [
                 "Unholy Hymns",
                 "Unholy Horror"
@@ -141,8 +141,7 @@
             "movement": 6,
             "ranged": 0,
             "melee": 0,
-            "armor": 0,
-            "abilities": [],
+            "armour": 0,
             "keywords": [
                 "HERETIC"
             ],
@@ -156,8 +155,7 @@
             "movement": 6,
             "ranged": 0,
             "melee": 1,
-            "armor": 0,
-            "abilities": [],
+            "armour": 0,
             "keywords": [
                 "HERETIC"
             ],
@@ -171,8 +169,7 @@
             "movement": 6,
             "ranged": 1,
             "melee": 0,
-            "armor": 0,
-            "abilities": [],
+            "armour": 0,
             "keywords": [
                 "HERETIC"
             ],
@@ -187,7 +184,7 @@
             "movement": 6,
             "ranged": 1,
             "melee": 1,
-            "armor": 0,
+            "armour": 0,
             "abilities": [
                 "Strong"
             ],
@@ -209,7 +206,7 @@
             "movement": 8,
             "ranged": 0,
             "melee": 3,
-            "armor": -2,
+            "armour": -2,
             "abilities": [
                 "Tough",
                 "Loping Dash",
@@ -245,7 +242,7 @@
             "movement": 6,
             "ranged": 0,
             "melee": -1,
-            "armor": 0,
+            "armour": 0,
             "abilities": [
                 "Infernal Bomb",
                 "Artificial Life"
@@ -461,7 +458,7 @@
             }
         }
     ],
-    "armor": [
+    "armour": [
         {
             "name": "Standard Armour",
             "cost": {

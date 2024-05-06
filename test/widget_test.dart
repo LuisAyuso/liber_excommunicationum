@@ -64,7 +64,7 @@ void main() {
     boss.max = 1;
     boss.ranged = 1;
     boss.melee = 1;
-    boss.armor = 0;
+    boss.armour = 0;
     boss.abilities = ["special"];
     boss.keywords = ["elite"];
     boss.cost = Currency(ducats: 60);
@@ -100,7 +100,7 @@ void main() {
 
     expect(roster.weapons, isNotEmpty);
     expect(roster.units, isNotEmpty);
-    expect(roster.armor, isNotEmpty);
+    expect(roster.armour, isNotEmpty);
     expect(roster.equipment, isNotEmpty);
 
     for (var w in roster.weapons) {
@@ -109,7 +109,7 @@ void main() {
           .firstWhere((def) => def!.name == w.name, orElse: () => null);
       expect(found, isNotNull, reason: w.name);
     }
-    for (var a in roster.armor) {
+    for (var a in roster.armour) {
       debugPrint(a.name);
       Armour? found = armory.armours
           .map<Armour?>((b) => b)
@@ -136,7 +136,7 @@ void main() {
 
     expect(roster.weapons, isNotEmpty);
     expect(roster.units, isNotEmpty);
-    expect(roster.armor, isNotEmpty);
+    expect(roster.armour, isNotEmpty);
     expect(roster.equipment, isNotEmpty);
 
     for (var w in roster.weapons) {
@@ -145,7 +145,44 @@ void main() {
           .firstWhere((def) => def!.name == w.name, orElse: () => null);
       expect(found, isNotNull, reason: w.name);
     }
-    for (var a in roster.armor) {
+    for (var a in roster.armour) {
+      debugPrint(a.name);
+      Armour? found = armory.armours
+          .map<Armour?>((b) => b)
+          .firstWhere((b) => b!.name == a.name, orElse: () => null);
+      expect(found, isNotNull, reason: a.name);
+    }
+    for (var a in roster.equipment) {
+      debugPrint(a.name);
+      Equipment? found = armory.equipments
+          .map<Equipment?>((b) => b)
+          .firstWhere((b) => b!.name == a.name, orElse: () => null);
+      expect(found, isNotNull, reason: a.name);
+    }
+  });
+
+  test('load new antioch list', () async {
+    String data = await rootBundle.loadString('assets/lists/armory.json');
+    var armory = Armory.fromJson(jsonDecode(data));
+    expect(armory.weapons, isNotEmpty);
+    expect(armory.armours, isNotEmpty);
+
+    data = await rootBundle.loadString('assets/lists/new_antioch.json');
+    var roster = Roster.fromJson(jsonDecode(data));
+    //debugPrint(roster.units.length.toString());
+
+    expect(roster.weapons, isNotEmpty);
+    expect(roster.units, isNotEmpty);
+    expect(roster.armour, isNotEmpty);
+    expect(roster.equipment, isNotEmpty);
+
+    for (var w in roster.weapons) {
+      Weapon? found = armory.weapons
+          .map<Weapon?>((w) => w)
+          .firstWhere((def) => def!.name == w.name, orElse: () => null);
+      expect(found, isNotNull, reason: w.name);
+    }
+    for (var a in roster.armour) {
       debugPrint(a.name);
       Armour? found = armory.armours
           .map<Armour?>((b) => b)

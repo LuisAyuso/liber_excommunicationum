@@ -342,7 +342,7 @@
             "value": -1
         },
         {
-            "name": "Holy Icon Armor",
+            "name": "Holy Icon Armour",
             "value": -1
         }
     ],
@@ -363,7 +363,7 @@
             "name": "Holy Relic"
         },
         {
-            "name": "Armor-Piercing Bullets",
+            "name": "Armour-Piercing Bullets",
             "consumable": true
         },
         {

@@ -27,14 +27,14 @@ class WarriorModel {
   final int uid;
   final Unit type;
   List<WeaponUse> weapons = [];
-  List<ArmorUse> armor = [];
+  List<ArmorUse> armour = [];
   List<EquipmentUse> equipment = [];
   final int bucket;
 
   WarriorModel copyWith({required String name, required int newUid}) {
     var w = WarriorModel(name: name, uid: newUid, type: type, bucket: bucket);
     w.weapons = List.of(weapons);
-    w.armor = List.of(armor);
+    w.armour = List.of(armour);
     w.equipment = List.of(equipment);
     return w;
   }
@@ -43,7 +43,7 @@ class WarriorModel {
   Currency get baseCost => type.cost;
   Currency get equipmentCost =>
       weapons.fold<Currency>(Currency.free(), (v, w) => w.cost + v) +
-      armor.fold<Currency>(Currency.free(), (v, w) => w.cost + v) +
+      armour.fold<Currency>(Currency.free(), (v, w) => w.cost + v) +
       equipment.fold<Currency>(Currency.free(), (v, w) => w.cost + v);
 
   void populateBuiltInWeapons(Armory armory) {
@@ -66,7 +66,7 @@ class WarriorModel {
             "failed to find weapon named $item, more than one match");
       }
       if (candidates.length == 1) {
-        armor.add(ArmorUse(name: item, builtIn: true));
+        armour.add(ArmorUse(name: item, builtIn: true));
       }
     }
   }
@@ -85,8 +85,8 @@ class WarriorModel {
   }
 
   int getArmorValue(Armory armory) {
-    return type.armor +
-        armor
+    return type.armour +
+        armour
             .map((a) => armory.armours.firstWhere((e) => e.name == a.name))
             .map((a) => a.value ?? 0)
             .fold(0, (a, b) => a + b);
@@ -213,7 +213,7 @@ class _WarbandViewState extends State<WarbandView> {
 
   Widget warriorLine(BuildContext context, WarriorModel warrior) {
     final weapons = warrior.weapons.map((w) => getWeaponDef(w));
-    final armours = warrior.armor.map((a) => getArmorDef(a));
+    final armours = warrior.armour.map((a) => getArmorDef(a));
     final pistols = weapons.fold(0, (v, w) => v + (w.isPistol ? 1 : 0));
     final firearms = weapons.fold(0, (v, w) => v + ((w.isFirearm) ? 1 : 0));
     final melee = weapons.fold(0, (v, w) => v + (w.isMeleeWeapon ? 1 : 0));
@@ -272,7 +272,7 @@ class _WarbandViewState extends State<WarbandView> {
     final bodyArmour = armours.where((a) => a.isArmour).isNotEmpty;
     final shield = armours.where((a) => a.isShield).isNotEmpty;
 
-    final availableArmours = widget.roster.armor.where((armour) {
+    final availableArmours = widget.roster.armour.where((armour) {
       if (!warrior.type.getArmourFilter.isAllowed(armour.name)) {
         return false;
       }
@@ -338,7 +338,7 @@ class _WarbandViewState extends State<WarbandView> {
         Row(
           children: [
             statBox("Mov:", '${warrior.type.movement}"'),
-            statBox("Armor:", warrior.getArmorValue(widget.armory)),
+            statBox("Armour:", warrior.getArmorValue(widget.armory)),
           ],
         ),
         const Spacer(),
@@ -349,7 +349,7 @@ class _WarbandViewState extends State<WarbandView> {
                 .toList(),
           ),
           Row(
-            children: warrior.armor
+            children: warrior.armour
                     .map<Widget>((w) => ItemChip(name: w.name))
                     .toList() +
                 warrior.equipment
@@ -363,7 +363,7 @@ class _WarbandViewState extends State<WarbandView> {
           children: warrior.weapons
                   .map<Widget>((w) => weaponLine(context, w, warrior))
                   .toList() +
-              warrior.armor
+              warrior.armour
                   .map<Widget>((a) => armorLine(context, a, warrior))
                   .toList() +
               warrior.equipment
@@ -400,8 +400,8 @@ class _WarbandViewState extends State<WarbandView> {
               constraints: const BoxConstraints(minWidth: 120),
               child: const Text("Add Armour: ")),
           itemDropDownMenu(armours, warrior, (armour) {
-            final a = widget.roster.armor.firstWhere((w) => w.name == armour);
-            context.read<WarbandModel>().getUID(warrior.uid).armor.add(a);
+            final a = widget.roster.armour.firstWhere((w) => w.name == armour);
+            context.read<WarbandModel>().getUID(warrior.uid).armour.add(a);
             context.read<WarbandModel>().invalidate();
           }),
         ]),
@@ -522,7 +522,7 @@ class _WarbandViewState extends State<WarbandView> {
         _editMode && !a.isBuiltIn
             ? IconButton(
                 onPressed: () {
-                  warrior.armor.removeWhere((d) => a.name == d.name);
+                  warrior.armour.removeWhere((d) => a.name == d.name);
                   context.read<WarbandModel>().invalidate();
                 },
                 icon: const Icon(Icons.delete))

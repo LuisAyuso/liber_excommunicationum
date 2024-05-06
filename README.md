@@ -22,10 +22,13 @@ Roster management
 - [ ] Weapon limits
   - [ ] by troop type
   - [ ] by keyword
-- [ ] List Roster
-- [ ] List Equipment
-- [ ] Add minimum unit count
-- [ ] Hide consumed units
+- [x] List Roster
+- [x] List Equipment
+- [x] Add minimum unit count
+- [x] Deactivate consumed units
+- [ ] Yeoman bolt-rifle requirement
+- [ ] Combat engineer armor
+- [ ] Machine armour limits
 
 - [ ] Card carousel
 

@@ -1,0 +1,518 @@
+{
+    "namesM": [
+        "William",
+        "James",
+        "John",
+        "Charles",
+        "George",
+        "Thomas",
+        "Edward",
+        "Henry",
+        "Arthur",
+        "Frederick",
+        "Albert",
+        "Alexander",
+        "David",
+        "Michael",
+        "Robert",
+        "Richard",
+        "Peter",
+        "Stephen",
+        "Christopher",
+        "Daniel"
+    ],
+    "namesF": [
+        "Elizabeth",
+        "Mary",
+        "Margaret",
+        "Jane",
+        "Anne",
+        "Victoria",
+        "Catherine",
+        "Sarah",
+        "Emily",
+        "Alice",
+        "Florence",
+        "Emma",
+        "Eleanor",
+        "Louise",
+        "Grace",
+        "Charlotte",
+        "Lucy",
+        "Sophia",
+        "Olivia",
+        "Isabella"
+    ],
+    "surnames": [
+        "Smith",
+        "Jones",
+        "Taylor",
+        "Brown",
+        "Wilson",
+        "Evans",
+        "Thomas",
+        "Roberts",
+        "Johnson",
+        "Lewis",
+        "Walker",
+        "White",
+        "Edwards",
+        "Hughes",
+        "Green",
+        "Hall",
+        "Davis",
+        "Harris",
+        "Clark",
+        "King"
+    ],
+    "units": [
+        {
+            "name": "Lieutenant",
+            "min": 1,
+            "max": 1,
+            "movement": 6,
+            "ranged": 2,
+            "melee": 2,
+            "armour": 0,
+            "abilities": [
+                "Tough",
+                "On my command"
+            ],
+            "keywords": [
+                "ELITE",
+                "NEW ANTIOCH",
+                "THOUGH"
+            ],
+            "cost": {
+                "ducats": 70
+            },
+            "base": 32
+        },
+        {
+            "name": "Trench Cleric",
+            "min": 0,
+            "max": 1,
+            "movement": 6,
+            "ranged": 1,
+            "melee": 1,
+            "armour": 0,
+            "abilities": [
+                "Onwards, Christian Soldiers!"
+            ],
+            "keywords": [
+                "ELITE",
+                "NEW ANTIOCH"
+            ],
+            "cost": {
+                "ducats": 60
+            },
+            "base": 32
+        },
+        {
+            "name": "Sniper Priests",
+            "min": 0,
+            "max": 2,
+            "movement": 6,
+            "ranged": 2,
+            "melee": -1,
+            "armour": 0,
+            "abilities": [
+                "Aim",
+                "Absolute Faith"
+            ],
+            "keywords": [
+                "ELITE",
+                "NEW ANTIOCH"
+            ],
+            "cost": {
+                "ducats": 50
+            },
+            "base": 25
+        },
+        {
+            "name": "Yeoman",
+            "movement": 6,
+            "ranged": 0,
+            "melee": 0,
+            "armour": 0,
+            "keywords": [
+                "NEW ANTIOCH"
+            ],
+            "cost": {
+                "ducats": 30
+            },
+            "base": 25
+        },
+        {
+            "name": "Trench Mole",
+            "max": 2,
+            "movement": 6,
+            "ranged": 0,
+            "melee": 0,
+            "armour": 0,
+            "keywords": [
+                "NEW ANTIOCH",
+                "INFILTRATOR"
+            ],
+            "cost": {
+                "ducats": 40
+            },
+            "base": 25
+        },
+        {
+            "name": "Shocktroopers",
+            "max": 5,
+            "movement": 6,
+            "ranged": 0,
+            "melee": 1,
+            "armour": 0,
+            "abilities": [
+                "Shock Charge"
+            ],
+            "keywords": [
+                "NEW ANTIOCH"
+            ],
+            "cost": {
+                "ducats": 45
+            },
+            "base": 25
+        },
+        {
+            "name": "Combat Engineers",
+            "max": 2,
+            "movement": 6,
+            "ranged": 1,
+            "melee": 0,
+            "armour": -2,
+            "builtInItems": [
+                "Shovel"
+            ],
+            "abilities": [
+                "Engineer Body Armor",
+                "Battlefield Demolition",
+                "Dig in",
+                "De-mine"
+            ],
+            "keywords": [
+                "NEW ANTIOCH"
+            ],
+            "cost": {
+                "ducats": 45
+            },
+            "base": 25
+        },
+        {
+            "name": "Mechanised Heavy Infantry",
+            "max": 3,
+            "movement": 6,
+            "ranged": 1,
+            "melee": 0,
+            "armour": 0,
+            "builtInItems": [
+                "Heavy Armour"
+            ],
+            "abilities": [
+                "Strong"
+            ],
+            "keywords": [
+                "NEW ANTIOCH"
+            ],
+            "cost": {
+                "ducats": 85
+            },
+            "base": 32
+        },
+        {
+            "name": "Combat Medic",
+            "max": 3,
+            "movement": 6,
+            "ranged": 0,
+            "melee": 0,
+            "armour": 0,
+            "builtInItems": [
+                "Misericordia",
+                "Medi-Kit",
+                "Gas Mask",
+                "Standard Armour"
+            ],
+            "abilities": [
+                "Finish the Fallen",
+                "Expert Medic"
+            ],
+            "keywords": [
+                "NEW ANTIOCH"
+            ],
+            "cost": {
+                "ducats": 65
+            },
+            "base": 25
+        }
+    ],
+    "weapons": [
+        {
+            "name": "Bolt Action Rifle",
+            "cost": {
+                "ducats": 10
+            }
+        },
+        {
+            "name": "Semi-automatic Rifle",
+            "cost": {
+                "ducats": 20
+            }
+        },
+        {
+            "name": "Automatic Rifle",
+            "cost": {
+                "glory": 3
+            }
+        },
+        {
+            "name": "Pistol/Revolver",
+            "cost": {
+                "ducats": 10
+            }
+        },
+        {
+            "name": "Automatic Pistol",
+            "cost": {
+                "ducats": 20
+            },
+            "limit": 3,
+            "keywordFilter": {
+                "whitelist": [
+                    "ELITE"
+                ]
+            }
+        },
+        {
+            "name": "Submachine Gun",
+            "cost": {
+                "ducats": 30
+            },
+            "limit": 2
+        },
+        {
+            "name": "Shotgun",
+            "cost": {
+                "ducats": 15
+            }
+        },
+        {
+            "name": "Automatic Shotgun",
+            "cost": {
+                "ducats": 20
+            },
+            "limit": 2
+        },
+        {
+            "name": "Sniper Rifle",
+            "cost": {
+                "ducats": 35
+            },
+            "keywordFilter": {
+                "whitelist": [
+                    "ELITE"
+                ]
+            }
+        },
+        {
+            "name": "Grenade Launcher",
+            "cost": {
+                "ducats": 40
+            }
+        },
+        {
+            "name": "Grenades",
+            "cost": {
+                "ducats": 5
+            }
+        },
+        {
+            "name": "Incendiary Grenades",
+            "cost": {
+                "ducats": 10
+            }
+        },
+        {
+            "name": "Machine Gun",
+            "cost": {
+                "ducats": 60
+            },
+            "limit": 2
+        },
+        {
+            "name": "Flamethrower",
+            "cost": {
+                "ducats": 40
+            }
+        },
+        {
+            "name": "Heavy Flamethrower",
+            "cost": {
+                "ducats": 55
+            },
+            "limit": 1
+        },
+        {
+            "name": "Satchel Charge",
+            "cost": {
+                "ducats": 15
+            },
+            "limit": 3
+        },
+        {
+            "name": "Knife/Dagger",
+            "cost": {
+                "ducats": 1
+            }
+        },
+        {
+            "name": "Bayonet",
+            "cost": {
+                "ducats": 2
+            }
+        },
+        {
+            "name": "Trench Club",
+            "cost": {
+                "ducats": 3
+            }
+        },
+        {
+            "name": "Sword/Axe",
+            "cost": {
+                "ducats": 4
+            }
+        },
+        {
+            "name": "Trench Polearm",
+            "cost": {
+                "ducats": 7
+            }
+        },
+        {
+            "name": "Great Sword/Axe",
+            "cost": {
+                "ducats": 15
+            }
+        },
+        {
+            "name": "Double-Handed Blunt Weapon",
+            "cost": {
+                "ducats": 12
+            }
+        }
+    ],
+    "armour": [
+        {
+            "name": "Standard Armour",
+            "cost": {
+                "ducats": 20
+            }
+        },
+        {
+            "name": "Heavy Armour",
+            "cost": {
+                "ducats": 40
+            },
+            "unitNameFilter": {
+                "whitelist": [
+                    "Mechanised Heavy Infantry"
+                ]
+            },
+            "keywordFilter": {
+                "whitelist": [
+                    "ELITE"
+                ]
+            }
+        },
+        {
+            "name": "Machine Armour",
+            "cost": {
+                "ducats": 55
+            },
+            "limit": 1,
+            "unitNameFilter": {
+                "whitelist": [
+                    "Mechanised Heavy Infantry"
+                ]
+            },
+            "keywordFilter": {
+                "whitelist": [
+                    "ELITE"
+                ]
+            }
+        },
+        {
+            "name": "Trench Shield",
+            "cost": {
+                "ducats": 15
+            }
+        }
+    ],
+    "equipment": [
+        {
+            "name": "Combat Helmet",
+            "cost": {
+                "ducats": 5
+            }
+        },
+        {
+            "name": "Gas Mask",
+            "cost": {
+                "ducats": 5
+            }
+        },
+        {
+            "name": "Shovel",
+            "cost": {
+                "ducats": 5
+            }
+        },
+        {
+            "name": "Medi-Kit",
+            "cost": {
+                "ducats": 5
+            }
+        },
+        {
+            "name": "Musical Instrument",
+            "cost": {
+                "ducats": 15
+            },
+            "limit": 1,
+            "keywordFilter": {
+                "blacklist": [
+                    "ELITE"
+                ]
+            }
+        },
+        {
+            "name": "Martyrdom Pills",
+            "cost": {
+                "glory": 2
+            },
+            "keywordFilter": {
+                "whitelist": [
+                    "ELITE"
+                ]
+            },
+            "keywords": [
+                "CONSUMABLE"
+            ]
+        },
+        {
+            "name": "Troop Flag",
+            "cost": {
+                "glory": 1
+            }
+        },
+        {
+            "name": "Binoculars",
+            "cost": {
+                "ducats": 10
+            }
+        }
+    ]
+}

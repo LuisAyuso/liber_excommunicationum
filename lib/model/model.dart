@@ -80,8 +80,8 @@ class Unit {
   int movement = 6;
   int ranged = 0;
   int melee = 0;
-  int armor = 0;
-  List<String> abilities = [];
+  int armour = 0;
+  List<String>? abilities = [];
   List<String> keywords = [];
   Currency cost = Currency(ducats: 0);
   int base = 25;
@@ -226,12 +226,12 @@ class Roster {
   List<String> surnames = [];
   List<Unit> units = [];
   List<WeaponUse> weapons = [];
-  List<ArmorUse> armor = [];
+  List<ArmorUse> armour = [];
   List<EquipmentUse> equipment = [];
 
   List<dynamic> get items =>
       weapons.map<dynamic>((e) => e).toList() +
-      armor.map<dynamic>((e) => e).toList() +
+      armour.map<dynamic>((e) => e).toList() +
       equipment.map<dynamic>((e) => e).toList();
 
   factory Roster.fromJson(Map<String, dynamic> json) => _$RosterFromJson(json);

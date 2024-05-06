@@ -190,7 +190,7 @@ class UnitDescription extends StatelessWidget {
                     Text("Movement", style: gothBlack20),
                     Text("Ranged", style: gothBlack20),
                     Text("Melee", style: gothBlack20),
-                    Text("Armor", style: gothBlack20),
+                    Text("Armour", style: gothBlack20),
                     Text("Base", style: gothBlack20),
                   ],
                   decoration: BoxDecoration(
@@ -200,7 +200,7 @@ class UnitDescription extends StatelessWidget {
                 Text("${unit.movement}"),
                 Text(ranged),
                 Text(melee),
-                Text("${unit.armor}"),
+                Text("${unit.armour}"),
                 Text("${unit.base}"),
               ]),
             ],

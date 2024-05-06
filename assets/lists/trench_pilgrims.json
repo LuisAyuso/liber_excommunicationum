@@ -45,7 +45,7 @@
             "movement": 6,
             "ranged": 2,
             "melee": 2,
-            "armor": 0,
+            "armour": 0,
             "abilities": [
                 "Loudspeakers",
                 "Memento Mori",
@@ -66,7 +66,7 @@
             "movement": 6,
             "ranged": 1,
             "melee": 1,
-            "armor": 0,
+            "armour": 0,
             "abilities": [
                 "Enforced Orthodoxy",
                 "Whip of God"
@@ -86,7 +86,7 @@
             "movement": 6,
             "ranged": -3,
             "melee": 2,
-            "armor": 0,
+            "armour": 0,
             "abilities": [
                 "The Communicant Cross"
             ],
@@ -106,7 +106,7 @@
             "movement": 6,
             "ranged": 0,
             "melee": 0,
-            "armor": 0,
+            "armour": 0,
             "abilities": [
                 "Resurrection"
             ],
@@ -123,8 +123,7 @@
             "movement": 6,
             "ranged": 0,
             "melee": 1,
-            "armor": 0,
-            "abilities": [],
+            "armour": 0,
             "keywords": [
                 "PILGRIM"
             ],
@@ -138,7 +137,7 @@
             "movement": 6,
             "ranged": 0,
             "melee": -1,
-            "armor": 0,
+            "armour": 0,
             "abilities": [
                 "Martyrdom Device",
                 "Mad Dash"
@@ -169,7 +168,7 @@
             "movement": 8,
             "ranged": 1,
             "melee": 1,
-            "armor": 0,
+            "armour": 0,
             "abilities": [
                 "Blessed Stigmata",
                 "Agile"
@@ -193,7 +192,7 @@
             "movement": 6,
             "ranged": 0,
             "melee": 1,
-            "armor": 0,
+            "armour": 0,
             "abilities": [
                 "Catherine Wheel",
                 "Bonebreaker Mace",
@@ -365,7 +364,7 @@
             "limit": 1
         }
     ],
-    "armor": [
+    "armour": [
         {
             "name": "Standard Armour",
             "cost": {

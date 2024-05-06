@@ -40,6 +40,8 @@ class WarbandChooser extends StatelessWidget {
             warbandButton(context, "Heretic Cult", "assets/lists/cult.json"),
             warbandButton(context, "Trench Pilgrims",
                 "assets/lists/trench_pilgrims.json"),
+            warbandButton(context, "The Principality of New Antioch",
+                "assets/lists/new_antioch.json"),
           ],
         ),
       ),
@@ -52,7 +54,8 @@ class WarbandChooser extends StatelessWidget {
         debugPrint('Button tapped: $name');
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (ctx) => WarbandPage(asset: asset)),
+          MaterialPageRoute(
+              builder: (ctx) => WarbandPage(title: name, asset: asset)),
         );
       },
       child: Container(
@@ -73,8 +76,9 @@ class WarbandChooser extends StatelessWidget {
 }
 
 class WarbandPage extends StatelessWidget {
-  const WarbandPage({super.key, required this.asset});
+  const WarbandPage({super.key, required this.title, required this.asset});
   final String asset;
+  final String title;
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -90,7 +94,7 @@ class WarbandPage extends StatelessWidget {
           }
           var (roster, armory) = future.data!;
           return WarbandView(
-            title: "Warband!",
+            title: title,
             roster: roster,
             armory: armory,
           );
