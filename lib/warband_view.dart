@@ -225,6 +225,12 @@ class _WarbandViewState extends State<WarbandView> {
     final freeHands = 2 -
         weapons.where((w) => w.isMeleeWeapon).fold(0, (v, w) => v + w.hands);
 
+    final unitCount = context
+        .read<WarbandModel>()
+        .items
+        .where((other) => other.type.name == warrior.type.name)
+        .length;
+
 // - One firearm and one pistol OR
 // - two pistols.
 // In addition, they may carry:
@@ -363,12 +369,8 @@ class _WarbandViewState extends State<WarbandView> {
               warrior.equipment
                   .map<Widget>((e) => equipmentLine(context, e, warrior))
                   .toList() +
-              editControls(
-                warrior,
-                availableWeapons,
-                availableArmours,
-                availableEquipment,
-              ),
+              editControls(warrior, availableWeapons, availableArmours,
+                  availableEquipment, unitCount),
         ),
       ],
     );
@@ -379,6 +381,7 @@ class _WarbandViewState extends State<WarbandView> {
     Iterable<WeaponUse> weapons,
     Iterable<ArmorUse> armours,
     Iterable<EquipmentUse> equipment,
+    int unitCount,
   ) {
     if (_editMode) {
       return UnmodifiableListView([
@@ -412,15 +415,18 @@ class _WarbandViewState extends State<WarbandView> {
             context.read<WarbandModel>().invalidate();
           }),
           const Spacer(),
-          IconButton(
-            onPressed: () {
-              var wbm = context.read<WarbandModel>();
-              wbm.add(warrior.copyWith(
-                  name: makeName(widget.roster.namesM, widget.roster.surnames),
-                  newUid: wbm.nextUID()));
-            },
-            icon: const Icon(Icons.copy),
-          ),
+          (warrior.type.max ?? double.infinity) > unitCount
+              ? IconButton(
+                  onPressed: () {
+                    var wbm = context.read<WarbandModel>();
+                    wbm.add(warrior.copyWith(
+                        name: makeName(
+                            widget.roster.namesM, widget.roster.surnames),
+                        newUid: wbm.nextUID()));
+                  },
+                  icon: const Icon(Icons.copy),
+                )
+              : const SizedBox(),
           IconButton(
             onPressed: () {
               context.read<WarbandModel>().removeUID(warrior.uid);
