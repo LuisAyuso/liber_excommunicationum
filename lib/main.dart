@@ -90,7 +90,7 @@ class WarbandPage extends StatelessWidget {
             return const Text("Failed to load roster");
           }
           if (!future.hasData) {
-            return const CircularProgressIndicator();
+            return const Center(child: CircularProgressIndicator());
           }
           var (roster, armory) = future.data!;
           return WarbandView(
