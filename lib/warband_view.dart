@@ -556,7 +556,7 @@ class _WarbandViewState extends State<WarbandView> {
   Weapon getWeaponDef(WeaponUse w) =>
       widget.armory.weapons.firstWhere((def) => def.name == w.name);
 
-  Armor getArmorDef(ArmorUse w) =>
+  Armour getArmorDef(ArmorUse w) =>
       widget.armory.armours.firstWhere((def) => def.name == w.name);
 
   Equipment getEquipmentDef(EquipmentUse w) =>

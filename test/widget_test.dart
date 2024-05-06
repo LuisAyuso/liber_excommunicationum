@@ -1,10 +1,3 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -118,8 +111,8 @@ void main() {
     }
     for (var a in roster.armor) {
       debugPrint(a.name);
-      Armor? found = armory.armours
-          .map<Armor?>((b) => b)
+      Armour? found = armory.armours
+          .map<Armour?>((b) => b)
           .firstWhere((b) => b!.name == a.name, orElse: () => null);
       expect(found, isNotNull, reason: a.name);
     }
@@ -154,8 +147,8 @@ void main() {
     }
     for (var a in roster.armor) {
       debugPrint(a.name);
-      Armor? found = armory.armours
-          .map<Armor?>((b) => b)
+      Armour? found = armory.armours
+          .map<Armour?>((b) => b)
           .firstWhere((b) => b!.name == a.name, orElse: () => null);
       expect(found, isNotNull, reason: a.name);
     }

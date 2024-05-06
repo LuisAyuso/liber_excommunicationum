@@ -34,7 +34,8 @@ Map<String, dynamic> _$CurrencyToJson(Currency instance) => <String, dynamic>{
 
 Unit _$UnitFromJson(Map<String, dynamic> json) => Unit()
   ..name = json['name'] as String
-  ..max = json['max'] as int
+  ..max = json['max'] as int?
+  ..min = json['min'] as int?
   ..movement = json['movement'] as int
   ..ranged = json['ranged'] as int
   ..melee = json['melee'] as int
@@ -63,6 +64,7 @@ Unit _$UnitFromJson(Map<String, dynamic> json) => Unit()
 Map<String, dynamic> _$UnitToJson(Unit instance) => <String, dynamic>{
       'name': instance.name,
       'max': instance.max,
+      'min': instance.min,
       'movement': instance.movement,
       'ranged': instance.ranged,
       'melee': instance.melee,
@@ -187,7 +189,7 @@ Map<String, dynamic> _$WeaponToJson(Weapon instance) => <String, dynamic>{
       'keywords': instance.keywords,
     };
 
-Armor _$ArmorFromJson(Map<String, dynamic> json) => Armor()
+Armour _$ArmourFromJson(Map<String, dynamic> json) => Armour()
   ..name = json['name'] as String
   ..value = json['value'] as int?
   ..special =
@@ -195,7 +197,7 @@ Armor _$ArmorFromJson(Map<String, dynamic> json) => Armor()
   ..keywords =
       (json['keywords'] as List<dynamic>?)?.map((e) => e as String).toList();
 
-Map<String, dynamic> _$ArmorToJson(Armor instance) => <String, dynamic>{
+Map<String, dynamic> _$ArmourToJson(Armour instance) => <String, dynamic>{
       'name': instance.name,
       'value': instance.value,
       'special': instance.special,
@@ -219,7 +221,7 @@ Armory _$ArmoryFromJson(Map<String, dynamic> json) => Armory()
       .map((e) => Weapon.fromJson(e as Map<String, dynamic>))
       .toList()
   ..armours = (json['armours'] as List<dynamic>)
-      .map((e) => Armor.fromJson(e as Map<String, dynamic>))
+      .map((e) => Armour.fromJson(e as Map<String, dynamic>))
       .toList()
   ..equipments = (json['equipments'] as List<dynamic>)
       .map((e) => Equipment.fromJson(e as Map<String, dynamic>))

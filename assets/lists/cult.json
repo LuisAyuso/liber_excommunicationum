@@ -68,6 +68,7 @@
     "units": [
         {
             "name": "Heretic Priest",
+            "min": 1,
             "max": 1,
             "movement": 6,
             "ranged": 2,
@@ -137,7 +138,6 @@
         },
         {
             "name": "Heretic Trooper",
-            "max": 0,
             "movement": 6,
             "ranged": 0,
             "melee": 0,
@@ -153,7 +153,6 @@
         },
         {
             "name": "Legionnaire Melee",
-            "max": 0,
             "movement": 6,
             "ranged": 0,
             "melee": 1,
@@ -169,7 +168,6 @@
         },
         {
             "name": "Legionnaire Ranged",
-            "max": 0,
             "movement": 6,
             "ranged": 1,
             "melee": 0,

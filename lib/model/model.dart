@@ -60,6 +60,11 @@ class Currency {
     return Currency(ducats: ducats + other.ducats, glory: glory + other.glory);
   }
 
+  @override
+  String toString() {
+    return isDucats ? "$_ducats Ducats" : "$_glory Glory";
+  }
+
   factory Currency.fromJson(Map<String, dynamic> json) =>
       _$CurrencyFromJson(json);
   Map<String, dynamic> toJson() => _$CurrencyToJson(this);
@@ -70,7 +75,8 @@ class Unit {
   Unit();
 
   String name = "";
-  int max = 1;
+  int? max;
+  int? min;
   int movement = 6;
   int ranged = 0;
   int melee = 0;
@@ -223,10 +229,10 @@ class Roster {
   List<ArmorUse> armor = [];
   List<EquipmentUse> equipment = [];
 
-  List<ItemUse> get items =>
-      weapons.map<ItemUse>((e) => e).toList() +
-      armor.map<ItemUse>((e) => e).toList() +
-      equipment.map<ItemUse>((e) => e).toList();
+  List<dynamic> get items =>
+      weapons.map<dynamic>((e) => e).toList() +
+      armor.map<dynamic>((e) => e).toList() +
+      equipment.map<dynamic>((e) => e).toList();
 
   factory Roster.fromJson(Map<String, dynamic> json) => _$RosterFromJson(json);
   Map<String, dynamic> toJson() => _$RosterToJson(this);
@@ -263,8 +269,8 @@ class Weapon extends Item {
 }
 
 @JsonSerializable(explicitToJson: true)
-class Armor extends Item {
-  Armor();
+class Armour extends Item {
+  Armour();
   String name = "";
   int? value;
   List<String>? special = [];
@@ -276,8 +282,8 @@ class Armor extends Item {
 
   bool get isShield => name.contains("Shield");
   bool get isArmour => name.contains("Armour");
-  factory Armor.fromJson(Map<String, dynamic> json) => _$ArmorFromJson(json);
-  Map<String, dynamic> toJson() => _$ArmorToJson(this);
+  factory Armour.fromJson(Map<String, dynamic> json) => _$ArmourFromJson(json);
+  Map<String, dynamic> toJson() => _$ArmourToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -304,9 +310,21 @@ class Armory {
   Armory();
 
   List<Weapon> weapons = [];
-  List<Armor> armours = [];
+  List<Armour> armours = [];
   List<Equipment> equipments = [];
 
   factory Armory.fromJson(Map<String, dynamic> json) => _$ArmoryFromJson(json);
   Map<String, dynamic> toJson() => _$ArmoryToJson(this);
+
+  Weapon findWeapon(String name) {
+    return weapons.firstWhere((def) => def.name == name);
+  }
+
+  Armour findArmour(String name) {
+    return armours.firstWhere((def) => def.name == name);
+  }
+
+  Equipment findEquipment(String name) {
+    return equipments.firstWhere((def) => def.name == name);
+  }
 }
