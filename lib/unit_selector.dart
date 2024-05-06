@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tc_thing/model/model.dart';
+import 'package:tc_thing/roster_preview.dart';
 import 'package:tc_thing/utils.dart';
 import 'package:tc_thing/warband_view.dart';
 
@@ -45,29 +46,22 @@ class UnitSelector extends StatelessWidget {
           count++;
         }
       }
-      final bool enabled = (unit.max == 0 || count < unit.max);
+      final bool enabled = (unit.max == null || count < unit.max!);
 
       return InkWell(
-        child: ListTile(
-          leading: CurrencyWidget(cost: unit.cost, simultaneous: false),
-          title: Text(unit.name),
-          subtitle: Text(unit.name),
-          trailing: unit.max == 0
-              ? const Icon(Icons.all_inclusive)
-              : Text("$count-${unit.max}"),
-        ),
-        onTap: () {
-          if (enabled) {
-            var wb = context.read<WarbandModel>();
-            wb.add(WarriorModel(
-                name: makeName(r.namesM, r.surnames),
-                uid: wb.nextUID(),
-                type: unit,
-                bucket: idx,
-                armory: armory));
-            Navigator.pop(context);
-          }
-        },
+        onTap: enabled
+            ? () {
+                var wb = context.read<WarbandModel>();
+                wb.add(WarriorModel(
+                    name: makeName(r.namesM, r.surnames),
+                    uid: wb.nextUID(),
+                    type: unit,
+                    bucket: idx,
+                    armory: armory));
+                Navigator.pop(context);
+              }
+            : null,
+        child: UnitDescription(unit: unit),
       );
     });
   }
