@@ -157,6 +157,15 @@ Roster _$RosterFromJson(Map<String, dynamic> json) => Roster()
       .toList()
   ..equipment = (json['equipment'] as List<dynamic>)
       .map((e) => EquipmentUse.fromJson(e as Map<String, dynamic>))
+      .toList()
+  ..uniqueWeapons = (json['uniqueWeapons'] as List<dynamic>?)
+      ?.map((e) => Weapon.fromJson(e as Map<String, dynamic>))
+      .toList()
+  ..uniqueArmour = (json['uniqueArmour'] as List<dynamic>?)
+      ?.map((e) => Armour.fromJson(e as Map<String, dynamic>))
+      .toList()
+  ..uniqueEquipment = (json['uniqueEquipment'] as List<dynamic>?)
+      ?.map((e) => Equipment.fromJson(e as Map<String, dynamic>))
       .toList();
 
 Map<String, dynamic> _$RosterToJson(Roster instance) => <String, dynamic>{
@@ -167,6 +176,10 @@ Map<String, dynamic> _$RosterToJson(Roster instance) => <String, dynamic>{
       'weapons': instance.weapons.map((e) => e.toJson()).toList(),
       'armour': instance.armour.map((e) => e.toJson()).toList(),
       'equipment': instance.equipment.map((e) => e.toJson()).toList(),
+      'uniqueWeapons': instance.uniqueWeapons?.map((e) => e.toJson()).toList(),
+      'uniqueArmour': instance.uniqueArmour?.map((e) => e.toJson()).toList(),
+      'uniqueEquipment':
+          instance.uniqueEquipment?.map((e) => e.toJson()).toList(),
     };
 
 Modifier _$ModifierFromJson(Map<String, dynamic> json) => Modifier(

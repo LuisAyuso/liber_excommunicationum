@@ -13,7 +13,7 @@ Roster management
 - [ ] Unit preview
 - [x] Edit mode - play mode
 - [ ] List variations
-- [ ] List-dependent armory
+- [x] List-dependent armory
 - [x] Unit-dependent armory: blacklist, whitelist
 - [x] Default armory: non removable
 - [ ] Unit alternatives

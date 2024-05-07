@@ -229,6 +229,10 @@ class Roster {
   List<ArmorUse> armour = [];
   List<EquipmentUse> equipment = [];
 
+  List<Weapon>? uniqueWeapons = [];
+  List<Armour>? uniqueArmour = [];
+  List<Equipment>? uniqueEquipment = [];
+
   List<dynamic> get items =>
       weapons.map<dynamic>((e) => e).toList() +
       armour.map<dynamic>((e) => e).toList() +

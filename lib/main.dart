@@ -119,7 +119,11 @@ class WarbandPage extends StatelessWidget {
 
     data = await DefaultAssetBundle.of(context)
         .loadString("assets/lists/armory.json");
-    final a = Armory.fromJson(jsonDecode(data));
+    var a = Armory.fromJson(jsonDecode(data));
+
+    a.weapons.addAll(r.uniqueWeapons ?? []);
+    a.armours.addAll(r.uniqueArmour ?? []);
+    a.equipments.addAll(r.uniqueEquipment ?? []);
 
     return (r, a);
   }
