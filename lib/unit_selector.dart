@@ -42,7 +42,7 @@ class UnitSelector extends StatelessWidget {
       final currentList = context.watch<WarbandModel>();
       int count = 0;
       for (var element in currentList.items) {
-        if (element.type.name == unit.name) {
+        if (element.type.typeName == unit.typeName) {
           count++;
         }
       }

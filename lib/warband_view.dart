@@ -47,47 +47,46 @@ class WarriorModel {
       equipment.fold<Currency>(Currency.free(), (v, w) => w.cost + v);
 
   void populateBuiltInWeapons(Armory armory) {
-    for (var item in type.builtInItems ?? []) {
-      final candidates = armory.weapons.where((w) => w.name == item);
-      if (candidates.length > 1) {
-        Exception("failed to find weapon named $item, more than one match");
+    for (var item in type.mandatoryItems ?? []) {
+      if (armory.isWeapon(name)) {
+        weapons.add(WeaponUse(typeName: item, removable: true));
       }
-      if (candidates.length == 1) {
-        weapons.add(WeaponUse(name: item, builtIn: true));
-      }
+    }
+    for (var item in type.defaultItems ?? []) {
+      if (item is WeaponUse) weapons.add(item);
     }
   }
 
   void populateBuiltInArmour(Armory armory) {
-    for (var item in type.builtInItems ?? []) {
-      final candidates = armory.armours.where((a) => a.name == item);
-      if (candidates.length > 1) {
-        throw Exception(
-            "failed to find weapon named $item, more than one match");
+    debugPrint("populate armour: ");
+    for (var item in type.mandatoryItems ?? []) {
+      debugPrint("[$item]");
+      if (armory.isArmour(item)) {
+        debugPrint("yes");
+        armour.add(ArmorUse(typeName: item, removable: true));
       }
-      if (candidates.length == 1) {
-        armour.add(ArmorUse(name: item, builtIn: true));
-      }
+    }
+    for (var item in type.defaultItems ?? []) {
+      if (item is ArmorUse) armour.add(item);
     }
   }
 
   void populateBuiltInEquipment(Armory armory) {
-    for (var item in type.builtInItems ?? []) {
-      final candidates = armory.equipments.where((e) => e.name == item);
-      if (candidates.length > 1) {
-        throw Exception(
-            "failed to find weapon named $item, more than one match");
+    for (var item in type.mandatoryItems ?? []) {
+      if (armory.isEquipment(item)) {
+        equipment.add(EquipmentUse(typeName: item, removable: true));
       }
-      if (candidates.length == 1) {
-        equipment.add(EquipmentUse(name: item, builtIn: true));
-      }
+    }
+    for (var item in type.defaultItems ?? []) {
+      if (item is EquipmentUse) equipment.add(item);
     }
   }
 
   int getArmorValue(Armory armory) {
     return type.armour +
         armour
-            .map((a) => armory.armours.firstWhere((e) => e.name == a.name))
+            .map((a) =>
+                armory.armours.firstWhere((e) => e.typeName == a.typeName))
             .map((a) => a.value ?? 0)
             .fold(0, (a, b) => a + b);
   }
@@ -228,7 +227,7 @@ class _WarbandViewState extends State<WarbandView> {
     final unitCount = context
         .read<WarbandModel>()
         .items
-        .where((other) => other.type.name == warrior.type.name)
+        .where((other) => other.type.typeName == warrior.type.typeName)
         .length;
 
 // - One firearm and one pistol OR
@@ -242,16 +241,16 @@ class _WarbandViewState extends State<WarbandView> {
       final def = getWeaponDef(weapon);
 
       if (def.canMelee &&
-          !warrior.type.getMeleeWeaponFilter.isAllowed(weapon.name)) {
+          !warrior.type.getMeleeWeaponFilter.isAllowed(weapon.typeName)) {
         return false;
       }
 
       if (def.canRanged &&
-          !warrior.type.getRangedWeaponFilter.isAllowed(weapon.name)) {
+          !warrior.type.getRangedWeaponFilter.isAllowed(weapon.typeName)) {
         return false;
       }
 
-      if (!weapon.getUnitNameFilter.isAllowed(warrior.type.name)) {
+      if (!weapon.getUnitNameFilter.isAllowed(warrior.type.typeName)) {
         return false;
       }
 
@@ -273,11 +272,11 @@ class _WarbandViewState extends State<WarbandView> {
     final shield = armours.where((a) => a.isShield).isNotEmpty;
 
     final availableArmours = widget.roster.armour.where((armour) {
-      if (!warrior.type.getArmourFilter.isAllowed(armour.name)) {
+      if (!warrior.type.getArmourFilter.isAllowed(armour.typeName)) {
         return false;
       }
 
-      if (!armour.getUnitNameFilter.isAllowed(warrior.type.name)) {
+      if (!armour.getUnitNameFilter.isAllowed(warrior.type.typeName)) {
         return false;
       }
 
@@ -294,11 +293,11 @@ class _WarbandViewState extends State<WarbandView> {
     });
 
     final availableEquipment = widget.roster.equipment.where((equip) {
-      if (!warrior.type.getEquipmentFilter.isAllowed(equip.name)) {
+      if (!warrior.type.getEquipmentFilter.isAllowed(equip.typeName)) {
         return false;
       }
 
-      if (!equip.getUnitNameFilter.isAllowed(warrior.type.name)) {
+      if (!equip.getUnitNameFilter.isAllowed(warrior.type.typeName)) {
         return false;
       }
 
@@ -309,7 +308,9 @@ class _WarbandViewState extends State<WarbandView> {
 
       final def = getEquipmentDef(equip);
       if (!def.isConsumable &&
-          warrior.equipment.where((e) => e.name == def.name).isNotEmpty) {
+          warrior.equipment
+              .where((e) => e.typeName == def.typeName)
+              .isNotEmpty) {
         return false;
       }
 
@@ -329,7 +330,7 @@ class _WarbandViewState extends State<WarbandView> {
             children: [
               Text(warrior.name, style: gothRed24),
               Text(
-                warrior.type.name,
+                warrior.type.typeName,
               )
             ],
           ),
@@ -345,15 +346,15 @@ class _WarbandViewState extends State<WarbandView> {
         Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
           Row(
             children: warrior.weapons
-                .map<Widget>((w) => ItemChip(name: w.name))
+                .map<Widget>((w) => ItemChip(text: w.typeName))
                 .toList(),
           ),
           Row(
             children: warrior.armour
-                    .map<Widget>((w) => ItemChip(name: w.name))
+                    .map<Widget>((w) => ItemChip(text: w.typeName))
                     .toList() +
                 warrior.equipment
-                    .map<Widget>((w) => ItemChip(name: w.name))
+                    .map<Widget>((w) => ItemChip(text: w.typeName))
                     .toList(),
           ),
         ]),
@@ -390,7 +391,8 @@ class _WarbandViewState extends State<WarbandView> {
               constraints: const BoxConstraints(minWidth: 120),
               child: const Text("Add Weapon: ")),
           itemDropDownMenu(weapons, warrior, (weapon) {
-            final w = widget.roster.weapons.firstWhere((w) => w.name == weapon);
+            final w =
+                widget.roster.weapons.firstWhere((w) => w.typeName == weapon);
             context.read<WarbandModel>().getUID(warrior.uid).weapons.add(w);
             context.read<WarbandModel>().invalidate();
           }),
@@ -400,7 +402,8 @@ class _WarbandViewState extends State<WarbandView> {
               constraints: const BoxConstraints(minWidth: 120),
               child: const Text("Add Armour: ")),
           itemDropDownMenu(armours, warrior, (armour) {
-            final a = widget.roster.armour.firstWhere((w) => w.name == armour);
+            final a =
+                widget.roster.armour.firstWhere((w) => w.typeName == armour);
             context.read<WarbandModel>().getUID(warrior.uid).armour.add(a);
             context.read<WarbandModel>().invalidate();
           }),
@@ -410,7 +413,8 @@ class _WarbandViewState extends State<WarbandView> {
               constraints: const BoxConstraints(minWidth: 120),
               child: const Text("Add Equipment: ")),
           itemDropDownMenu(equipment, warrior, (eq) {
-            final e = widget.roster.equipment.firstWhere((w) => w.name == eq);
+            final e =
+                widget.roster.equipment.firstWhere((w) => w.typeName == eq);
             context.read<WarbandModel>().getUID(warrior.uid).equipment.add(e);
             context.read<WarbandModel>().invalidate();
           }),
@@ -461,9 +465,6 @@ class _WarbandViewState extends State<WarbandView> {
 
   Widget weaponLine(BuildContext context, WeaponUse w, WarriorModel warrior) {
     final def = getWeaponDef(w);
-//    var ranged = rangedToString(def, warrior, "Ranged ");
-//    var melee = meleeToString(def, warrior, "Melee ");
-//    var injury = def.injury == null ? "" : " Injury ${def.injury ?? 0}";
     return Row(
       children: [
         SizedBox(
@@ -473,17 +474,14 @@ class _WarbandViewState extends State<WarbandView> {
             simultaneous: false,
           ),
         ),
-        SizedBox(
-          width: 240,
-          child: Text(w.name),
-        ),
+        SizedBox(width: 240, child: Text(w.typeName)),
         const Divider(),
         Text(def.getModifiersString),
         const Spacer(),
-        _editMode && !w.isBuiltIn
+        _editMode && w.isRemovable
             ? IconButton(
                 onPressed: () {
-                  warrior.weapons.removeWhere((d) => w.name == d.name);
+                  warrior.weapons.removeWhere((d) => w.typeName == d.typeName);
                   context.read<WarbandModel>().invalidate();
                 },
                 icon: const Icon(Icons.delete))
@@ -503,19 +501,16 @@ class _WarbandViewState extends State<WarbandView> {
             simultaneous: false,
           ),
         ),
-        SizedBox(
-          width: 240,
-          child: Text(a.name),
-        ),
+        SizedBox(width: 240, child: Text(a.typeName)),
         const Divider(),
         Row(
           children: [Text("Armour: ${def.value ?? 0}")],
         ),
         const Spacer(),
-        _editMode && !a.isBuiltIn
+        _editMode && a.isRemovable
             ? IconButton(
                 onPressed: () {
-                  warrior.armour.removeWhere((d) => a.name == d.name);
+                  warrior.armour.removeWhere((d) => a.typeName == d.typeName);
                   context.read<WarbandModel>().invalidate();
                 },
                 icon: const Icon(Icons.delete))
@@ -535,15 +530,13 @@ class _WarbandViewState extends State<WarbandView> {
             simultaneous: false,
           ),
         ),
-        SizedBox(
-          width: 240,
-          child: Text(e.name),
-        ),
+        SizedBox(width: 240, child: Text(e.typeName)),
         const Spacer(),
-        _editMode && !e.isBuiltIn
+        _editMode && e.isRemovable
             ? IconButton(
                 onPressed: () {
-                  warrior.equipment.removeWhere((d) => e.name == d.name);
+                  warrior.equipment
+                      .removeWhere((d) => e.typeName == d.typeName);
                   context.read<WarbandModel>().invalidate();
                 },
                 icon: const Icon(Icons.delete))
@@ -553,23 +546,23 @@ class _WarbandViewState extends State<WarbandView> {
   }
 
   Weapon getWeaponDef(WeaponUse w) =>
-      widget.armory.weapons.firstWhere((def) => def.name == w.name);
+      widget.armory.weapons.firstWhere((def) => def.typeName == w.typeName);
 
   Armour getArmorDef(ArmorUse w) =>
-      widget.armory.armours.firstWhere((def) => def.name == w.name);
+      widget.armory.armours.firstWhere((def) => def.typeName == w.typeName);
 
   Equipment getEquipmentDef(EquipmentUse w) =>
-      widget.armory.equipments.firstWhere((def) => def.name == w.name);
+      widget.armory.equipments.firstWhere((def) => def.typeName == w.typeName);
 }
 
 class ItemChip extends StatelessWidget {
-  const ItemChip({super.key, required this.name});
-  final String name;
+  const ItemChip({super.key, required this.text});
+  final String text;
 
   @override
   Widget build(BuildContext context) {
     return Chip(
-      label: Text(name),
+      label: Text(text),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     );
   }

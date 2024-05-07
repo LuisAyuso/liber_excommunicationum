@@ -33,7 +33,7 @@ Map<String, dynamic> _$CurrencyToJson(Currency instance) => <String, dynamic>{
     };
 
 Unit _$UnitFromJson(Map<String, dynamic> json) => Unit()
-  ..name = json['name'] as String
+  ..typeName = json['typeName'] as String
   ..max = json['max'] as int?
   ..min = json['min'] as int?
   ..movement = json['movement'] as int
@@ -46,8 +46,12 @@ Unit _$UnitFromJson(Map<String, dynamic> json) => Unit()
       (json['keywords'] as List<dynamic>).map((e) => e as String).toList()
   ..cost = Currency.fromJson(json['cost'] as Map<String, dynamic>)
   ..base = json['base'] as int
-  ..builtInItems =
-      (json['builtInItems'] as List<dynamic>?)?.map((e) => e as String).toList()
+  ..mandatoryItems = (json['mandatoryItems'] as List<dynamic>?)
+      ?.map((e) => e as String)
+      .toList()
+  ..defaultItems = (json['defaultItems'] as List<dynamic>?)
+      ?.map((e) => WeaponUse.fromJson(e as Map<String, dynamic>))
+      .toList()
   ..rangedWeaponFilter = json['rangedWeaponFilter'] == null
       ? null
       : Filter.fromJson(json['rangedWeaponFilter'] as Map<String, dynamic>)
@@ -62,7 +66,7 @@ Unit _$UnitFromJson(Map<String, dynamic> json) => Unit()
       : Filter.fromJson(json['equipmentFilter'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$UnitToJson(Unit instance) => <String, dynamic>{
-      'name': instance.name,
+      'typeName': instance.typeName,
       'max': instance.max,
       'min': instance.min,
       'movement': instance.movement,
@@ -73,7 +77,8 @@ Map<String, dynamic> _$UnitToJson(Unit instance) => <String, dynamic>{
       'keywords': instance.keywords,
       'cost': instance.cost,
       'base': instance.base,
-      'builtInItems': instance.builtInItems,
+      'mandatoryItems': instance.mandatoryItems,
+      'defaultItems': instance.defaultItems,
       'rangedWeaponFilter': instance.rangedWeaponFilter,
       'meleeWeaponFilter': instance.meleeWeaponFilter,
       'armourFilter': instance.armourFilter,
@@ -81,8 +86,8 @@ Map<String, dynamic> _$UnitToJson(Unit instance) => <String, dynamic>{
     };
 
 WeaponUse _$WeaponUseFromJson(Map<String, dynamic> json) => WeaponUse(
-      name: json['name'] as String?,
-      builtIn: json['builtIn'] as bool?,
+      typeName: json['typeName'] as String?,
+      removable: json['removable'] as bool?,
     )
       ..cost = Currency.fromJson(json['cost'] as Map<String, dynamic>)
       ..unitNameFilter = json['unitNameFilter'] == null
@@ -90,21 +95,24 @@ WeaponUse _$WeaponUseFromJson(Map<String, dynamic> json) => WeaponUse(
           : Filter.fromJson(json['unitNameFilter'] as Map<String, dynamic>)
       ..keywordFilter = json['keywordFilter'] == null
           ? null
-          : Filter.fromJson(json['keywordFilter'] as Map<String, dynamic>);
+          : Filter.fromJson(json['keywordFilter'] as Map<String, dynamic>)
+      ..limit = json['limit'] as int?;
 
 Map<String, dynamic> _$WeaponUseToJson(WeaponUse instance) => <String, dynamic>{
-      'name': instance.name,
+      'typeName': instance.typeName,
       'cost': instance.cost.toJson(),
-      'builtIn': instance.builtIn,
+      'removable': instance.removable,
       'unitNameFilter': instance.unitNameFilter?.toJson(),
       'keywordFilter': instance.keywordFilter?.toJson(),
+      'limit': instance.limit,
     };
 
 ArmorUse _$ArmorUseFromJson(Map<String, dynamic> json) => ArmorUse(
-      name: json['name'] as String?,
-      builtIn: json['builtIn'] as bool?,
+      typeName: json['typeName'] as String?,
+      removable: json['removable'] as bool?,
     )
       ..cost = Currency.fromJson(json['cost'] as Map<String, dynamic>)
+      ..limit = json['limit'] as int?
       ..unitNameFilter = json['unitNameFilter'] == null
           ? null
           : Filter.fromJson(json['unitNameFilter'] as Map<String, dynamic>)
@@ -113,18 +121,20 @@ ArmorUse _$ArmorUseFromJson(Map<String, dynamic> json) => ArmorUse(
           : Filter.fromJson(json['keywordFilter'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$ArmorUseToJson(ArmorUse instance) => <String, dynamic>{
-      'name': instance.name,
+      'typeName': instance.typeName,
       'cost': instance.cost.toJson(),
-      'builtIn': instance.builtIn,
+      'removable': instance.removable,
+      'limit': instance.limit,
       'unitNameFilter': instance.unitNameFilter?.toJson(),
       'keywordFilter': instance.keywordFilter?.toJson(),
     };
 
 EquipmentUse _$EquipmentUseFromJson(Map<String, dynamic> json) => EquipmentUse(
-      name: json['name'] as String?,
-      builtIn: json['builtIn'] as bool?,
+      typeName: json['typeName'] as String?,
+      removable: json['removable'] as bool?,
     )
       ..cost = Currency.fromJson(json['cost'] as Map<String, dynamic>)
+      ..limit = json['limit'] as int?
       ..unitNameFilter = json['unitNameFilter'] == null
           ? null
           : Filter.fromJson(json['unitNameFilter'] as Map<String, dynamic>)
@@ -134,9 +144,10 @@ EquipmentUse _$EquipmentUseFromJson(Map<String, dynamic> json) => EquipmentUse(
 
 Map<String, dynamic> _$EquipmentUseToJson(EquipmentUse instance) =>
     <String, dynamic>{
-      'name': instance.name,
+      'typeName': instance.typeName,
       'cost': instance.cost.toJson(),
-      'builtIn': instance.builtIn,
+      'removable': instance.removable,
+      'limit': instance.limit,
       'unitNameFilter': instance.unitNameFilter?.toJson(),
       'keywordFilter': instance.keywordFilter?.toJson(),
     };
@@ -196,7 +207,7 @@ Map<String, dynamic> _$ModifierToJson(Modifier instance) => <String, dynamic>{
     };
 
 Weapon _$WeaponFromJson(Map<String, dynamic> json) => Weapon()
-  ..name = json['name'] as String
+  ..typeName = json['typeName'] as String
   ..hands = json['hands'] as int
   ..range = json['range'] as int?
   ..melee = json['melee'] as bool?
@@ -207,7 +218,7 @@ Weapon _$WeaponFromJson(Map<String, dynamic> json) => Weapon()
       .toList();
 
 Map<String, dynamic> _$WeaponToJson(Weapon instance) => <String, dynamic>{
-      'name': instance.name,
+      'typeName': instance.typeName,
       'hands': instance.hands,
       'range': instance.range,
       'melee': instance.melee,
@@ -216,7 +227,7 @@ Map<String, dynamic> _$WeaponToJson(Weapon instance) => <String, dynamic>{
     };
 
 Armour _$ArmourFromJson(Map<String, dynamic> json) => Armour()
-  ..name = json['name'] as String
+  ..typeName = json['typeName'] as String
   ..value = json['value'] as int?
   ..special =
       (json['special'] as List<dynamic>?)?.map((e) => e as String).toList()
@@ -224,20 +235,20 @@ Armour _$ArmourFromJson(Map<String, dynamic> json) => Armour()
       (json['keywords'] as List<dynamic>?)?.map((e) => e as String).toList();
 
 Map<String, dynamic> _$ArmourToJson(Armour instance) => <String, dynamic>{
-      'name': instance.name,
+      'typeName': instance.typeName,
       'value': instance.value,
       'special': instance.special,
       'keywords': instance.keywords,
     };
 
 Equipment _$EquipmentFromJson(Map<String, dynamic> json) => Equipment()
-  ..name = json['name'] as String
+  ..typeName = json['typeName'] as String
   ..consumable = json['consumable'] as bool?
   ..keywords =
       (json['keywords'] as List<dynamic>?)?.map((e) => e as String).toList();
 
 Map<String, dynamic> _$EquipmentToJson(Equipment instance) => <String, dynamic>{
-      'name': instance.name,
+      'typeName': instance.typeName,
       'consumable': instance.consumable,
       'keywords': instance.keywords,
     };

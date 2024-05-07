@@ -18,17 +18,18 @@ class Filter {
   factory Filter.none() => Filter(none: true);
   factory Filter.any() => Filter();
 
-  bool isAllowed(String name) {
+  bool isAllowed(String typeName) {
     if (none ?? false) {
       return false;
     }
 
     bool allowed = true;
     if (whitelist != null) {
-      allowed = allowed && whitelist!.where((str) => str == name).isNotEmpty;
+      allowed =
+          allowed && whitelist!.where((str) => str == typeName).isNotEmpty;
     }
     if (blacklist != null) {
-      allowed = allowed && blacklist!.where((str) => str == name).isEmpty;
+      allowed = allowed && blacklist!.where((str) => str == typeName).isEmpty;
     }
     return allowed;
   }
@@ -74,7 +75,7 @@ class Currency {
 class Unit {
   Unit();
 
-  String name = "";
+  String typeName = "";
   int? max;
   int? min;
   int movement = 6;
@@ -85,7 +86,8 @@ class Unit {
   List<String> keywords = [];
   Currency cost = Currency(ducats: 0);
   int base = 25;
-  List<String>? builtInItems = [];
+  List<String>? mandatoryItems = [];
+  List<WeaponUse>? defaultItems = [];
   Filter? rangedWeaponFilter;
   Filter get getRangedWeaponFilter => rangedWeaponFilter ?? Filter();
   Filter? meleeWeaponFilter;
@@ -108,39 +110,37 @@ abstract class ItemUse {
   String get getName;
   Filter get getUnitNameFilter;
   Filter get getKeywordFilter;
-  bool get isBuiltIn;
+  bool get isRemovable;
   Currency get getCost;
+  int get getLimit;
 }
 
 @JsonSerializable(explicitToJson: true)
 class WeaponUse extends ItemUse {
-  WeaponUse({String? name, bool? builtIn})
-      : name = name ?? "",
-        builtIn = builtIn ?? false;
+  WeaponUse({String? typeName, bool? removable})
+      : typeName = typeName ?? "",
+        removable = removable ?? true;
 
-  String name = "";
-  @override
-  String get getName => name;
+  String typeName = "";
   Currency cost = Currency(ducats: 0);
-  bool? builtIn;
+  bool? removable;
 
   Filter? unitNameFilter;
+  Filter? keywordFilter;
+  int? limit;
+
+  @override
+  String get getName => typeName;
+  @override
+  Currency get getCost => cost;
   @override
   Filter get getUnitNameFilter => unitNameFilter ?? Filter();
-  Filter? keywordFilter;
   @override
   Filter get getKeywordFilter => keywordFilter ?? Filter();
-
   @override
-  bool get isBuiltIn => builtIn ?? false;
-
-  int? _limit;
-  int get limit => _limit ?? double.maxFinite.toInt();
-
+  bool get isRemovable => removable ?? true;
   @override
-  Currency get getCost {
-    return cost;
-  }
+  int get getLimit => limit ?? double.maxFinite.toInt();
 
   factory WeaponUse.fromJson(Map<String, dynamic> json) =>
       _$WeaponUseFromJson(json);
@@ -149,33 +149,29 @@ class WeaponUse extends ItemUse {
 
 @JsonSerializable(explicitToJson: true)
 class ArmorUse extends ItemUse {
-  ArmorUse({String? name, bool? builtIn})
-      : name = name ?? "",
-        builtIn = builtIn ?? false;
+  ArmorUse({String? typeName, bool? removable})
+      : typeName = typeName ?? "",
+        removable = removable ?? true;
 
-  String name = "";
-  @override
-  String get getName => name;
+  String typeName = "";
   Currency cost = Currency.free();
-  bool? builtIn;
+  bool? removable;
+  int? limit;
 
-  int? _limit;
-  int get limit => _limit ?? double.maxFinite.toInt();
-
+  @override
+  String get getName => typeName;
   Filter? unitNameFilter;
   @override
   Filter get getUnitNameFilter => unitNameFilter ?? Filter();
   Filter? keywordFilter;
   @override
   Filter get getKeywordFilter => keywordFilter ?? Filter();
-
   @override
-  bool get isBuiltIn => builtIn ?? false;
-
+  bool get isRemovable => removable ?? true;
   @override
-  Currency get getCost {
-    return cost;
-  }
+  int get getLimit => limit ?? double.maxFinite.toInt();
+  @override
+  Currency get getCost => cost;
 
   factory ArmorUse.fromJson(Map<String, dynamic> json) =>
       _$ArmorUseFromJson(json);
@@ -184,33 +180,29 @@ class ArmorUse extends ItemUse {
 
 @JsonSerializable(explicitToJson: true)
 class EquipmentUse extends ItemUse {
-  EquipmentUse({String? name, bool? builtIn})
-      : name = name ?? "",
-        builtIn = builtIn ?? false;
+  EquipmentUse({String? typeName, bool? removable})
+      : typeName = typeName ?? "",
+        removable = removable ?? true;
 
-  String name = "";
-  @override
-  String get getName => name;
+  String typeName = "";
   Currency cost = Currency.free();
-  bool? builtIn;
-
-  int? _limit;
-  int get limit => _limit ?? double.maxFinite.toInt();
-
+  bool? removable;
+  int? limit;
   Filter? unitNameFilter;
+  Filter? keywordFilter;
+
+  @override
+  String get getName => typeName;
   @override
   Filter get getUnitNameFilter => unitNameFilter ?? Filter();
-  Filter? keywordFilter;
   @override
   Filter get getKeywordFilter => keywordFilter ?? Filter();
-
   @override
-  bool get isBuiltIn => builtIn ?? false;
-
+  bool get isRemovable => removable ?? true;
   @override
-  Currency get getCost {
-    return cost;
-  }
+  Currency get getCost => cost;
+  @override
+  int get getLimit => limit ?? double.maxFinite.toInt();
 
   factory EquipmentUse.fromJson(Map<String, dynamic> json) =>
       _$EquipmentUseFromJson(json);
@@ -277,7 +269,7 @@ class Modifier {
 @JsonSerializable(explicitToJson: true)
 class Weapon extends Item {
   Weapon();
-  String name = "";
+  String typeName = "";
   int hands = 1;
   int? range;
   bool? melee;
@@ -286,10 +278,10 @@ class Weapon extends Item {
 
   bool get canMelee => range == null || (melee ?? false);
   bool get canRanged => range != null;
-  bool get isPistol => name.contains("Pistol");
-  bool get isFirearm => canRanged && !name.contains("Pistol");
+  bool get isPistol => typeName.contains("Pistol");
+  bool get isFirearm => canRanged && !typeName.contains("Pistol");
   bool get isMeleeWeapon => !canRanged && canMelee;
-  bool get isRifle => name.contains("Rifle");
+  bool get isRifle => typeName.contains("Rifle");
   String get getModifiersString => modifiers.fold<String>("", (v, m) {
         if (v == "") return m.toString();
         return "$v; ${m.toString()}";
@@ -306,7 +298,7 @@ class Weapon extends Item {
 @JsonSerializable(explicitToJson: true)
 class Armour extends Item {
   Armour();
-  String name = "";
+  String typeName = "";
   int? value;
   List<String>? special = [];
   List<String>? keywords = [];
@@ -315,8 +307,8 @@ class Armour extends Item {
   UnmodifiableListView<String> get getKeywords =>
       UnmodifiableListView(keywords ?? []);
 
-  bool get isShield => name.contains("Shield");
-  bool get isArmour => name.contains("Armour");
+  bool get isShield => typeName.contains("Shield");
+  bool get isArmour => typeName.contains("Armour");
   factory Armour.fromJson(Map<String, dynamic> json) => _$ArmourFromJson(json);
   Map<String, dynamic> toJson() => _$ArmourToJson(this);
 }
@@ -325,7 +317,7 @@ class Armour extends Item {
 class Equipment extends Item {
   Equipment();
 
-  String name = "";
+  String typeName = "";
   bool? consumable;
   List<String>? keywords = [];
 
@@ -351,15 +343,27 @@ class Armory {
   factory Armory.fromJson(Map<String, dynamic> json) => _$ArmoryFromJson(json);
   Map<String, dynamic> toJson() => _$ArmoryToJson(this);
 
-  Weapon findWeapon(String name) {
-    return weapons.firstWhere((def) => def.name == name);
+  Weapon findWeapon(String typeName) {
+    return weapons.firstWhere((def) => def.typeName == typeName);
   }
 
-  Armour findArmour(String name) {
-    return armours.firstWhere((def) => def.name == name);
+  bool isWeapon(String typeName) {
+    return weapons.where((def) => def.typeName == typeName).length == 1;
   }
 
-  Equipment findEquipment(String name) {
-    return equipments.firstWhere((def) => def.name == name);
+  Armour findArmour(String typeName) {
+    return armours.firstWhere((def) => def.typeName == typeName);
+  }
+
+  bool isArmour(String typeName) {
+    return armours.where((def) => def.typeName == typeName).length == 1;
+  }
+
+  Equipment findEquipment(String typeName) {
+    return equipments.firstWhere((def) => def.typeName == typeName);
+  }
+
+  bool isEquipment(String typeName) {
+    return equipments.where((def) => def.typeName == typeName).length == 1;
   }
 }

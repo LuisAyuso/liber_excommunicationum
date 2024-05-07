@@ -39,7 +39,7 @@
     ],
     "units": [
         {
-            "name": "War Prophet",
+            "typeName": "War Prophet",
             "min": 1,
             "max": 1,
             "movement": 6,
@@ -61,7 +61,7 @@
             "base": 32
         },
         {
-            "name": "Castigator",
+            "typeName": "Castigator",
             "max": 1,
             "movement": 6,
             "ranged": 1,
@@ -81,7 +81,7 @@
             "base": 32
         },
         {
-            "name": "Communicant",
+            "typeName": "Communicant",
             "max": 1,
             "movement": 6,
             "ranged": -3,
@@ -102,7 +102,7 @@
             "base": 40
         },
         {
-            "name": "Trench Pilgrim",
+            "typeName": "Trench Pilgrim",
             "movement": 6,
             "ranged": 0,
             "melee": 0,
@@ -119,7 +119,7 @@
             "base": 25
         },
         {
-            "name": "Martyr Penitent",
+            "typeName": "Martyr Penitent",
             "movement": 6,
             "ranged": 0,
             "melee": 1,
@@ -133,7 +133,7 @@
             "base": 25
         },
         {
-            "name": "Ecclesiastic Prisoners",
+            "typeName": "Ecclesiastic Prisoners",
             "movement": 6,
             "ranged": 0,
             "melee": -1,
@@ -163,7 +163,7 @@
             }
         },
         {
-            "name": "Stigmatic Nuns",
+            "typeName": "Stigmatic Nuns",
             "max": 4,
             "movement": 8,
             "ranged": 1,
@@ -187,7 +187,7 @@
             }
         },
         {
-            "name": "Anchorite Shrine",
+            "typeName": "Anchorite Shrine",
             "max": 1,
             "movement": 6,
             "ranged": 0,
@@ -209,7 +209,7 @@
                 "ducats": 140
             },
             "base": 50,
-            "builtInItems": [
+            "mandatoryItems": [
                 "Heavy Armour",
                 "Combat Helmet"
             ],
@@ -229,124 +229,124 @@
     ],
     "weapons": [
         {
-            "name": "Bolt Action Rifle",
+            "typeName": "Bolt Action Rifle",
             "cost": {
                 "ducats": 10
             }
         },
         {
-            "name": "Semi-automatic Rifle",
+            "typeName": "Semi-automatic Rifle",
             "cost": {
                 "ducats": 20
             }
         },
         {
-            "name": "Pistol/Revolver",
+            "typeName": "Pistol/Revolver",
             "cost": {
                 "ducats": 10
             },
             "limit": 2
         },
         {
-            "name": "Automatic Pistol",
+            "typeName": "Automatic Pistol",
             "cost": {
                 "ducats": 20
             },
             "limit": 2
         },
         {
-            "name": "Molotov Cocktail",
+            "typeName": "Molotov Cocktail",
             "cost": {
                 "ducats": 5
             }
         },
         {
-            "name": "Incendiary Grenades",
+            "typeName": "Incendiary Grenades",
             "cost": {
                 "ducats": 10
             }
         },
         {
-            "name": "Submachine Gun",
+            "typeName": "Submachine Gun",
             "cost": {
                 "glory": 2
             },
             "limit": 4
         },
         {
-            "name": "Musket",
+            "typeName": "Musket",
             "cost": {
                 "ducats": 5
             }
         },
         {
-            "name": "Shotgun",
+            "typeName": "Shotgun",
             "cost": {
                 "ducats": 15
             }
         },
         {
-            "name": "Flamethrower",
+            "typeName": "Flamethrower",
             "cost": {
                 "ducats": 40
             }
         },
         {
-            "name": "Machine Gun",
+            "typeName": "Machine Gun",
             "cost": {
                 "glory": 3
             }
         },
         {
-            "name": "Knife/Dagger",
+            "typeName": "Knife/Dagger",
             "cost": {
                 "ducats": 1
             }
         },
         {
-            "name": "Bayonet",
+            "typeName": "Bayonet",
             "cost": {
                 "ducats": 2
             }
         },
         {
-            "name": "Trench Club",
+            "typeName": "Trench Club",
             "cost": {
                 "ducats": 3
             }
         },
         {
-            "name": "Sword/Axe",
+            "typeName": "Sword/Axe",
             "cost": {
                 "ducats": 4
             }
         },
         {
-            "name": "Flail/Scourge",
+            "typeName": "Flail/Scourge",
             "cost": {
                 "ducats": 4
             }
         },
         {
-            "name": "Trench Polearm",
+            "typeName": "Trench Polearm",
             "cost": {
                 "ducats": 7
             }
         },
         {
-            "name": "Great Sword/Axe",
+            "typeName": "Great Sword/Axe",
             "cost": {
                 "ducats": 12
             }
         },
         {
-            "name": "Double-Handed Blunt Weapon",
+            "typeName": "Double-Handed Blunt Weapon",
             "cost": {
                 "ducats": 12
             }
         },
         {
-            "name": "Anti-Tank Hammer",
+            "typeName": "Anti-Tank Hammer",
             "cost": {
                 "ducats": 35
             },
@@ -357,7 +357,7 @@
             }
         },
         {
-            "name": "Misericordia",
+            "typeName": "Misericordia",
             "cost": {
                 "ducats": 15
             },
@@ -366,13 +366,13 @@
     ],
     "armour": [
         {
-            "name": "Standard Armour",
+            "typeName": "Standard Armour",
             "cost": {
                 "ducats": 20
             }
         },
         {
-            "name": "Heavy Armour",
+            "typeName": "Heavy Armour",
             "cost": {
                 "ducats": 40
             },
@@ -383,13 +383,13 @@
             }
         },
         {
-            "name": "Trench Shield",
+            "typeName": "Trench Shield",
             "cost": {
                 "ducats": 15
             }
         },
         {
-            "name": "Holy Icon Shield",
+            "typeName": "Holy Icon Shield",
             "cost": {
                 "glory": 2
             }
@@ -397,25 +397,25 @@
     ],
     "equipment": [
         {
-            "name": "Iron Capirote",
+            "typeName": "Iron Capirote",
             "cost": {
                 "ducats": 7
             }
         },
         {
-            "name": "Gas Mask",
+            "typeName": "Gas Mask",
             "cost": {
                 "ducats": 5
             }
         },
         {
-            "name": "Blessed Icon",
+            "typeName": "Blessed Icon",
             "cost": {
                 "ducats": 15
             }
         },
         {
-            "name": "Holy Relic",
+            "typeName": "Holy Relic",
             "cost": {
                 "glory": 2
             },
@@ -426,20 +426,20 @@
             }
         },
         {
-            "name": "Troop Flag",
+            "typeName": "Troop Flag",
             "cost": {
                 "glory": 1
             },
             "limit": 1
         },
         {
-            "name": "Medi-Kit",
+            "typeName": "Medi-Kit",
             "cost": {
                 "ducats": 10
             }
         },
         {
-            "name": "Musical Instrument",
+            "typeName": "Musical Instrument",
             "cost": {
                 "ducats": 15
             },
@@ -451,13 +451,13 @@
             }
         },
         {
-            "name": "Incendiary Bullets",
+            "typeName": "Incendiary Bullets",
             "cost": {
                 "ducats": 15
             }
         },
         {
-            "name": "Martyrdom Pills",
+            "typeName": "Martyrdom Pills",
             "cost": {
                 "ducats": 15
             }

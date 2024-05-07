@@ -67,7 +67,7 @@
     ],
     "units": [
         {
-            "name": "Heretic Priest",
+            "typeName": "Heretic Priest",
             "min": 1,
             "max": 1,
             "movement": 6,
@@ -89,7 +89,7 @@
             "base": 32
         },
         {
-            "name": "Heretic Death Commando",
+            "typeName": "Heretic Death Commando",
             "max": 1,
             "movement": 6,
             "ranged": 1,
@@ -116,7 +116,7 @@
             }
         },
         {
-            "name": "Heretic Chorister",
+            "typeName": "Heretic Chorister",
             "max": 1,
             "movement": 6,
             "ranged": -2,
@@ -137,7 +137,7 @@
             "base": 32
         },
         {
-            "name": "Heretic Trooper",
+            "typeName": "Heretic Trooper",
             "movement": 6,
             "ranged": 0,
             "melee": 0,
@@ -151,7 +151,7 @@
             "base": 25
         },
         {
-            "name": "Legionnaire Melee",
+            "typeName": "Legionnaire Melee",
             "movement": 6,
             "ranged": 0,
             "melee": 1,
@@ -165,7 +165,7 @@
             "base": 25
         },
         {
-            "name": "Legionnaire Ranged",
+            "typeName": "Legionnaire Ranged",
             "movement": 6,
             "ranged": 1,
             "melee": 0,
@@ -179,7 +179,7 @@
             "base": 25
         },
         {
-            "name": "Anointed Heavy Infantry",
+            "typeName": "Anointed Heavy Infantry",
             "max": 5,
             "movement": 6,
             "ranged": 1,
@@ -195,13 +195,13 @@
                 "ducats": 95
             },
             "base": 32,
-            "builtInItems": [
+            "mandatoryItems": [
                 "Heavy Armour",
                 "Infernal Brand Mark"
             ]
         },
         {
-            "name": "War Wolf Assault Beast",
+            "typeName": "War Wolf Assault Beast",
             "max": 1,
             "movement": 8,
             "ranged": 0,
@@ -237,7 +237,7 @@
             }
         },
         {
-            "name": "Artillery Witches",
+            "typeName": "Artillery Witches",
             "max": 2,
             "movement": 6,
             "ranged": 0,
@@ -270,31 +270,31 @@
     ],
     "weapons": [
         {
-            "name": "Bolt Action Rifle",
+            "typeName": "Bolt Action Rifle",
             "cost": {
                 "ducats": 10
             }
         },
         {
-            "name": "Semi-automatic Rifle",
+            "typeName": "Semi-automatic Rifle",
             "cost": {
                 "ducats": 20
             }
         },
         {
-            "name": "Automatic Rifle",
+            "typeName": "Automatic Rifle",
             "cost": {
                 "glory": 3
             }
         },
         {
-            "name": "Pistol/Revolver",
+            "typeName": "Pistol/Revolver",
             "cost": {
                 "ducats": 10
             }
         },
         {
-            "name": "Silenced Pistol",
+            "typeName": "Silenced Pistol",
             "cost": {
                 "ducats": 20
             },
@@ -305,119 +305,119 @@
             }
         },
         {
-            "name": "Grenades",
+            "typeName": "Grenades",
             "cost": {
                 "ducats": 5
             }
         },
         {
-            "name": "Gas Grenades",
+            "typeName": "Gas Grenades",
             "cost": {
                 "ducats": 10
             }
         },
         {
-            "name": "Incendiary Grenades",
+            "typeName": "Incendiary Grenades",
             "cost": {
                 "ducats": 10
             }
         },
         {
-            "name": "Submachine Gun",
+            "typeName": "Submachine Gun",
             "cost": {
                 "glory": 2
             }
         },
         {
-            "name": "Shotgun",
+            "typeName": "Shotgun",
             "cost": {
                 "ducats": 15
             }
         },
         {
-            "name": "Automatic Shotgun",
+            "typeName": "Automatic Shotgun",
             "cost": {
                 "ducats": 20
             }
         },
         {
-            "name": "Grenade Launcher",
+            "typeName": "Grenade Launcher",
             "cost": {
                 "ducats": 50
             },
             "limit": 1
         },
         {
-            "name": "Machine Gun",
+            "typeName": "Machine Gun",
             "cost": {
                 "ducats": 60
             },
             "limit": 1
         },
         {
-            "name": "Flamethrower",
+            "typeName": "Flamethrower",
             "cost": {
                 "ducats": 40
             }
         },
         {
-            "name": "Heavy Flamethrower",
+            "typeName": "Heavy Flamethrower",
             "cost": {
                 "ducats": 55
             },
             "limit": 2
         },
         {
-            "name": "Anti-Material Rifle",
+            "typeName": "Anti-Material Rifle",
             "cost": {
                 "glory": 3
             },
             "limit": 1
         },
         {
-            "name": "Knife/Dagger",
+            "typeName": "Knife/Dagger",
             "cost": {
                 "ducats": 1
             }
         },
         {
-            "name": "Bayonet",
+            "typeName": "Bayonet",
             "cost": {
                 "ducats": 2
             }
         },
         {
-            "name": "Trench Club",
+            "typeName": "Trench Club",
             "cost": {
                 "ducats": 3
             }
         },
         {
-            "name": "Sword/Axe",
+            "typeName": "Sword/Axe",
             "cost": {
                 "ducats": 4
             }
         },
         {
-            "name": "Trench Polearm",
+            "typeName": "Trench Polearm",
             "cost": {
                 "ducats": 7
             }
         },
         {
-            "name": "Great Sword/Axe",
+            "typeName": "Great Sword/Axe",
             "cost": {
                 "ducats": 15
             }
         },
         {
-            "name": "Double-Handed Blunt Weapon",
+            "typeName": "Double-Handed Blunt Weapon",
             "cost": {
                 "ducats": 12
             }
         },
         {
-            "name": "Sacrificial Knife",
+            "typeName": "Sacrificial Knife",
             "cost": {
                 "ducats": 23
             },
@@ -429,14 +429,14 @@
             }
         },
         {
-            "name": "Hellblade",
+            "typeName": "Hellblade",
             "limit": 2,
             "cost": {
                 "glory": 2
             }
         },
         {
-            "name": "Tartarus Claws",
+            "typeName": "Tartarus Claws",
             "cost": {
                 "ducats": 25
             },
@@ -447,7 +447,7 @@
             }
         },
         {
-            "name": "Blasphemous Staff",
+            "typeName": "Blasphemous Staff",
             "cost": {
                 "glory": 2
             },
@@ -460,13 +460,13 @@
     ],
     "armour": [
         {
-            "name": "Standard Armour",
+            "typeName": "Standard Armour",
             "cost": {
                 "ducats": 20
             }
         },
         {
-            "name": "Heavy Armour",
+            "typeName": "Heavy Armour",
             "cost": {
                 "ducats": 40
             },
@@ -477,7 +477,7 @@
             }
         },
         {
-            "name": "Trench Shield",
+            "typeName": "Trench Shield",
             "cost": {
                 "ducats": 15
             }
@@ -485,19 +485,19 @@
     ],
     "equipment": [
         {
-            "name": "Combat Helmet",
+            "typeName": "Combat Helmet",
             "cost": {
                 "ducats": 5
             }
         },
         {
-            "name": "Gas Mask",
+            "typeName": "Gas Mask",
             "cost": {
                 "ducats": 5
             }
         },
         {
-            "name": "Unholy Trinket",
+            "typeName": "Unholy Trinket",
             "cost": {
                 "ducats": 15
             },
@@ -506,13 +506,13 @@
             ]
         },
         {
-            "name": "Unholy Relic",
+            "typeName": "Unholy Relic",
             "cost": {
                 "ducats": 30
             }
         },
         {
-            "name": "Incendiary Bullets",
+            "typeName": "Incendiary Bullets",
             "cost": {
                 "ducats": 15
             },
@@ -521,25 +521,25 @@
             ]
         },
         {
-            "name": "Shovel",
+            "typeName": "Shovel",
             "cost": {
                 "ducats": 5
             }
         },
         {
-            "name": "Infernal Brand Mark",
+            "typeName": "Infernal Brand Mark",
             "cost": {
                 "ducats": 5
             }
         },
         {
-            "name": "Troop Flag",
+            "typeName": "Troop Flag",
             "cost": {
                 "glory": 1
             }
         },
         {
-            "name": "Hellbound Soul Contract",
+            "typeName": "Hellbound Soul Contract",
             "cost": {
                 "ducats": 5
             },

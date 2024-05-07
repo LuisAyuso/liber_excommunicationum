@@ -1,7 +1,7 @@
 {
     "weapons": [
         {
-            "name": "Pistol/Revolver",
+            "typeName": "Pistol/Revolver",
             "hands": 1,
             "range": 12,
             "ranged": 0,
@@ -9,7 +9,7 @@
             "modifiers": []
         },
         {
-            "name": "Automatic Pistol",
+            "typeName": "Automatic Pistol",
             "hands": 1,
             "range": 12,
             "ranged": 0,
@@ -28,7 +28,7 @@
             ]
         },
         {
-            "name": "Silenced Pistol",
+            "typeName": "Silenced Pistol",
             "hands": 1,
             "range": 12,
             "ranged": 0,
@@ -44,24 +44,14 @@
             ]
         },
         {
-            "name": "Bolt Action Rifle",
+            "typeName": "Bolt Action Rifle",
             "hands": 2,
             "range": 24,
             "ranged": 0,
             "modifiers": []
         },
         {
-            "name": "Semi-automatic Rifle",
-            "hands": 2,
-            "range": 24,
-            "ranged": 0,
-            "keywords": [
-                "ASSAULT"
-            ],
-            "modifiers": []
-        },
-        {
-            "name": "Automatic Rifle",
+            "typeName": "Semi-automatic Rifle",
             "hands": 2,
             "range": 24,
             "ranged": 0,
@@ -71,13 +61,23 @@
             "modifiers": []
         },
         {
-            "name": "Jezzail",
+            "typeName": "Automatic Rifle",
+            "hands": 2,
+            "range": 24,
+            "ranged": 0,
+            "keywords": [
+                "ASSAULT"
+            ],
+            "modifiers": []
+        },
+        {
+            "typeName": "Jezzail",
             "hands": 2,
             "range": 18,
             "modifiers": []
         },
         {
-            "name": "Shotgun",
+            "typeName": "Shotgun",
             "hands": 2,
             "range": 24,
             "modifiers": [
@@ -91,7 +91,7 @@
             ]
         },
         {
-            "name": "Automatic Shotgun",
+            "typeName": "Automatic Shotgun",
             "hands": 2,
             "range": 24,
             "keywords": [
@@ -108,7 +108,7 @@
             ]
         },
         {
-            "name": "Submachine Gun",
+            "typeName": "Submachine Gun",
             "hands": 2,
             "range": 16,
             "keywords": [
@@ -121,7 +121,7 @@
             ]
         },
         {
-            "name": "Musket",
+            "typeName": "Musket",
             "hands": 2,
             "range": 18,
             "keywords": [
@@ -134,7 +134,7 @@
             ]
         },
         {
-            "name": "Sniper Rifle",
+            "typeName": "Sniper Rifle",
             "hands": 2,
             "range": 48,
             "keywords": [
@@ -148,7 +148,7 @@
             ]
         },
         {
-            "name": "Grenades",
+            "typeName": "Grenades",
             "hands": 0,
             "range": 8,
             "keywords": [
@@ -158,7 +158,7 @@
             "modifiers": []
         },
         {
-            "name": "Incendiary Grenades",
+            "typeName": "Incendiary Grenades",
             "hands": 0,
             "range": 8,
             "keywords": [
@@ -168,7 +168,7 @@
             "modifiers": []
         },
         {
-            "name": "Gas Grenades",
+            "typeName": "Gas Grenades",
             "hands": 0,
             "range": 8,
             "keywords": [
@@ -182,7 +182,7 @@
             ]
         },
         {
-            "name": "Grenade Launcher",
+            "typeName": "Grenade Launcher",
             "hands": 2,
             "range": 36,
             "keywords": [
@@ -196,7 +196,7 @@
             ]
         },
         {
-            "name": "Satchel Charge",
+            "typeName": "Satchel Charge",
             "hands": 0,
             "range": 6,
             "keywords": [
@@ -210,7 +210,7 @@
             ]
         },
         {
-            "name": "Molotov Cocktail",
+            "typeName": "Molotov Cocktail",
             "hands": 0,
             "range": 6,
             "keywords": [
@@ -224,7 +224,7 @@
             ]
         },
         {
-            "name": "Anti-Material Rifle",
+            "typeName": "Anti-Material Rifle",
             "hands": 2,
             "range": 36,
             "keywords": [
@@ -241,7 +241,7 @@
             ]
         },
         {
-            "name": "Machine Gun",
+            "typeName": "Machine Gun",
             "hands": 2,
             "range": 36,
             "keywords": [
@@ -254,7 +254,7 @@
             ]
         },
         {
-            "name": "Flamethrower",
+            "typeName": "Flamethrower",
             "hands": 2,
             "range": 8,
             "keywords": [
@@ -267,7 +267,7 @@
             ]
         },
         {
-            "name": "Heavy Flamethrower",
+            "typeName": "Heavy Flamethrower",
             "hands": 2,
             "range": 10,
             "keywords": [
@@ -277,7 +277,7 @@
             "modifiers": []
         },
         {
-            "name": "Knife/Dagger",
+            "typeName": "Knife/Dagger",
             "hands": 1,
             "modifiers": [
                 {
@@ -286,12 +286,12 @@
             ]
         },
         {
-            "name": "Trench Club",
+            "typeName": "Trench Club",
             "hands": 1,
             "modifiers": []
         },
         {
-            "name": "Sword/Axe",
+            "typeName": "Sword/Axe",
             "hands": 1,
             "keywords": [
                 "CRITICAL"
@@ -299,12 +299,12 @@
             "modifiers": []
         },
         {
-            "name": "Bayonet",
+            "typeName": "Bayonet",
             "hands": 2,
             "modifiers": []
         },
         {
-            "name": "Sacrificial Knife",
+            "typeName": "Sacrificial Knife",
             "hands": 1,
             "keywords": [
                 "RISKY"
@@ -316,7 +316,7 @@
             ]
         },
         {
-            "name": "Blasphemous Staff",
+            "typeName": "Blasphemous Staff",
             "hands": 1,
             "keywords": [
                 "FIRE",
@@ -325,7 +325,7 @@
             "modifiers": []
         },
         {
-            "name": "Hellblade",
+            "typeName": "Hellblade",
             "hands": 2,
             "keywords": [
                 "FIRE"
@@ -337,12 +337,12 @@
             ]
         },
         {
-            "name": "Tartarus Claws",
+            "typeName": "Tartarus Claws",
             "hands": 2,
             "modifiers": []
         },
         {
-            "name": "Anti-Tank Hammer",
+            "typeName": "Anti-Tank Hammer",
             "hands": 2,
             "keywords": [
                 "RISKY",
@@ -355,7 +355,7 @@
             ]
         },
         {
-            "name": "Trench Polearm",
+            "typeName": "Trench Polearm",
             "hands": 2,
             "modifiers": [
                 {
@@ -365,7 +365,7 @@
             ]
         },
         {
-            "name": "Scourge/Battle Whip/Flail",
+            "typeName": "Scourge/Battle Whip/Flail",
             "hands": 1,
             "modifiers": [
                 {
@@ -374,7 +374,7 @@
             ]
         },
         {
-            "name": "Double-Handed Blunt Weapon",
+            "typeName": "Double-Handed Blunt Weapon",
             "hands": 2,
             "keywords": [
                 "HEAVY"
@@ -386,7 +386,7 @@
             ]
         },
         {
-            "name": "Great Sword/Axe",
+            "typeName": "Great Sword/Axe",
             "hands": 2,
             "keywords": [
                 "HEAVY",
@@ -399,7 +399,7 @@
             ]
         },
         {
-            "name": "Misericordia",
+            "typeName": "Misericordia",
             "hands": 1,
             "modifiers": [
                 {
@@ -408,7 +408,7 @@
             ]
         },
         {
-            "name": "Flail/Scourge",
+            "typeName": "Flail/Scourge",
             "hands": 1,
             "modifiers": [
                 {
@@ -419,98 +419,98 @@
     ],
     "armours": [
         {
-            "name": "Trench Shield",
+            "typeName": "Trench Shield",
             "value": -1
         },
         {
-            "name": "Standard Armour",
+            "typeName": "Standard Armour",
             "value": -1
         },
         {
-            "name": "Heavy Armour",
+            "typeName": "Heavy Armour",
             "value": -2
         },
         {
-            "name": "Machine Armour",
+            "typeName": "Machine Armour",
             "value": -3
         },
         {
-            "name": "Holy Icon Shield",
+            "typeName": "Holy Icon Shield",
             "value": -1
         },
         {
-            "name": "Holy Icon Armour",
+            "typeName": "Holy Icon Armour",
             "value": -1
         }
     ],
     "equipments": [
         {
-            "name": "Combat Helmet"
+            "typeName": "Combat Helmet"
         },
         {
-            "name": "Iron Capirote"
+            "typeName": "Iron Capirote"
         },
         {
-            "name": "Medi-Kit"
+            "typeName": "Medi-Kit"
         },
         {
-            "name": "Gas Mask"
+            "typeName": "Gas Mask"
         },
         {
-            "name": "Holy Relic"
+            "typeName": "Holy Relic"
         },
         {
-            "name": "Armour-Piercing Bullets",
+            "typeName": "Armour-Piercing Bullets",
             "consumable": true
         },
         {
-            "name": "Dum-Dum Bullets",
+            "typeName": "Dum-Dum Bullets",
             "consumable": true
         },
         {
-            "name": "Incendiary Bullets",
+            "typeName": "Incendiary Bullets",
             "consumable": true
         },
         {
-            "name": "Tracer Bullets",
+            "typeName": "Tracer Bullets",
             "consumable": true
         },
         {
-            "name": "Sniper Scope"
+            "typeName": "Sniper Scope"
         },
         {
-            "name": "Shovel"
+            "typeName": "Shovel"
         },
         {
-            "name": "Troop Flag"
+            "typeName": "Troop Flag"
         },
         {
-            "name": "Martyrdom Pills"
+            "typeName": "Martyrdom Pills"
         },
         {
-            "name": "Unholy Trinket",
+            "typeName": "Unholy Trinket",
             "consumable": true
         },
         {
-            "name": "Unholy Relic"
+            "typeName": "Unholy Relic"
         },
         {
-            "name": "Blessed Icon"
+            "typeName": "Blessed Icon"
         },
         {
-            "name": "Infernal Brand Mark"
+            "typeName": "Infernal Brand Mark"
         },
         {
-            "name": "Field Shrine"
+            "typeName": "Field Shrine"
         },
         {
-            "name": "Hellbound Soul Contract"
+            "typeName": "Hellbound Soul Contract"
         },
         {
-            "name": "Binoculars"
+            "typeName": "Binoculars"
         },
         {
-            "name": "Musical Instrument"
+            "typeName": "Musical Instrument"
         }
     ]
 }

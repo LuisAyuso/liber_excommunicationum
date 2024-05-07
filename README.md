@@ -12,7 +12,6 @@ Roster management
 ## features
 - [ ] Unit preview
 - [x] Edit mode - play mode
-- [ ] List variations
 - [x] List-dependent armory
 - [x] Unit-dependent armory: blacklist, whitelist
 - [x] Default armory: non removable
@@ -26,10 +25,13 @@ Roster management
 - [x] List Equipment
 - [x] Add minimum unit count
 - [x] Deactivate consumed units
-- [ ] Yeoman bolt-rifle requirement
+- [x] Yeoman bolt-rifle requirement
 - [ ] Combat engineer armor
 - [ ] Machine armour limits
 - [ ] Either list units base modifier, or add them to weapons as before
+- [ ] Validate lists
+  - [ ] Min characters
+  - [ ] Yeoman bolt-rifle or other ranged (any ranged)
 
 ### Lists:
 - [x] Cult

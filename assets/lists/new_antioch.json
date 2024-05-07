@@ -67,7 +67,7 @@
     ],
     "units": [
         {
-            "name": "Lieutenant",
+            "typeName": "Lieutenant",
             "min": 1,
             "max": 1,
             "movement": 6,
@@ -89,7 +89,7 @@
             "base": 32
         },
         {
-            "name": "Trench Cleric",
+            "typeName": "Trench Cleric",
             "min": 0,
             "max": 1,
             "movement": 6,
@@ -109,7 +109,7 @@
             "base": 32
         },
         {
-            "name": "Sniper Priests",
+            "typeName": "Sniper Priests",
             "min": 0,
             "max": 2,
             "movement": 6,
@@ -130,7 +130,7 @@
             "base": 25
         },
         {
-            "name": "Yeoman",
+            "typeName": "Yeoman",
             "movement": 6,
             "ranged": 0,
             "melee": 0,
@@ -141,10 +141,18 @@
             "cost": {
                 "ducats": 30
             },
+            "defaultItems": [
+                {
+                    "typeName": "Bolt Action Rifle",
+                    "cost": {
+                        "ducats": 10
+                    }
+                }
+            ],
             "base": 25
         },
         {
-            "name": "Trench Mole",
+            "typeName": "Trench Mole",
             "max": 2,
             "movement": 6,
             "ranged": 0,
@@ -160,7 +168,7 @@
             "base": 25
         },
         {
-            "name": "Shocktroopers",
+            "typeName": "Shocktroopers",
             "max": 5,
             "movement": 6,
             "ranged": 0,
@@ -178,13 +186,13 @@
             "base": 25
         },
         {
-            "name": "Combat Engineers",
+            "typeName": "Combat Engineers",
             "max": 2,
             "movement": 6,
             "ranged": 1,
             "melee": 0,
             "armour": -2,
-            "builtInItems": [
+            "mandatoryItems": [
                 "Shovel"
             ],
             "abilities": [
@@ -202,13 +210,13 @@
             "base": 25
         },
         {
-            "name": "Mechanised Heavy Infantry",
+            "typeName": "Mechanised Heavy Infantry",
             "max": 3,
             "movement": 6,
             "ranged": 1,
             "melee": 0,
             "armour": 0,
-            "builtInItems": [
+            "mandatoryItems": [
                 "Heavy Armour"
             ],
             "abilities": [
@@ -223,13 +231,13 @@
             "base": 32
         },
         {
-            "name": "Combat Medic",
+            "typeName": "Combat Medic",
             "max": 3,
             "movement": 6,
             "ranged": 0,
             "melee": 0,
             "armour": 0,
-            "builtInItems": [
+            "mandatoryItems": [
                 "Misericordia",
                 "Medi-Kit",
                 "Gas Mask",
@@ -250,31 +258,31 @@
     ],
     "weapons": [
         {
-            "name": "Bolt Action Rifle",
+            "typeName": "Bolt Action Rifle",
             "cost": {
                 "ducats": 10
             }
         },
         {
-            "name": "Semi-automatic Rifle",
+            "typeName": "Semi-automatic Rifle",
             "cost": {
                 "ducats": 20
             }
         },
         {
-            "name": "Automatic Rifle",
+            "typeName": "Automatic Rifle",
             "cost": {
                 "glory": 3
             }
         },
         {
-            "name": "Pistol/Revolver",
+            "typeName": "Pistol/Revolver",
             "cost": {
                 "ducats": 10
             }
         },
         {
-            "name": "Automatic Pistol",
+            "typeName": "Automatic Pistol",
             "cost": {
                 "ducats": 20
             },
@@ -286,27 +294,27 @@
             }
         },
         {
-            "name": "Submachine Gun",
+            "typeName": "Submachine Gun",
             "cost": {
                 "ducats": 30
             },
             "limit": 2
         },
         {
-            "name": "Shotgun",
+            "typeName": "Shotgun",
             "cost": {
                 "ducats": 15
             }
         },
         {
-            "name": "Automatic Shotgun",
+            "typeName": "Automatic Shotgun",
             "cost": {
                 "ducats": 20
             },
             "limit": 2
         },
         {
-            "name": "Sniper Rifle",
+            "typeName": "Sniper Rifle",
             "cost": {
                 "ducats": 35
             },
@@ -317,88 +325,88 @@
             }
         },
         {
-            "name": "Grenade Launcher",
+            "typeName": "Grenade Launcher",
             "cost": {
                 "ducats": 40
             }
         },
         {
-            "name": "Grenades",
+            "typeName": "Grenades",
             "cost": {
                 "ducats": 5
             }
         },
         {
-            "name": "Incendiary Grenades",
+            "typeName": "Incendiary Grenades",
             "cost": {
                 "ducats": 10
             }
         },
         {
-            "name": "Machine Gun",
+            "typeName": "Machine Gun",
             "cost": {
                 "ducats": 60
             },
             "limit": 2
         },
         {
-            "name": "Flamethrower",
+            "typeName": "Flamethrower",
             "cost": {
                 "ducats": 40
             }
         },
         {
-            "name": "Heavy Flamethrower",
+            "typeName": "Heavy Flamethrower",
             "cost": {
                 "ducats": 55
             },
             "limit": 1
         },
         {
-            "name": "Satchel Charge",
+            "typeName": "Satchel Charge",
             "cost": {
                 "ducats": 15
             },
             "limit": 3
         },
         {
-            "name": "Knife/Dagger",
+            "typeName": "Knife/Dagger",
             "cost": {
                 "ducats": 1
             }
         },
         {
-            "name": "Bayonet",
+            "typeName": "Bayonet",
             "cost": {
                 "ducats": 2
             }
         },
         {
-            "name": "Trench Club",
+            "typeName": "Trench Club",
             "cost": {
                 "ducats": 3
             }
         },
         {
-            "name": "Sword/Axe",
+            "typeName": "Sword/Axe",
             "cost": {
                 "ducats": 4
             }
         },
         {
-            "name": "Trench Polearm",
+            "typeName": "Trench Polearm",
             "cost": {
                 "ducats": 7
             }
         },
         {
-            "name": "Great Sword/Axe",
+            "typeName": "Great Sword/Axe",
             "cost": {
                 "ducats": 15
             }
         },
         {
-            "name": "Double-Handed Blunt Weapon",
+            "typeName": "Double-Handed Blunt Weapon",
             "cost": {
                 "ducats": 12
             }
@@ -406,13 +414,13 @@
     ],
     "armour": [
         {
-            "name": "Standard Armour",
+            "typeName": "Standard Armour",
             "cost": {
                 "ducats": 20
             }
         },
         {
-            "name": "Heavy Armour",
+            "typeName": "Heavy Armour",
             "cost": {
                 "ducats": 40
             },
@@ -428,7 +436,7 @@
             }
         },
         {
-            "name": "Machine Armour",
+            "typeName": "Machine Armour",
             "cost": {
                 "ducats": 55
             },
@@ -445,7 +453,7 @@
             }
         },
         {
-            "name": "Trench Shield",
+            "typeName": "Trench Shield",
             "cost": {
                 "ducats": 15
             }
@@ -453,31 +461,31 @@
     ],
     "equipment": [
         {
-            "name": "Combat Helmet",
+            "typeName": "Combat Helmet",
             "cost": {
                 "ducats": 5
             }
         },
         {
-            "name": "Gas Mask",
+            "typeName": "Gas Mask",
             "cost": {
                 "ducats": 5
             }
         },
         {
-            "name": "Shovel",
+            "typeName": "Shovel",
             "cost": {
                 "ducats": 5
             }
         },
         {
-            "name": "Medi-Kit",
+            "typeName": "Medi-Kit",
             "cost": {
                 "ducats": 5
             }
         },
         {
-            "name": "Musical Instrument",
+            "typeName": "Musical Instrument",
             "cost": {
                 "ducats": 15
             },
@@ -489,7 +497,7 @@
             }
         },
         {
-            "name": "Martyrdom Pills",
+            "typeName": "Martyrdom Pills",
             "cost": {
                 "glory": 2
             },
@@ -503,13 +511,13 @@
             ]
         },
         {
-            "name": "Troop Flag",
+            "typeName": "Troop Flag",
             "cost": {
                 "glory": 1
             }
         },
         {
-            "name": "Binoculars",
+            "typeName": "Binoculars",
             "cost": {
                 "ducats": 10
             }

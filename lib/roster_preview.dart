@@ -37,14 +37,14 @@ class RosterPreview extends StatelessWidget {
   }
 
   Widget weaponDescription(WeaponUse weapon) {
-    final def = armory.findWeapon(weapon.name);
+    final def = armory.findWeapon(weapon.typeName);
     return Column(
       children: [
         Row(
           children: [
             const SizedBox(width: 40),
             Text(
-              weapon.name,
+              weapon.typeName,
               style: gothRed24,
             )
           ],
@@ -70,7 +70,7 @@ class RosterPreview extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: (def.keywords ?? [])
-                      .map((kw) => ItemChip(name: kw))
+                      .map((kw) => ItemChip(text: kw))
                       .toList(),
                 )
               ]),
@@ -96,7 +96,7 @@ class RosterPreview extends StatelessWidget {
           children: [
             const SizedBox(width: 40),
             Text(
-              item.name,
+              item.typeName,
               style: gothRed24,
             )
           ],
@@ -127,7 +127,7 @@ class RosterPreview extends StatelessWidget {
           children: [
             const SizedBox(width: 40),
             Text(
-              item.name,
+              item.typeName,
               style: gothRed24,
             )
           ],
@@ -166,7 +166,7 @@ class UnitDescription extends StatelessWidget {
           children: [
             SizedBox(width: 40, child: Center(child: unitCount(unit))),
             Text(
-              unit.name,
+              unit.typeName,
               style: gothRed24,
             )
           ],
@@ -197,12 +197,12 @@ class UnitDescription extends StatelessWidget {
           ),
         ),
         Row(
-          children: (unit.builtInItems ?? [])
-              .map((elem) => ItemChip(name: elem))
+          children: (unit.mandatoryItems ?? [])
+              .map((elem) => ItemChip(text: elem))
               .toList(),
         ),
         Row(
-          children: unit.keywords.map((elem) => ItemChip(name: elem)).toList(),
+          children: unit.keywords.map((elem) => ItemChip(text: elem)).toList(),
         )
       ],
     );
