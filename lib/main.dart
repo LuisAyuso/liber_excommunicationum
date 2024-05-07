@@ -59,15 +59,25 @@ class WarbandChooser extends StatelessWidget {
         );
       },
       child: Container(
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadiusDirectional.all(Radius.circular(16)),
+          border: Border.all(
+              color: Colors.black, style: BorderStyle.solid, width: 4),
+        ),
         margin: const EdgeInsets.all(8),
         padding: const EdgeInsets.all(16),
         child: Center(
-          child: Text(
-            name,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                name,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
         ),
       ),
