@@ -11,6 +11,7 @@ Roster management
 
 ## features
 - [ ] Unit preview
+- [ ] Unarmed: if no melee equipped, add the "unarmed" weapon profile
 - [x] Edit mode - play mode
 - [x] List-dependent armory
 - [x] Unit-dependent armory: blacklist, whitelist

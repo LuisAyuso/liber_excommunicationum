@@ -32,8 +32,26 @@ class RosterPreview extends StatelessWidget {
     if (idx < roster.units.length) {
       return UnitDescription(unit: roster.units[idx]);
     } else {
-      return itemDescription(roster.items[idx - roster.units.length]);
+      return ItemDescription(
+        item: roster.items[idx - roster.units.length],
+        armory: armory,
+      );
     }
+  }
+}
+
+class ItemDescription extends StatelessWidget {
+  const ItemDescription({super.key, required this.item, required this.armory});
+  final dynamic item;
+  final Armory armory;
+
+  @override
+  Widget build(BuildContext context) {
+    if (item is WeaponUse) return weaponDescription(item);
+    if (item is ArmorUse) return armorDescription(item);
+    if (item is EquipmentUse) return equipmentDescription(item);
+    assert(false, "unreachable");
+    return const SizedBox();
   }
 
   Widget weaponDescription(WeaponUse weapon) {
@@ -79,14 +97,6 @@ class RosterPreview extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  Widget itemDescription(dynamic item) {
-    if (item is WeaponUse) return weaponDescription(item);
-    if (item is ArmorUse) return armorDescription(item);
-    if (item is EquipmentUse) return equipmentDescription(item);
-    assert(false, "unreachable");
-    return const SizedBox();
   }
 
   Widget armorDescription(ArmorUse item) {

@@ -356,6 +356,7 @@ class _WarbandViewState extends State<WarbandView> {
           ),
         ]),
       ]),
+      childrenPadding: const EdgeInsets.all(16),
       children: [
         Column(
           children: warrior.weapons
@@ -376,46 +377,82 @@ class _WarbandViewState extends State<WarbandView> {
 
   UnmodifiableListView<Widget> editControls(
     WarriorModel warrior,
-    Iterable<WeaponUse> weapons,
-    Iterable<ArmorUse> armours,
-    Iterable<EquipmentUse> equipment,
+    Iterable<WeaponUse> availableWeapons,
+    Iterable<ArmorUse> availableArmours,
+    Iterable<EquipmentUse> availableEquipment,
     int unitCount,
   ) {
     if (_editMode) {
       return UnmodifiableListView([
         Row(children: [
-          Container(
-              constraints: const BoxConstraints(minWidth: 120),
-              child: const Text("Add Weapon: ")),
-          itemDropDownMenu(weapons, warrior, (weapon) {
-            final w =
-                widget.roster.weapons.firstWhere((w) => w.typeName == weapon);
-            context.read<WarbandModel>().getUID(warrior.uid).weapons.add(w);
-            context.read<WarbandModel>().invalidate();
-          }),
+          TextButton(
+            onPressed: availableWeapons.isEmpty
+                ? null
+                : () {
+                    var wb = context.read<WarbandModel>();
+                    showModalBottomSheet(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return ItemChooser(
+                              elements: availableWeapons.toList(),
+                              armory: widget.armory,
+                              callback: (eq) {
+                                final e = widget.roster.weapons
+                                    .firstWhere((w) => w.typeName == eq);
+                                wb.getUID(warrior.uid).weapons.add(e);
+                                wb.invalidate();
+                                Navigator.pop(context);
+                              });
+                        });
+                  },
+            child: const Text("+Weapon"),
+          ),
+          TextButton(
+            onPressed: availableArmours.isEmpty
+                ? null
+                : () {
+                    var wb = context.read<WarbandModel>();
+                    showModalBottomSheet(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return ItemChooser(
+                              elements: availableArmours.toList(),
+                              armory: widget.armory,
+                              callback: (eq) {
+                                final e = widget.roster.armour
+                                    .firstWhere((w) => w.typeName == eq);
+                                wb.getUID(warrior.uid).armour.add(e);
+                                wb.invalidate();
+                                Navigator.pop(context);
+                              });
+                        });
+                  },
+            child: const Text("+Armour"),
+          ),
+          TextButton(
+            onPressed: availableEquipment.isEmpty
+                ? null
+                : () {
+                    var wb = context.read<WarbandModel>();
+                    showModalBottomSheet(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return ItemChooser(
+                              elements: availableEquipment.toList(),
+                              armory: widget.armory,
+                              callback: (eq) {
+                                final e = widget.roster.equipment
+                                    .firstWhere((w) => w.typeName == eq);
+                                wb.getUID(warrior.uid).equipment.add(e);
+                                wb.invalidate();
+                                Navigator.pop(context);
+                              });
+                        });
+                  },
+            child: const Text("+Equipment"),
+          ),
         ]),
         Row(children: [
-          Container(
-              constraints: const BoxConstraints(minWidth: 120),
-              child: const Text("Add Armour: ")),
-          itemDropDownMenu(armours, warrior, (armour) {
-            final a =
-                widget.roster.armour.firstWhere((w) => w.typeName == armour);
-            context.read<WarbandModel>().getUID(warrior.uid).armour.add(a);
-            context.read<WarbandModel>().invalidate();
-          }),
-        ]),
-        Row(children: [
-          Container(
-              constraints: const BoxConstraints(minWidth: 120),
-              child: const Text("Add Equipment: ")),
-          itemDropDownMenu(equipment, warrior, (eq) {
-            final e =
-                widget.roster.equipment.firstWhere((w) => w.typeName == eq);
-            context.read<WarbandModel>().getUID(warrior.uid).equipment.add(e);
-            context.read<WarbandModel>().invalidate();
-          }),
-          const Spacer(),
           (warrior.type.max ?? double.infinity) > unitCount
               ? IconButton(
                   onPressed: () {
@@ -439,25 +476,6 @@ class _WarbandViewState extends State<WarbandView> {
     } else {
       return UnmodifiableListView([]);
     }
-  }
-
-  DropdownMenu<String> itemDropDownMenu(Iterable<ItemUse> it,
-      WarriorModel warrior, void Function(String) onSelected) {
-    return DropdownMenu(
-      dropdownMenuEntries: it
-          .map<DropdownMenuEntry<String>>((ItemUse w) => DropdownMenuEntry(
-              value: w.getName,
-              label: w.getName,
-              labelWidget: Text(w.getName),
-              leadingIcon: CurrencyWidget(
-                cost: w.getCost,
-                simultaneous: false,
-              )))
-          .toList(),
-      onSelected: (item) {
-        if (item != null) onSelected(item);
-      },
-    );
   }
 
   Widget weaponLine(BuildContext context, WeaponUse w, WarriorModel warrior) {
@@ -550,6 +568,42 @@ class _WarbandViewState extends State<WarbandView> {
 
   Equipment getEquipmentDef(EquipmentUse w) =>
       widget.armory.equipments.firstWhere((def) => def.typeName == w.typeName);
+}
+
+class ItemChooser extends StatelessWidget {
+  const ItemChooser({
+    super.key,
+    required this.callback,
+    required this.elements,
+    required this.armory,
+  });
+  final void Function(String) callback;
+  final List<dynamic> elements;
+  final Armory armory;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.5,
+      color: Colors.white,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        child: Center(
+          child: ListView.separated(
+            itemBuilder: (ctx, idx) => InkWell(
+              onTap: () => callback(elements[idx].typeName),
+              child: ItemDescription(
+                item: elements[idx],
+                armory: armory,
+              ),
+            ),
+            separatorBuilder: (ctx, idx) => const Divider(),
+            itemCount: elements.length,
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class ItemChip extends StatelessWidget {
