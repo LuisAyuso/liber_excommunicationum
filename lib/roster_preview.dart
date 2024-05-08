@@ -197,8 +197,8 @@ class UnitDescription extends StatelessWidget {
           ),
         ),
         Row(
-          children: (unit.mandatoryItems ?? [])
-              .map((elem) => ItemChip(text: elem))
+          children: (unit.defaultItems ?? [])
+              .map((elem) => ItemChip(text: elem.itemName))
               .toList(),
         ),
         Row(

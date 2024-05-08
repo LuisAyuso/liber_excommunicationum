@@ -143,7 +143,7 @@
             },
             "defaultItems": [
                 {
-                    "typeName": "Bolt Action Rifle",
+                    "itemName": "Bolt Action Rifle",
                     "cost": {
                         "ducats": 10
                     }
@@ -192,8 +192,11 @@
             "ranged": 1,
             "melee": 0,
             "armour": -2,
-            "mandatoryItems": [
-                "Shovel"
+            "defaultItems": [
+                {
+                    "itemName": "Shovel",
+                    "removable": false
+                }
             ],
             "abilities": [
                 "Engineer Body Armor",
@@ -216,8 +219,11 @@
             "ranged": 1,
             "melee": 0,
             "armour": 0,
-            "mandatoryItems": [
-                "Heavy Armour"
+            "defaultItems": [
+                {
+                    "itemName": "Heavy Armour",
+                    "removable": false
+                }
             ],
             "abilities": [
                 "Strong"
@@ -237,11 +243,23 @@
             "ranged": 0,
             "melee": 0,
             "armour": 0,
-            "mandatoryItems": [
-                "Misericordia",
-                "Medi-Kit",
-                "Gas Mask",
-                "Standard Armour"
+            "defaultItems": [
+                {
+                    "itemName": "Misericordia",
+                    "removable": false
+                },
+                {
+                    "itemName": "Medi-Kit",
+                    "removable": false
+                },
+                {
+                    "itemName": "Gas Mask",
+                    "removable": false
+                },
+                {
+                    "itemName": "Standard Armour",
+                    "removable": false
+                }
             ],
             "abilities": [
                 "Finish the Fallen",

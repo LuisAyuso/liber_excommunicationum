@@ -209,9 +209,15 @@
                 "ducats": 140
             },
             "base": 50,
-            "mandatoryItems": [
-                "Heavy Armour",
-                "Combat Helmet"
+            "defaultItems": [
+                {
+                    "itemName": "Heavy Armour",
+                    "removable": false
+                },
+                {
+                    "itemName": "Combat Helmet",
+                    "removable": false
+                }
             ],
             "rangedWeaponFilter": {
                 "none": true

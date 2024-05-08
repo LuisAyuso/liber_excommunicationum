@@ -47,38 +47,35 @@ class WarriorModel {
       equipment.fold<Currency>(Currency.free(), (v, w) => w.cost + v);
 
   void populateBuiltInWeapons(Armory armory) {
-    for (var item in type.mandatoryItems ?? []) {
-      if (armory.isWeapon(name)) {
-        weapons.add(WeaponUse(typeName: item, removable: true));
-      }
-    }
     for (var item in type.defaultItems ?? []) {
-      if (item is WeaponUse) weapons.add(item);
+      if (armory.isWeapon(item.itemName)) {
+        weapons.add(WeaponUse(
+            typeName: item.itemName,
+            removable: item.isRemovable,
+            cost: item.getCost));
+      }
     }
   }
 
   void populateBuiltInArmour(Armory armory) {
-    debugPrint("populate armour: ");
-    for (var item in type.mandatoryItems ?? []) {
-      debugPrint("[$item]");
-      if (armory.isArmour(item)) {
-        debugPrint("yes");
-        armour.add(ArmorUse(typeName: item, removable: true));
-      }
-    }
     for (var item in type.defaultItems ?? []) {
-      if (item is ArmorUse) armour.add(item);
+      if (armory.isArmour(item.itemName)) {
+        armour.add(ArmorUse(
+            typeName: item.itemName,
+            removable: item.isRemovable,
+            cost: item.getCost));
+      }
     }
   }
 
   void populateBuiltInEquipment(Armory armory) {
-    for (var item in type.mandatoryItems ?? []) {
-      if (armory.isEquipment(item)) {
-        equipment.add(EquipmentUse(typeName: item, removable: true));
-      }
-    }
     for (var item in type.defaultItems ?? []) {
-      if (item is EquipmentUse) equipment.add(item);
+      if (armory.isEquipment(item.itemName)) {
+        equipment.add(EquipmentUse(
+            typeName: item.itemName,
+            removable: item.isRemovable,
+            cost: item.getCost));
+      }
     }
   }
 

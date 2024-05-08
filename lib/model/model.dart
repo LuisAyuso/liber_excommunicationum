@@ -72,6 +72,36 @@ class Currency {
 }
 
 @JsonSerializable()
+class ItemReplacement {
+  ItemReplacement();
+
+  List<String> anyOf = [];
+
+  factory ItemReplacement.fromJson(Map<String, dynamic> json) =>
+      _$ItemReplacementFromJson(json);
+  Map<String, dynamic> toJson() => _$ItemReplacementToJson(this);
+}
+
+@JsonSerializable()
+class DefaultItem {
+  DefaultItem();
+
+  String itemName = "";
+
+  Currency? cost;
+  Currency get getCost => cost ?? Currency.free();
+
+  List<ItemReplacement>? replacements;
+
+  bool? removable;
+  bool get isRemovable => removable ?? (replacements ?? []).isNotEmpty;
+
+  factory DefaultItem.fromJson(Map<String, dynamic> json) =>
+      _$DefaultItemFromJson(json);
+  Map<String, dynamic> toJson() => _$DefaultItemToJson(this);
+}
+
+@JsonSerializable()
 class Unit {
   Unit();
 
@@ -84,10 +114,10 @@ class Unit {
   int armour = 0;
   List<String>? abilities = [];
   List<String> keywords = [];
+  List<DefaultItem>? defaultItems;
   Currency cost = Currency(ducats: 0);
   int base = 25;
-  List<String>? mandatoryItems = [];
-  List<WeaponUse>? defaultItems = [];
+
   Filter? rangedWeaponFilter;
   Filter get getRangedWeaponFilter => rangedWeaponFilter ?? Filter();
   Filter? meleeWeaponFilter;
@@ -117,9 +147,10 @@ abstract class ItemUse {
 
 @JsonSerializable(explicitToJson: true)
 class WeaponUse extends ItemUse {
-  WeaponUse({String? typeName, bool? removable})
+  WeaponUse({String? typeName, bool? removable, Currency? cost})
       : typeName = typeName ?? "",
-        removable = removable ?? true;
+        removable = removable ?? true,
+        cost = cost ?? Currency.free();
 
   String typeName = "";
   Currency cost = Currency(ducats: 0);
@@ -149,9 +180,10 @@ class WeaponUse extends ItemUse {
 
 @JsonSerializable(explicitToJson: true)
 class ArmorUse extends ItemUse {
-  ArmorUse({String? typeName, bool? removable})
+  ArmorUse({String? typeName, bool? removable, Currency? cost})
       : typeName = typeName ?? "",
-        removable = removable ?? true;
+        removable = removable ?? true,
+        cost = cost ?? Currency.free();
 
   String typeName = "";
   Currency cost = Currency.free();
@@ -180,9 +212,10 @@ class ArmorUse extends ItemUse {
 
 @JsonSerializable(explicitToJson: true)
 class EquipmentUse extends ItemUse {
-  EquipmentUse({String? typeName, bool? removable})
+  EquipmentUse({String? typeName, bool? removable, Currency? cost})
       : typeName = typeName ?? "",
-        removable = removable ?? true;
+        removable = removable ?? true,
+        cost = cost ?? Currency.free();
 
   String typeName = "";
   Currency cost = Currency.free();
