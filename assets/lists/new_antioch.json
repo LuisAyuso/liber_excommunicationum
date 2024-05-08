@@ -272,8 +272,9 @@
         {
             "typeName": "Automatic Rifle",
             "cost": {
-                "glory": 3
-            }
+                "ducats": 40
+            },
+            "limit": 1
         },
         {
             "typeName": "Pistol/Revolver",
