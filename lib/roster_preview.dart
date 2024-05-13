@@ -100,7 +100,9 @@ class ItemDescription extends StatelessWidget {
                       border: Border(bottom: BorderSide(color: tcRed)))),
               TableRow(children: [
                 Text("${weapon.cost}"),
-                Text("${def.hands}-handed"),
+                def.isGrenade
+                    ? const Text("Grenades")
+                    : Text("${def.hands}-handed"),
                 def.range != null ? Text('${def.range}"') : const Text("Melee"),
                 Text(def.getModifiersString),
                 Column(
