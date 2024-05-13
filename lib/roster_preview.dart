@@ -21,11 +21,25 @@ class RosterPreview extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: ListView.separated(
               itemBuilder: (context, idx) => entry(idx),
-              separatorBuilder: (context, idx) => const Divider(),
+              separatorBuilder: (context, idx) => makeDivider(idx),
               itemCount: roster.units.length + roster.items.length),
         ),
       ),
     );
+  }
+
+  Widget makeDivider(int idx) {
+    if (idx == roster.units.length - 1) {
+      return const Column(children: [
+        Divider(),
+        Text(
+          "Weapons, Armour\n & Equipment",
+          style: gothBlackBig,
+        ),
+      ]);
+    }
+
+    return const Divider();
   }
 
   Widget entry(int idx) {

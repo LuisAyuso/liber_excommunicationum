@@ -29,3 +29,10 @@ const TextStyle gothBlack20 = TextStyle(
   fontWeight: FontWeight.w400,
   fontSize: 20,
 );
+
+const TextStyle gothBlackBig = TextStyle(
+  fontFamily: "CloisterBlack",
+  fontWeight: FontWeight.w400,
+  fontSize: 36,
+  color: tcRed,
+);
