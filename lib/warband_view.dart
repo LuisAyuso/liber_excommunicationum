@@ -3,129 +3,11 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tc_thing/model/model.dart';
+import 'package:tc_thing/model/warband.dart';
 import 'package:tc_thing/roster_preview.dart';
 import 'package:tc_thing/utils.dart';
 
 import 'unit_selector.dart';
-
-class WarriorModel {
-  WarriorModel(
-      {String? name,
-      required this.uid,
-      required this.type,
-      required this.bucket,
-      Armory? armory})
-      : name = name ?? "Generated" {
-    if (armory != null) {
-      populateBuiltInWeapons(armory);
-      populateBuiltInArmour(armory);
-      populateBuiltInEquipment(armory);
-    }
-  }
-
-  String name = "Generated name?";
-  final int uid;
-  final Unit type;
-  List<WeaponUse> weapons = [];
-  List<ArmorUse> armour = [];
-  List<EquipmentUse> equipment = [];
-  final int bucket;
-
-  WarriorModel copyWith({required String name, required int newUid}) {
-    var w = WarriorModel(name: name, uid: newUid, type: type, bucket: bucket);
-    w.weapons = List.of(weapons);
-    w.armour = List.of(armour);
-    w.equipment = List.of(equipment);
-    return w;
-  }
-
-  Currency get totalCost => baseCost + equipmentCost;
-  Currency get baseCost => type.cost;
-  Currency get equipmentCost =>
-      weapons.fold<Currency>(Currency.free(), (v, w) => w.cost + v) +
-      armour.fold<Currency>(Currency.free(), (v, w) => w.cost + v) +
-      equipment.fold<Currency>(Currency.free(), (v, w) => w.cost + v);
-
-  void populateBuiltInWeapons(Armory armory) {
-    for (var item in type.defaultItems ?? []) {
-      if (armory.isWeapon(item.itemName)) {
-        weapons.add(WeaponUse(
-            typeName: item.itemName,
-            removable: item.isRemovable,
-            cost: item.getCost));
-      }
-    }
-  }
-
-  void populateBuiltInArmour(Armory armory) {
-    for (var item in type.defaultItems ?? []) {
-      if (armory.isArmour(item.itemName)) {
-        armour.add(ArmorUse(
-            typeName: item.itemName,
-            removable: item.isRemovable,
-            cost: item.getCost));
-      }
-    }
-  }
-
-  void populateBuiltInEquipment(Armory armory) {
-    for (var item in type.defaultItems ?? []) {
-      if (armory.isEquipment(item.itemName)) {
-        equipment.add(EquipmentUse(
-            typeName: item.itemName,
-            removable: item.isRemovable,
-            cost: item.getCost));
-      }
-    }
-  }
-
-  int getArmorValue(Armory armory) {
-    return type.armour +
-        armour
-            .map((a) =>
-                armory.armours.firstWhere((e) => e.typeName == a.typeName))
-            .map((a) => a.value ?? 0)
-            .fold(0, (a, b) => a + b);
-  }
-}
-
-class WarbandModel extends ChangeNotifier {
-  final List<WarriorModel> _items = [];
-  int _id = 0;
-
-  UnmodifiableListView<WarriorModel> get items => UnmodifiableListView(_items);
-  int get length => _items.length;
-  Currency get cost =>
-      _items.fold<Currency>(Currency.free(), (v, w) => v + w.totalCost);
-
-  void add(WarriorModel item) {
-    _items.add(item);
-    _items.sort((a, b) => a.bucket.compareTo(b.bucket));
-    notifyListeners();
-  }
-
-  int nextUID() {
-    return ++_id;
-  }
-
-  WarriorModel getUID(int uid) {
-    return _items.firstWhere((w) => w.uid == uid);
-  }
-
-  void removeUID(int uid) {
-    _items.removeWhere((w) => w.uid == uid);
-    notifyListeners();
-  }
-
-  void clear() {
-    _items.clear();
-    notifyListeners();
-  }
-
-  void invalidate() {
-    notifyListeners();
-  }
-}
 
 class WarbandView extends StatefulWidget {
   const WarbandView(
@@ -208,111 +90,11 @@ class _WarbandViewState extends State<WarbandView> {
   }
 
   Widget warriorLine(BuildContext context, WarriorModel warrior) {
-    final weapons = warrior.weapons.map((w) => getWeaponDef(w));
-    final armours = warrior.armour.map((a) => getArmorDef(a));
-    final pistols = weapons.fold(0, (v, w) => v + (w.isPistol ? 1 : 0));
-    final firearms = weapons.fold(0, (v, w) => v + ((w.isFirearm) ? 1 : 0));
-    final melee = weapons.fold(0, (v, w) => v + (w.isMeleeWeapon ? 1 : 0));
-
-    final allowPistol =
-        (firearms == 0 && pistols < 2) || (firearms == 1 && pistols < 1);
-    final allowMelee =
-        armours.where((a) => a.isShield).isEmpty ? melee <= 2 : melee <= 1;
-    final freeHands = 2 -
-        weapons.where((w) => w.isMeleeWeapon).fold(0, (v, w) => v + w.hands);
-
     final unitCount = context
         .read<WarbandModel>()
         .items
         .where((other) => other.type.typeName == warrior.type.typeName)
         .length;
-
-// - One firearm and one pistol OR
-// - two pistols.
-// In addition, they may carry:
-// - One two-handed melee weapon OR
-// - one single-handed melee weapon and a trench shield OR
-// - two single-handed melee weapons.
-
-    final availableWeapons = widget.roster.weapons.where((weapon) {
-      final def = getWeaponDef(weapon);
-
-      if (def.canMelee &&
-          !warrior.type.getMeleeWeaponFilter.isAllowed(weapon.typeName)) {
-        return false;
-      }
-
-      if (def.canRanged &&
-          !warrior.type.getRangedWeaponFilter.isAllowed(weapon.typeName)) {
-        return false;
-      }
-
-      if (!weapon.getUnitNameFilter.isAllowed(warrior.type.typeName)) {
-        return false;
-      }
-
-      if (!warrior.type.keywords.fold(false,
-          (v, keyword) => v || weapon.getKeywordFilter.isAllowed(keyword))) {
-        return false;
-      }
-
-      if (def.isPistol && allowPistol) return true;
-      if (def.isFirearm && firearms < 1) return true;
-      if (def.isMeleeWeapon && allowMelee) {
-        return freeHands >= def.hands;
-      }
-
-      return false;
-    });
-
-    final bodyArmour = armours.where((a) => a.isArmour).isNotEmpty;
-    final shield = armours.where((a) => a.isShield).isNotEmpty;
-
-    final availableArmours = widget.roster.armour.where((armour) {
-      if (!warrior.type.getArmourFilter.isAllowed(armour.typeName)) {
-        return false;
-      }
-
-      if (!armour.getUnitNameFilter.isAllowed(warrior.type.typeName)) {
-        return false;
-      }
-
-      if (!warrior.type.keywords.fold(false,
-          (v, keyword) => v || armour.getKeywordFilter.isAllowed(keyword))) {
-        return false;
-      }
-
-      final def = getArmorDef(armour);
-      if (def.isArmour && bodyArmour) return false;
-      if (def.isShield && shield) return false;
-
-      return true;
-    });
-
-    final availableEquipment = widget.roster.equipment.where((equip) {
-      if (!warrior.type.getEquipmentFilter.isAllowed(equip.typeName)) {
-        return false;
-      }
-
-      if (!equip.getUnitNameFilter.isAllowed(warrior.type.typeName)) {
-        return false;
-      }
-
-      if (!warrior.type.keywords.fold(false,
-          (v, keyword) => v || equip.getKeywordFilter.isAllowed(keyword))) {
-        return false;
-      }
-
-      final def = getEquipmentDef(equip);
-      if (!def.isConsumable &&
-          warrior.equipment
-              .where((e) => e.typeName == def.typeName)
-              .isNotEmpty) {
-        return false;
-      }
-
-      return true;
-    });
 
     return ExpansionTile(
       tilePadding: EdgeInsets.zero,
@@ -336,7 +118,7 @@ class _WarbandViewState extends State<WarbandView> {
         Row(
           children: [
             statBox("Mov:", '${warrior.type.movement}"'),
-            statBox("Armour:", warrior.getArmorValue(widget.armory)),
+            statBox("Armour:", warrior.computeArmorValue(widget.armory)),
           ],
         ),
         const Spacer(),
@@ -368,8 +150,12 @@ class _WarbandViewState extends State<WarbandView> {
               warrior.equipment
                   .map<Widget>((e) => equipmentLine(context, e, warrior))
                   .toList() +
-              editControls(warrior, availableWeapons, availableArmours,
-                  availableEquipment, unitCount),
+              editControls(
+                  warrior,
+                  warrior.availableWeapons(widget.roster, widget.armory),
+                  warrior.availableArmours(widget.roster, widget.armory),
+                  warrior.availableEquipment(widget.roster, widget.armory),
+                  unitCount),
         ),
       ],
     );
@@ -478,25 +264,35 @@ class _WarbandViewState extends State<WarbandView> {
     }
   }
 
-  Widget weaponLine(BuildContext context, WeaponUse w, WarriorModel warrior) {
-    final def = getWeaponDef(w);
+  Widget weaponLine(
+    BuildContext context,
+    WeaponUse weapon,
+    WarriorModel warrior,
+  ) {
+    final def = widget.armory.findWeapon(weapon);
+    final defaultItem = (warrior.type.defaultItems ?? [])
+        .where((eq) => eq.itemName == weapon.typeName)
+        .firstOrNull;
     return Row(
       children: [
         SizedBox(
           width: 40,
           child: CurrencyWidget(
-            cost: w.cost,
+            cost: weapon.cost,
             simultaneous: false,
           ),
         ),
-        SizedBox(width: 240, child: Text(w.typeName)),
-        const Divider(),
-        Text(def.getModifiersString),
+        SizedBox(width: 240, child: Text(weapon.typeName)),
         const Spacer(),
-        _editMode && w.isRemovable
+        Text(def.getModifiersString),
+        defaultItem != null && defaultItem.replacements != null
+            ? replaceWeapon(context, warrior, weapon, defaultItem)
+            : const SizedBox(),
+        _editMode && weapon.isRemovable
             ? IconButton(
                 onPressed: () {
-                  warrior.weapons.removeWhere((d) => w.typeName == d.typeName);
+                  warrior.weapons
+                      .removeWhere((d) => weapon.typeName == d.typeName);
                   context.read<WarbandModel>().invalidate();
                 },
                 icon: const Icon(Icons.delete))
@@ -505,8 +301,59 @@ class _WarbandViewState extends State<WarbandView> {
     );
   }
 
+  TextButton replaceWeapon(
+    BuildContext context,
+    WarriorModel warrior,
+    WeaponUse weapon,
+    DefaultItem replaceableItem,
+  ) {
+    return TextButton(
+      onPressed: () {
+        var wb = context.read<WarbandModel>();
+        showModalBottomSheet(
+            context: context,
+            builder: (BuildContext context) {
+              final alterEgo = warrior.copyWith(name: "", newUid: -1);
+              alterEgo.weapons
+                  .removeWhere((d) => weapon.typeName == d.typeName);
+              final replacements = alterEgo
+                  .availableWeapons(
+                widget.roster,
+                widget.armory,
+              )
+                  .where((item) {
+                if (item.getName == weapon.getName) return false;
+                if (!replaceableItem.replacements!.isAllowed(item.getName)) {
+                  return false;
+                }
+                final defA = widget.armory.findWeapon(weapon);
+                final defB = widget.armory.findWeapon(item);
+                return defA.canRanged == defB.canRanged;
+              }).map((item) {
+                item.cost = weapon.cost.offset(item.cost);
+                return item;
+              }).toList();
+              return ItemChooser(
+                  elements: replacements,
+                  armory: widget.armory,
+                  callback: (eq) {
+                    warrior.weapons
+                        .removeWhere((d) => weapon.typeName == d.typeName);
+                    final e = widget.roster.weapons
+                        .firstWhere((w) => w.typeName == eq);
+                    warrior.weapons.add(e);
+                    wb.invalidate();
+
+                    Navigator.pop(context);
+                  });
+            });
+      },
+      child: const Text("Replace"),
+    );
+  }
+
   Widget armorLine(BuildContext context, ArmorUse a, WarriorModel warrior) {
-    final def = getArmorDef(a);
+    final def = widget.armory.findArmour(a);
     return Row(
       children: [
         SizedBox(
@@ -559,15 +406,6 @@ class _WarbandViewState extends State<WarbandView> {
       ],
     );
   }
-
-  Weapon getWeaponDef(WeaponUse w) =>
-      widget.armory.weapons.firstWhere((def) => def.typeName == w.typeName);
-
-  Armour getArmorDef(ArmorUse w) =>
-      widget.armory.armours.firstWhere((def) => def.typeName == w.typeName);
-
-  Equipment getEquipmentDef(EquipmentUse w) =>
-      widget.armory.equipments.firstWhere((def) => def.typeName == w.typeName);
 }
 
 class ItemChooser extends StatelessWidget {
@@ -576,10 +414,12 @@ class ItemChooser extends StatelessWidget {
     required this.callback,
     required this.elements,
     required this.armory,
+    this.priceOffset = const Currency(),
   });
   final void Function(String) callback;
   final List<dynamic> elements;
   final Armory armory;
+  final Currency priceOffset;
 
   @override
   Widget build(BuildContext context) {

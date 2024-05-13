@@ -2,9 +2,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tc_thing/model/model.dart';
+import 'package:tc_thing/model/warband.dart';
 import 'package:tc_thing/roster_preview.dart';
 import 'package:tc_thing/utils.dart';
-import 'package:tc_thing/warband_view.dart';
 
 String makeName(List<String> names, List<String> surnames) {
   final random = Random();

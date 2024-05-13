@@ -34,22 +34,30 @@ Map<String, dynamic> _$CurrencyToJson(Currency instance) => <String, dynamic>{
 
 ItemReplacement _$ItemReplacementFromJson(Map<String, dynamic> json) =>
     ItemReplacement()
-      ..anyOf =
-          (json['anyOf'] as List<dynamic>).map((e) => e as String).toList();
+      ..policy = $enumDecode(_$ReplacementPolicyEnumMap, json['policy'])
+      ..values =
+          (json['values'] as List<dynamic>?)?.map((e) => e as String).toList();
 
 Map<String, dynamic> _$ItemReplacementToJson(ItemReplacement instance) =>
     <String, dynamic>{
-      'anyOf': instance.anyOf,
+      'policy': _$ReplacementPolicyEnumMap[instance.policy]!,
+      'values': instance.values,
     };
+
+const _$ReplacementPolicyEnumMap = {
+  ReplacementPolicy.any: 'any',
+  ReplacementPolicy.anyExcept: 'anyExcept',
+  ReplacementPolicy.anyFrom: 'anyFrom',
+};
 
 DefaultItem _$DefaultItemFromJson(Map<String, dynamic> json) => DefaultItem()
   ..itemName = json['itemName'] as String
   ..cost = json['cost'] == null
       ? null
       : Currency.fromJson(json['cost'] as Map<String, dynamic>)
-  ..replacements = (json['replacements'] as List<dynamic>?)
-      ?.map((e) => ItemReplacement.fromJson(e as Map<String, dynamic>))
-      .toList()
+  ..replacements = json['replacements'] == null
+      ? null
+      : ItemReplacement.fromJson(json['replacements'] as Map<String, dynamic>)
   ..removable = json['removable'] as bool?;
 
 Map<String, dynamic> _$DefaultItemToJson(DefaultItem instance) =>
@@ -112,8 +120,10 @@ Map<String, dynamic> _$UnitToJson(Unit instance) => <String, dynamic>{
 WeaponUse _$WeaponUseFromJson(Map<String, dynamic> json) => WeaponUse(
       typeName: json['typeName'] as String?,
       removable: json['removable'] as bool?,
+      cost: json['cost'] == null
+          ? null
+          : Currency.fromJson(json['cost'] as Map<String, dynamic>),
     )
-      ..cost = Currency.fromJson(json['cost'] as Map<String, dynamic>)
       ..unitNameFilter = json['unitNameFilter'] == null
           ? null
           : Filter.fromJson(json['unitNameFilter'] as Map<String, dynamic>)
@@ -134,8 +144,10 @@ Map<String, dynamic> _$WeaponUseToJson(WeaponUse instance) => <String, dynamic>{
 ArmorUse _$ArmorUseFromJson(Map<String, dynamic> json) => ArmorUse(
       typeName: json['typeName'] as String?,
       removable: json['removable'] as bool?,
+      cost: json['cost'] == null
+          ? null
+          : Currency.fromJson(json['cost'] as Map<String, dynamic>),
     )
-      ..cost = Currency.fromJson(json['cost'] as Map<String, dynamic>)
       ..limit = json['limit'] as int?
       ..unitNameFilter = json['unitNameFilter'] == null
           ? null
@@ -156,8 +168,10 @@ Map<String, dynamic> _$ArmorUseToJson(ArmorUse instance) => <String, dynamic>{
 EquipmentUse _$EquipmentUseFromJson(Map<String, dynamic> json) => EquipmentUse(
       typeName: json['typeName'] as String?,
       removable: json['removable'] as bool?,
+      cost: json['cost'] == null
+          ? null
+          : Currency.fromJson(json['cost'] as Map<String, dynamic>),
     )
-      ..cost = Currency.fromJson(json['cost'] as Map<String, dynamic>)
       ..limit = json['limit'] as int?
       ..unitNameFilter = json['unitNameFilter'] == null
           ? null

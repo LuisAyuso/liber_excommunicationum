@@ -146,6 +146,9 @@
                     "itemName": "Bolt Action Rifle",
                     "cost": {
                         "ducats": 10
+                    },
+                    "replacements": {
+                        "policy": "any"
                     }
                 }
             ],

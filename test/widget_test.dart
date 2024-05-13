@@ -6,9 +6,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tc_thing/model/model.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:tc_thing/warband_view.dart';
-
-typedef WL = List<WarriorModel>;
 
 void testList(String listJson) async {
   String data = await rootBundle.loadString('assets/lists/armory.json');
@@ -112,6 +109,28 @@ void main() {
 
     var str = jsonEncode(r.toJson());
     debugPrint(str);
+  });
+
+  test('Replacements', () {
+    var item = ItemReplacement(
+      policy: ReplacementPolicy.anyFrom,
+      values: ["one", "two", "three"],
+    );
+
+    expect(item.isAllowed("one"), true);
+    expect(item.isAllowed("two"), true);
+    expect(item.isAllowed("three"), true);
+    expect(item.isAllowed("nop"), false);
+
+    var item2 = ItemReplacement(
+      policy: ReplacementPolicy.anyExcept,
+      values: ["one", "two", "three"],
+    );
+
+    expect(item2.isAllowed("one"), false);
+    expect(item2.isAllowed("two"), false);
+    expect(item2.isAllowed("three"), false);
+    expect(item2.isAllowed("nop"), true);
   });
 
   test('load armory', () async {

@@ -55,7 +55,11 @@ class RosterPreview extends StatelessWidget {
 }
 
 class ItemDescription extends StatelessWidget {
-  const ItemDescription({super.key, required this.item, required this.armory});
+  const ItemDescription({
+    super.key,
+    required this.item,
+    required this.armory,
+  });
   final dynamic item;
   final Armory armory;
 

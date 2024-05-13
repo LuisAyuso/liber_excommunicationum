@@ -40,7 +40,7 @@ class Filter {
 
 @JsonSerializable()
 class Currency {
-  Currency({int? ducats, int? glory})
+  const Currency({int? ducats, int? glory})
       : _ducats = ducats,
         _glory = glory;
 
@@ -53,9 +53,23 @@ class Currency {
   int get glory => _glory ?? 0;
   int get ducats => _ducats ?? 0;
 
-  factory Currency.free() => Currency(ducats: 0);
+  factory Currency.free() => const Currency(ducats: 0);
   factory Currency.ducats(int v) => Currency(ducats: v);
   factory Currency.glory(int v) => Currency(glory: v);
+
+  // this will offset the value of other IFF not less than
+  // current value. if the currency is different, do nothing.
+  Currency offset(Currency other) {
+    if (isDucats != other.isDucats) return other;
+    final v = other - this;
+    if (v.ducats < 0 && v.glory == 0) return Currency.free();
+    if (v.glory < 0 && v.ducats == 0) return Currency.free();
+    return v;
+  }
+
+  Currency operator -(Currency other) {
+    return Currency(ducats: ducats - other.ducats, glory: glory - other.glory);
+  }
 
   Currency operator +(Currency other) {
     return Currency(ducats: ducats + other.ducats, glory: glory + other.glory);
@@ -71,11 +85,25 @@ class Currency {
   Map<String, dynamic> toJson() => _$CurrencyToJson(this);
 }
 
+enum ReplacementPolicy { any, anyExcept, anyFrom }
+
 @JsonSerializable()
 class ItemReplacement {
-  ItemReplacement();
+  ItemReplacement({this.policy = ReplacementPolicy.any, this.values});
 
-  List<String> anyOf = [];
+  ReplacementPolicy policy = ReplacementPolicy.anyFrom;
+  List<String>? values = [];
+
+  bool isAllowed(String itemName) {
+    switch (policy) {
+      case ReplacementPolicy.any:
+        return true;
+      case ReplacementPolicy.anyExcept:
+        return (values ?? []).where((v) => v == itemName).isEmpty;
+      case ReplacementPolicy.anyFrom:
+        return (values ?? []).where((v) => v == itemName).isNotEmpty;
+    }
+  }
 
   factory ItemReplacement.fromJson(Map<String, dynamic> json) =>
       _$ItemReplacementFromJson(json);
@@ -84,17 +112,20 @@ class ItemReplacement {
 
 @JsonSerializable()
 class DefaultItem {
-  DefaultItem();
+  DefaultItem({
+    this.itemName = "",
+    this.cost,
+    this.replacements,
+    this.removable,
+  });
 
-  String itemName = "";
-
+  String itemName;
   Currency? cost;
-  Currency get getCost => cost ?? Currency.free();
-
-  List<ItemReplacement>? replacements;
-
+  ItemReplacement? replacements;
   bool? removable;
-  bool get isRemovable => removable ?? (replacements ?? []).isNotEmpty;
+
+  Currency get getCost => cost ?? Currency.free();
+  bool get isRemovable => removable != null;
 
   factory DefaultItem.fromJson(Map<String, dynamic> json) =>
       _$DefaultItemFromJson(json);
@@ -153,7 +184,7 @@ class WeaponUse extends ItemUse {
         cost = cost ?? Currency.free();
 
   String typeName = "";
-  Currency cost = Currency(ducats: 0);
+  Currency cost = const Currency(ducats: 0);
   bool? removable;
 
   Filter? unitNameFilter;
@@ -311,10 +342,11 @@ class Weapon extends Item {
 
   bool get canMelee => range == null || (melee ?? false);
   bool get canRanged => range != null;
-  bool get isPistol => typeName.contains("Pistol");
   bool get isFirearm => canRanged && !typeName.contains("Pistol");
   bool get isMeleeWeapon => !canRanged && canMelee;
+  bool get isPistol => typeName.contains("Pistol");
   bool get isRifle => typeName.contains("Rifle");
+  bool get isGrenade => hands == 0 && canRanged;
   String get getModifiersString => modifiers.fold<String>("", (v, m) {
         if (v == "") return m.toString();
         return "$v; ${m.toString()}";
@@ -376,24 +408,27 @@ class Armory {
   factory Armory.fromJson(Map<String, dynamic> json) => _$ArmoryFromJson(json);
   Map<String, dynamic> toJson() => _$ArmoryToJson(this);
 
-  Weapon findWeapon(String typeName) {
-    return weapons.firstWhere((def) => def.typeName == typeName);
+  Weapon findWeapon(dynamic w) {
+    if (w is WeaponUse) return findWeapon(w.typeName);
+    return weapons.firstWhere((def) => def.typeName == w);
   }
 
   bool isWeapon(String typeName) {
     return weapons.where((def) => def.typeName == typeName).length == 1;
   }
 
-  Armour findArmour(String typeName) {
-    return armours.firstWhere((def) => def.typeName == typeName);
+  Armour findArmour(dynamic a) {
+    if (a is ArmorUse) return findArmour(a.typeName);
+    return armours.firstWhere((def) => def.typeName == a);
   }
 
   bool isArmour(String typeName) {
     return armours.where((def) => def.typeName == typeName).length == 1;
   }
 
-  Equipment findEquipment(String typeName) {
-    return equipments.firstWhere((def) => def.typeName == typeName);
+  Equipment findEquipment(dynamic e) {
+    if (e is EquipmentUse) return findEquipment(e.typeName);
+    return equipments.firstWhere((def) => def.typeName == e);
   }
 
   bool isEquipment(String typeName) {
