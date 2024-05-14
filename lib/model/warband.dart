@@ -12,9 +12,7 @@ class WarriorModel {
       Armory? armory})
       : name = name ?? "Generated" {
     if (armory != null) {
-      populateBuiltInWeapons(armory);
-      populateBuiltInArmour(armory);
-      populateBuiltInEquipment(armory);
+      populateBuiltIn(armory);
     }
   }
 
@@ -41,7 +39,7 @@ class WarriorModel {
       armour.fold<Currency>(Currency.free(), (v, w) => w.cost + v) +
       equipment.fold<Currency>(Currency.free(), (v, w) => w.cost + v);
 
-  void populateBuiltInWeapons(Armory armory) {
+  void populateBuiltIn(Armory armory) {
     for (var item in type.defaultItems ?? []) {
       if (armory.isWeapon(item.itemName)) {
         weapons.add(WeaponUse(
@@ -49,22 +47,12 @@ class WarriorModel {
             removable: item.isRemovable,
             cost: item.getCost));
       }
-    }
-  }
-
-  void populateBuiltInArmour(Armory armory) {
-    for (var item in type.defaultItems ?? []) {
       if (armory.isArmour(item.itemName)) {
         armour.add(ArmorUse(
             typeName: item.itemName,
             removable: item.isRemovable,
             cost: item.getCost));
       }
-    }
-  }
-
-  void populateBuiltInEquipment(Armory armory) {
-    for (var item in type.defaultItems ?? []) {
       if (armory.isEquipment(item.itemName)) {
         equipment.add(EquipmentUse(
             typeName: item.itemName,

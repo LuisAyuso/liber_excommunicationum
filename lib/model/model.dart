@@ -146,7 +146,7 @@ class Unit {
   List<String>? abilities = [];
   List<String> keywords = [];
   List<DefaultItem>? defaultItems;
-  Currency cost = Currency(ducats: 0);
+  Currency cost = const Currency(ducats: 0);
   int base = 25;
 
   Filter? rangedWeaponFilter;

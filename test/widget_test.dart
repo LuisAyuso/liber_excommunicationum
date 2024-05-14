@@ -100,10 +100,10 @@ void main() {
     boss.armour = 0;
     boss.abilities = ["special"];
     boss.keywords = ["elite"];
-    boss.cost = Currency(ducats: 60);
+    boss.cost = const Currency(ducats: 60);
     var w = WeaponUse();
     w.typeName = "gun";
-    w.cost = Currency(ducats: 10);
+    w.cost = const Currency(ducats: 10);
     r.units = [boss];
     r.weapons = [w];
 
