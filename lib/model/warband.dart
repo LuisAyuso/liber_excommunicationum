@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:tc_thing/model/model.dart';
@@ -59,6 +58,18 @@ class WarriorModel {
   List<ItemStack> _items = [];
   Iterable<WeaponUse> get weapons =>
       _items.map((s) => s.value).whereType<WeaponUse>();
+
+  Iterable<WeaponUse> weaponsOrUnarmed(Armory armory) {
+    final collection = weapons.toList();
+    if (collection.where((wu) => armory.findWeapon(wu).canMelee).isEmpty) {
+      return Iterable.generate(weapons.length + 1, (idx) {
+        if (idx == 0) return WeaponUse.unarmed();
+        return collection[idx - 1];
+      });
+    }
+    return collection;
+  }
+
   Iterable<ArmorUse> get armour =>
       _items.map((s) => s.value).whereType<ArmorUse>();
   Iterable<EquipmentUse> get equipment =>
@@ -197,8 +208,6 @@ class WarriorModel {
   UnmodifiableListView<ArmorUse> availableArmours(
           Roster roster, Armory armory) =>
       UnmodifiableListView(roster.armour.where((armour) {
-        debugPrint("-> ${armour.getName}");
-
         if (!type.getArmourFilter.isAllowed(armour.typeName)) {
           return false;
         }

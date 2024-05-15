@@ -1,6 +1,8 @@
 import 'dart:collection';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'model.g.dart';
@@ -207,6 +209,9 @@ class WeaponUse extends ItemUse {
   factory WeaponUse.fromJson(Map<String, dynamic> json) =>
       _$WeaponUseFromJson(json);
   Map<String, dynamic> toJson() => _$WeaponUseToJson(this);
+
+  factory WeaponUse.unarmed() =>
+      WeaponUse(typeName: "Unarmed", cost: Currency.free(), removable: false);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -302,24 +307,48 @@ abstract class Item {
   UnmodifiableListView<String> get getKeywords;
 }
 
-String bonus(int v) {
+enum BonusType { dice, value }
+
+String bonus(int v, {BonusType type = BonusType.dice}) {
+  String suffix = "";
+  switch (type) {
+    case BonusType.dice:
+      suffix = "D";
+      break;
+    case BonusType.value:
+      break;
+  }
+
   final sign = v > 0 ? "+" : "";
-  return "$sign$v";
+  return "$sign$v$suffix";
 }
+
+enum ModifierType { melee, ranged, any }
 
 @JsonSerializable(explicitToJson: true)
 class Modifier {
-  Modifier({this.hit, this.injury, this.extra});
+  Modifier({this.hit, this.injury, this.type, this.attacks, this.extra});
 
-  int? attacks;
   int? hit;
   int? injury;
+  int? attacks;
+  ModifierType? type;
   String? extra;
+
+  Modifier clone() => Modifier(
+      hit: hit, injury: injury, attacks: attacks, type: type, extra: extra);
+
+  bool get isHitModifier => (hit ?? 0) != 0;
 
   @override
   String toString() {
     final suffix = extra == null ? "" : " $extra";
     if (attacks != null) return "$attacks Attacks$suffix";
+
+    if (hit != null && injury != null) {
+      return "${bonus(hit!)} to Hit; ${bonus(injury!)} to Injury$suffix";
+    }
+
     if (hit != null) return "${bonus(hit!)} to Hit$suffix";
     if (injury != null) return "${bonus(injury!)} to Injury$suffix";
     return extra ?? "";
@@ -328,6 +357,25 @@ class Modifier {
   factory Modifier.fromJson(Map<String, dynamic> json) =>
       _$ModifierFromJson(json);
   Map<String, dynamic> toJson() => _$ModifierToJson(this);
+
+  Modifier offset(int base) {
+    Modifier m = clone();
+    if (base != 0 && isHitModifier) m.hit = (m.hit ?? 0) + base;
+    return m;
+  }
+
+  bool filter(ModifierType other) {
+    switch (other) {
+      case ModifierType.melee:
+      case ModifierType.ranged:
+        {
+          final x = type ?? ModifierType.any;
+          return x == ModifierType.any || x == other;
+        }
+      case ModifierType.any:
+        return true;
+    }
+  }
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -347,17 +395,41 @@ class Weapon extends Item {
   bool get isPistol => typeName.contains("Pistol");
   bool get isRifle => typeName.contains("Rifle");
   bool get isGrenade => hands == 0 && canRanged;
-  String get getModifiersString => modifiers.fold<String>("", (v, m) {
-        if (v == "") return m.toString();
-        return "$v; ${m.toString()}";
-      });
+  String getModifiersString(int baseValue, ModifierType type) {
+    final res = modifiers.where((m) => m.filter(type)).fold<String>("",
+        (acc, modifier) {
+      final mod = modifier.offset(baseValue).toString();
+      if (acc == "") {
+        return mod;
+      }
+      return "$acc; $mod";
+    });
+    if (res.isEmpty && baseValue != 0) return "${bonus(baseValue)} to Hit";
+    return res;
+  }
+
+  String get getTypeString {
+    if (canMelee && canRanged) return "Ranged/Melee";
+    if (canMelee) return "Melee";
+    return "Ranged";
+  }
 
   @override
   UnmodifiableListView<String> get getKeywords =>
       UnmodifiableListView(keywords ?? []);
 
   factory Weapon.fromJson(Map<String, dynamic> json) => _$WeaponFromJson(json);
+
   Map<String, dynamic> toJson() => _$WeaponToJson(this);
+
+  factory Weapon.unarmed() {
+    Weapon w = Weapon();
+    w.typeName = "Unarmed";
+    w.hands = 2;
+    w.melee = true;
+    w.modifiers = [Modifier(hit: -1, injury: -1)];
+    return w;
+  }
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -410,6 +482,7 @@ class Armory {
 
   Weapon findWeapon(dynamic w) {
     if (w is WeaponUse) return findWeapon(w.typeName);
+    if (w == "Unarmed") return Weapon.unarmed();
     return weapons.firstWhere((def) => def.typeName == w);
   }
 

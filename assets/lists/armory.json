@@ -23,7 +23,7 @@
                 },
                 {
                     "attacks": 2,
-                    "extra": "ranged"
+                    "type": "ranged"
                 }
             ]
         },

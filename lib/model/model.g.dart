@@ -33,10 +33,12 @@ Map<String, dynamic> _$CurrencyToJson(Currency instance) => <String, dynamic>{
     };
 
 ItemReplacement _$ItemReplacementFromJson(Map<String, dynamic> json) =>
-    ItemReplacement()
-      ..policy = $enumDecode(_$ReplacementPolicyEnumMap, json['policy'])
-      ..values =
-          (json['values'] as List<dynamic>?)?.map((e) => e as String).toList();
+    ItemReplacement(
+      policy: $enumDecodeNullable(_$ReplacementPolicyEnumMap, json['policy']) ??
+          ReplacementPolicy.any,
+      values:
+          (json['values'] as List<dynamic>?)?.map((e) => e as String).toList(),
+    );
 
 Map<String, dynamic> _$ItemReplacementToJson(ItemReplacement instance) =>
     <String, dynamic>{
@@ -50,15 +52,17 @@ const _$ReplacementPolicyEnumMap = {
   ReplacementPolicy.anyFrom: 'anyFrom',
 };
 
-DefaultItem _$DefaultItemFromJson(Map<String, dynamic> json) => DefaultItem()
-  ..itemName = json['itemName'] as String
-  ..cost = json['cost'] == null
-      ? null
-      : Currency.fromJson(json['cost'] as Map<String, dynamic>)
-  ..replacements = json['replacements'] == null
-      ? null
-      : ItemReplacement.fromJson(json['replacements'] as Map<String, dynamic>)
-  ..removable = json['removable'] as bool?;
+DefaultItem _$DefaultItemFromJson(Map<String, dynamic> json) => DefaultItem(
+      itemName: json['itemName'] as String? ?? "",
+      cost: json['cost'] == null
+          ? null
+          : Currency.fromJson(json['cost'] as Map<String, dynamic>),
+      replacements: json['replacements'] == null
+          ? null
+          : ItemReplacement.fromJson(
+              json['replacements'] as Map<String, dynamic>),
+      removable: json['removable'] as bool?,
+    );
 
 Map<String, dynamic> _$DefaultItemToJson(DefaultItem instance) =>
     <String, dynamic>{
@@ -235,14 +239,23 @@ Modifier _$ModifierFromJson(Map<String, dynamic> json) => Modifier(
       hit: json['hit'] as int?,
       injury: json['injury'] as int?,
       extra: json['extra'] as String?,
-    )..attacks = json['attacks'] as int?;
+    )
+      ..attacks = json['attacks'] as int?
+      ..type = $enumDecodeNullable(_$ModifierTypeEnumMap, json['type']);
 
 Map<String, dynamic> _$ModifierToJson(Modifier instance) => <String, dynamic>{
       'attacks': instance.attacks,
       'hit': instance.hit,
       'injury': instance.injury,
+      'type': _$ModifierTypeEnumMap[instance.type],
       'extra': instance.extra,
     };
+
+const _$ModifierTypeEnumMap = {
+  ModifierType.melee: 'melee',
+  ModifierType.ranged: 'ranged',
+  ModifierType.any: 'any',
+};
 
 Weapon _$WeaponFromJson(Map<String, dynamic> json) => Weapon()
   ..typeName = json['typeName'] as String

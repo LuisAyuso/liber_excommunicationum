@@ -141,7 +141,8 @@ class _WarbandViewState extends State<WarbandView> {
       childrenPadding: const EdgeInsets.all(16),
       children: [
         Column(
-          children: warrior.weapons
+          children: warrior
+                  .weaponsOrUnarmed(widget.armory)
                   .map<Widget>((w) => weaponLine(context, w, warrior))
                   .toList() +
               warrior.armour
@@ -284,7 +285,23 @@ class _WarbandViewState extends State<WarbandView> {
         ),
         SizedBox(width: 240, child: Text(weapon.typeName)),
         const Spacer(),
-        Text(def.getModifiersString),
+        Column(
+          children: [
+            def.canRanged
+                ? Text("Ranged: ${def.getModifiersString(
+                    warrior.type.ranged,
+                    ModifierType.ranged,
+                  )}")
+                : const SizedBox(),
+            def.canMelee
+                ? Text("Melee: ${def.getModifiersString(
+                    warrior.type.melee,
+                    ModifierType.ranged,
+                  )}")
+                : const SizedBox(),
+          ],
+        ),
+        const Spacer(),
         defaultItem != null && defaultItem.replacements != null
             ? replaceWeapon(context, warrior, weapon, defaultItem)
             : const SizedBox(),

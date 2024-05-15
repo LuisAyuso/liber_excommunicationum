@@ -7,11 +7,11 @@ Roster management
 - [ ] Problem with width, lines too long. Too much info.
 
 ### Refactors
-- [ ] Move filter logic to model, keep frontend business-logic-free
+- [x] Move filter logic to model, keep frontend business-logic-free
 
 ## features
 - [ ] Unit preview
-- [ ] Unarmed: if no melee equipped, add the "unarmed" weapon profile
+- [x] Unarmed: if no melee equipped, add the "unarmed" weapon profile
 - [x] Edit mode - play mode
 - [x] List-dependent armory
 - [x] Unit-dependent armory: blacklist, whitelist
@@ -29,7 +29,7 @@ Roster management
 - [x] Yeoman bolt-rifle requirement
 - [ ] Combat engineer armor
 - [ ] Machine armour replacement!
-- [ ] Either list units base modifier, or add them to weapons as before
+- [x] Either list units base modifier, or add them to weapons as before
 - [ ] grenades, limit count, weapon type
 - [ ] Validate lists
   - [ ] Min characters
