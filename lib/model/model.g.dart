@@ -238,23 +238,29 @@ Map<String, dynamic> _$RosterToJson(Roster instance) => <String, dynamic>{
 Modifier _$ModifierFromJson(Map<String, dynamic> json) => Modifier(
       hit: json['hit'] as int?,
       injury: json['injury'] as int?,
+      type: $enumDecodeNullable(_$ModifierTypeEnumMap, json['type']),
+      attacks: json['attacks'] as int?,
       extra: json['extra'] as String?,
-    )
-      ..attacks = json['attacks'] as int?
-      ..type = $enumDecodeNullable(_$ModifierTypeEnumMap, json['type']);
+    )..bonusType = $enumDecodeNullable(_$BonusTypeEnumMap, json['bonusType']);
 
 Map<String, dynamic> _$ModifierToJson(Modifier instance) => <String, dynamic>{
-      'attacks': instance.attacks,
       'hit': instance.hit,
       'injury': instance.injury,
+      'attacks': instance.attacks,
       'type': _$ModifierTypeEnumMap[instance.type],
       'extra': instance.extra,
+      'bonusType': _$BonusTypeEnumMap[instance.bonusType],
     };
 
 const _$ModifierTypeEnumMap = {
   ModifierType.melee: 'melee',
   ModifierType.ranged: 'ranged',
   ModifierType.any: 'any',
+};
+
+const _$BonusTypeEnumMap = {
+  BonusType.dice: 'dice',
+  BonusType.value: 'value',
 };
 
 Weapon _$WeaponFromJson(Map<String, dynamic> json) => Weapon()
@@ -264,8 +270,8 @@ Weapon _$WeaponFromJson(Map<String, dynamic> json) => Weapon()
   ..melee = json['melee'] as bool?
   ..keywords =
       (json['keywords'] as List<dynamic>?)?.map((e) => e as String).toList()
-  ..modifiers = (json['modifiers'] as List<dynamic>)
-      .map((e) => Modifier.fromJson(e as Map<String, dynamic>))
+  ..modifiers = (json['modifiers'] as List<dynamic>?)
+      ?.map((e) => Modifier.fromJson(e as Map<String, dynamic>))
       .toList();
 
 Map<String, dynamic> _$WeaponToJson(Weapon instance) => <String, dynamic>{
@@ -274,7 +280,7 @@ Map<String, dynamic> _$WeaponToJson(Weapon instance) => <String, dynamic>{
       'range': instance.range,
       'melee': instance.melee,
       'keywords': instance.keywords,
-      'modifiers': instance.modifiers.map((e) => e.toJson()).toList(),
+      'modifiers': instance.modifiers?.map((e) => e.toJson()).toList(),
     };
 
 Armour _$ArmourFromJson(Map<String, dynamic> json) => Armour()

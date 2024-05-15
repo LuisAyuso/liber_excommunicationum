@@ -16,12 +16,16 @@ void testList(String listJson) async {
   data = await rootBundle.loadString(listJson);
   var roster = Roster.fromJson(jsonDecode(data));
 
+  armory.extendWithUnique(roster);
+  validateArmory(armory);
+
   expect(roster.weapons, isNotEmpty);
   expect(roster.units, isNotEmpty);
   expect(roster.armour, isNotEmpty);
   expect(roster.equipment, isNotEmpty);
 
   for (var w in roster.weapons) {
+    debugPrint(w.getName);
     Weapon? found = armory.weapons
         .map<Weapon?>((w) => w)
         .firstWhere((def) => def!.typeName == w.typeName, orElse: () => null);
@@ -70,25 +74,36 @@ void main() {
     {
       Weapon w = Weapon();
       w.modifiers = [];
-      expect(w.getModifiersString(0, ModifierType.any), "");
-      expect(w.getModifiersString(1, ModifierType.any), "+1D to Hit");
+      expect(
+        w.getModifiersString(Modifier(hit: 0), ModifierType.any),
+        "",
+      );
+      expect(w.getModifiersString(Modifier(hit: 1), ModifierType.any),
+          "+1D to Hit");
     }
     {
       Weapon w = Weapon();
       w.modifiers = [Modifier(hit: 1)];
-      expect(w.getModifiersString(0, ModifierType.any), "+1D to Hit");
-      expect(w.getModifiersString(1, ModifierType.any), "+2D to Hit");
+      expect(w.getModifiersString(Modifier(hit: 0), ModifierType.any),
+          "+1D to Hit");
+      expect(w.getModifiersString(Modifier(hit: 1), ModifierType.any),
+          "+2D to Hit");
     }
 
     {
       Weapon w = Weapon();
       w.modifiers = [Modifier(hit: 1, type: ModifierType.ranged)];
-      expect(w.getModifiersString(0, ModifierType.melee), "");
-      expect(w.getModifiersString(1, ModifierType.melee), "+1D to Hit");
-      expect(w.getModifiersString(0, ModifierType.ranged), "+1D to Hit");
-      expect(w.getModifiersString(1, ModifierType.ranged), "+2D to Hit");
-      expect(w.getModifiersString(0, ModifierType.any), "+1D to Hit");
-      expect(w.getModifiersString(1, ModifierType.any), "+2D to Hit");
+      expect(w.getModifiersString(Modifier(hit: 0), ModifierType.melee), "");
+      expect(w.getModifiersString(Modifier(hit: 1), ModifierType.melee),
+          "+1D to Hit");
+      expect(w.getModifiersString(Modifier(hit: 0), ModifierType.ranged),
+          "+1D to Hit");
+      expect(w.getModifiersString(Modifier(hit: 1), ModifierType.ranged),
+          "+2D to Hit");
+      expect(w.getModifiersString(Modifier(hit: 0), ModifierType.any),
+          "+1D to Hit");
+      expect(w.getModifiersString(Modifier(hit: 1), ModifierType.any),
+          "+2D to Hit");
     }
 
     {
@@ -97,11 +112,12 @@ void main() {
         Modifier(injury: -1),
         Modifier(attacks: 2, type: ModifierType.ranged),
       ];
-      expect(w.getModifiersString(1, ModifierType.any),
-          "-1D to Injury; 2 Attacks");
-      expect(w.getModifiersString(1, ModifierType.ranged),
-          "-1D to Injury; 2 Attacks");
-      expect(w.getModifiersString(1, ModifierType.melee), "-1D to Injury");
+      expect(w.getModifiersString(Modifier(hit: 1), ModifierType.any),
+          "+1D to Hit; -1D to Injury; 2 Attacks");
+      expect(w.getModifiersString(Modifier(hit: 1), ModifierType.ranged),
+          "+1D to Hit; -1D to Injury; 2 Attacks");
+      expect(w.getModifiersString(Modifier(hit: 1), ModifierType.melee),
+          "+1D to Hit; -1D to Injury");
     }
   });
 

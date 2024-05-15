@@ -5,8 +5,7 @@
             "hands": 1,
             "range": 12,
             "ranged": 0,
-            "melee": true,
-            "modifiers": []
+            "melee": true
         },
         {
             "typeName": "Automatic Pistol",
@@ -47,8 +46,7 @@
             "typeName": "Bolt Action Rifle",
             "hands": 2,
             "range": 24,
-            "ranged": 0,
-            "modifiers": []
+            "ranged": 0
         },
         {
             "typeName": "Semi-automatic Rifle",
@@ -57,8 +55,7 @@
             "ranged": 0,
             "keywords": [
                 "ASSAULT"
-            ],
-            "modifiers": []
+            ]
         },
         {
             "typeName": "Automatic Rifle",
@@ -67,14 +64,12 @@
             "ranged": 0,
             "keywords": [
                 "ASSAULT"
-            ],
-            "modifiers": []
+            ]
         },
         {
             "typeName": "Jezzail",
             "hands": 2,
-            "range": 18,
-            "modifiers": []
+            "range": 18
         },
         {
             "typeName": "Shotgun",
@@ -154,8 +149,7 @@
             "keywords": [
                 "ASSAULT",
                 "SHRAPNEL"
-            ],
-            "modifiers": []
+            ]
         },
         {
             "typeName": "Incendiary Grenades",
@@ -164,8 +158,7 @@
             "keywords": [
                 "ASSAULT",
                 "FIRE"
-            ],
-            "modifiers": []
+            ]
         },
         {
             "typeName": "Gas Grenades",
@@ -273,8 +266,7 @@
             "keywords": [
                 "HEAVY",
                 "FIRE"
-            ],
-            "modifiers": []
+            ]
         },
         {
             "typeName": "Knife/Dagger",
@@ -287,21 +279,18 @@
         },
         {
             "typeName": "Trench Club",
-            "hands": 1,
-            "modifiers": []
+            "hands": 1
         },
         {
             "typeName": "Sword/Axe",
             "hands": 1,
             "keywords": [
                 "CRITICAL"
-            ],
-            "modifiers": []
+            ]
         },
         {
             "typeName": "Bayonet",
-            "hands": 2,
-            "modifiers": []
+            "hands": 2
         },
         {
             "typeName": "Sacrificial Knife",
@@ -321,8 +310,7 @@
             "keywords": [
                 "FIRE",
                 "RISKY"
-            ],
-            "modifiers": []
+            ]
         },
         {
             "typeName": "Hellblade",
@@ -338,8 +326,7 @@
         },
         {
             "typeName": "Tartarus Claws",
-            "hands": 2,
-            "modifiers": []
+            "hands": 2
         },
         {
             "typeName": "Anti-Tank Hammer",

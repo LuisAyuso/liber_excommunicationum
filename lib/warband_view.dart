@@ -289,13 +289,13 @@ class _WarbandViewState extends State<WarbandView> {
           children: [
             def.canRanged
                 ? Text("Ranged: ${def.getModifiersString(
-                    warrior.type.ranged,
+                    Modifier(hit: warrior.type.ranged),
                     ModifierType.ranged,
                   )}")
                 : const SizedBox(),
             def.canMelee
                 ? Text("Melee: ${def.getModifiersString(
-                    warrior.type.melee,
+                    Modifier(hit: warrior.type.melee),
                     ModifierType.ranged,
                   )}")
                 : const SizedBox(),

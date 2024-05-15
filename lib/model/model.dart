@@ -325,6 +325,8 @@ String bonus(int v, {BonusType type = BonusType.dice}) {
 
 enum ModifierType { melee, ranged, any }
 
+enum ModifierCategory { hit, injury, hitInjury, attacks, unknown, extraOnly }
+
 @JsonSerializable(explicitToJson: true)
 class Modifier {
   Modifier({this.hit, this.injury, this.type, this.attacks, this.extra});
@@ -332,8 +334,12 @@ class Modifier {
   int? hit;
   int? injury;
   int? attacks;
-  ModifierType? type;
   String? extra;
+  ModifierType? type;
+  BonusType? bonusType;
+
+  bool get isEmpty =>
+      hit != null && injury != null && attacks != null && extra != null;
 
   Modifier clone() => Modifier(
       hit: hit, injury: injury, attacks: attacks, type: type, extra: extra);
@@ -342,15 +348,17 @@ class Modifier {
 
   @override
   String toString() {
+    final bt = bonusType ?? BonusType.dice;
     final suffix = extra == null ? "" : " $extra";
-    if (attacks != null) return "$attacks Attacks$suffix";
-
-    if (hit != null && injury != null) {
-      return "${bonus(hit!)} to Hit; ${bonus(injury!)} to Injury$suffix";
+    if (attacks != null && attacks != 0) {
+      return "$attacks Attacks$suffix";
     }
-
-    if (hit != null) return "${bonus(hit!)} to Hit$suffix";
-    if (injury != null) return "${bonus(injury!)} to Injury$suffix";
+    if (hit != null && hit != 0) {
+      return "${bonus(hit!, type: bt)} to Hit$suffix";
+    }
+    if (injury != null && injury != 0) {
+      return "${bonus(injury!, type: bt)} to Injury$suffix";
+    }
     return extra ?? "";
   }
 
@@ -358,9 +366,17 @@ class Modifier {
       _$ModifierFromJson(json);
   Map<String, dynamic> toJson() => _$ModifierToJson(this);
 
-  Modifier offset(int base) {
+  Modifier offset(Modifier base) {
     Modifier m = clone();
-    if (base != 0 && isHitModifier) m.hit = (m.hit ?? 0) + base;
+    if (m.hit != null && base.hit != null) {
+      m.hit = m.hit! + base.hit!;
+    }
+    if (m.injury != null && base.injury != null) {
+      m.injury = m.injury! + base.injury!;
+    }
+    if (m.attacks != null && base.attacks != null) {
+      m.attacks = m.attacks! + base.attacks!;
+    }
     return m;
   }
 
@@ -376,6 +392,22 @@ class Modifier {
         return true;
     }
   }
+
+  ModifierCategory cat() {
+    if (hit != null && injury == null && attacks == null) {
+      return ModifierCategory.hit;
+    }
+    if (hit == null && injury != null && attacks == null) {
+      return ModifierCategory.injury;
+    }
+    if (hit == null && injury == null && attacks != null) {
+      return ModifierCategory.attacks;
+    }
+    if (extra != null) {
+      return ModifierCategory.extraOnly;
+    }
+    return ModifierCategory.unknown;
+  }
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -386,7 +418,7 @@ class Weapon extends Item {
   int? range;
   bool? melee;
   List<String>? keywords;
-  List<Modifier> modifiers = [];
+  List<Modifier>? modifiers = [];
 
   bool get canMelee => range == null || (melee ?? false);
   bool get canRanged => range != null;
@@ -395,8 +427,19 @@ class Weapon extends Item {
   bool get isPistol => typeName.contains("Pistol");
   bool get isRifle => typeName.contains("Rifle");
   bool get isGrenade => hands == 0 && canRanged;
-  String getModifiersString(int baseValue, ModifierType type) {
-    final res = modifiers.where((m) => m.filter(type)).fold<String>("",
+
+  UnmodifiableListView<Modifier> get getModifiers =>
+      UnmodifiableListView(modifiers ?? []);
+
+  String getModifiersString(Modifier baseValue, ModifierType type) {
+    String res = "";
+    if (!baseValue.isEmpty &&
+        (modifiers ?? []).where((mod) => mod.filter(type)).where((mod) {
+          return baseValue.cat() == mod.cat();
+        }).isEmpty) {
+      res = baseValue.toString();
+    }
+    return (modifiers ?? []).where((m) => m.filter(type)).fold<String>(res,
         (acc, modifier) {
       final mod = modifier.offset(baseValue).toString();
       if (acc == "") {
@@ -404,8 +447,6 @@ class Weapon extends Item {
       }
       return "$acc; $mod";
     });
-    if (res.isEmpty && baseValue != 0) return "${bonus(baseValue)} to Hit";
-    return res;
   }
 
   String get getTypeString {
@@ -506,5 +547,11 @@ class Armory {
 
   bool isEquipment(String typeName) {
     return equipments.where((def) => def.typeName == typeName).length == 1;
+  }
+
+  void extendWithUnique(Roster roster) {
+    weapons.addAll(roster.uniqueWeapons ?? []);
+    armours.addAll(roster.uniqueArmour ?? []);
+    equipments.addAll(roster.uniqueEquipment ?? []);
   }
 }
