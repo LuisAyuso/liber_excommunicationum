@@ -35,10 +35,13 @@ Roster management
   - [ ] Min characters
   - [x] Yeoman bolt-rifle or other ranged (any ranged)
 - [x] Restore removed equipment after delete replacement
+- [ ] default weapons in special units, wolf not unarmed
+- [ ] keywords and special rules in weapon line
+- [ ] Equipment-dependent equipment: bayonet or alchemical ammo
 
 ### Lists:
 - [x] Cult
 - [x] Pilgrims
-- [ ] Califate
+- [x] Califate
 - [ ] Plage
 - [x] Antioch

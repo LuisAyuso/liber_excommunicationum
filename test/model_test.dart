@@ -198,21 +198,7 @@ void main() {
     expect(armory.armours, isNotEmpty);
     expect(armory.equipments, isNotEmpty);
 
-    for (var weapon in armory.weapons) {
-      expect(armory.isArmour(weapon.typeName), false);
-      expect(armory.isWeapon(weapon.typeName), true);
-      expect(armory.isEquipment(weapon.typeName), false);
-    }
-    for (var armour in armory.armours) {
-      expect(armory.isArmour(armour.typeName), true);
-      expect(armory.isWeapon(armour.typeName), false);
-      expect(armory.isEquipment(armour.typeName), false);
-    }
-    for (var equipment in armory.equipments) {
-      expect(armory.isArmour(equipment.typeName), false);
-      expect(armory.isWeapon(equipment.typeName), false);
-      expect(armory.isEquipment(equipment.typeName), true);
-    }
+    validateArmory(armory);
   });
 
   test('load cult list', () async {
@@ -224,4 +210,30 @@ void main() {
   test('load new antioch list', () async {
     testList('assets/lists/new_antioch.json');
   });
+
+  test('load sultanate list', () async {
+    testList('assets/lists/sultanate.json');
+  });
+}
+
+void validateArmory(Armory armory) {
+  for (var weapon in armory.weapons) {
+    debugPrint(weapon.typeName);
+    expect(armory.isArmour(weapon.typeName), false);
+    expect(armory.isWeapon(weapon.typeName), true);
+    expect(armory.isEquipment(weapon.typeName), false);
+    for (var mod in weapon.getModifiers) {
+      expect(mod.cat(), predicate((v) => v != ModifierCategory.unknown));
+    }
+  }
+  for (var armour in armory.armours) {
+    expect(armory.isArmour(armour.typeName), true);
+    expect(armory.isWeapon(armour.typeName), false);
+    expect(armory.isEquipment(armour.typeName), false);
+  }
+  for (var equipment in armory.equipments) {
+    expect(armory.isArmour(equipment.typeName), false);
+    expect(armory.isWeapon(equipment.typeName), false);
+    expect(armory.isEquipment(equipment.typeName), true);
+  }
 }

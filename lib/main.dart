@@ -43,6 +43,8 @@ class WarbandChooser extends StatelessWidget {
                 "assets/lists/trench_pilgrims.json"),
             warbandButton(context, "The Principality of New Antioch",
                 "assets/lists/new_antioch.json"),
+            warbandButton(
+                context, "The Iron Sultanate", "assets/lists/sultanate.json"),
           ],
         ),
       ),
@@ -104,6 +106,7 @@ class WarbandPage extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           var (roster, armory) = future.data!;
+          armory.extendWithUnique(roster);
           return WarbandView(
             title: title,
             roster: roster,

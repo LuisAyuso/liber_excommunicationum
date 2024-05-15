@@ -1,0 +1,601 @@
+{
+    "namesM": [
+        "Ahmet",
+        "Mehmet",
+        "Mustafa",
+        "Ali",
+        "Ayşe",
+        "Fatma",
+        "Emre",
+        "İbrahim",
+        "Yusuf",
+        "Osman",
+        "Ömer",
+        "Murat",
+        "İsmail",
+        "Hatice",
+        "Hüseyin",
+        "Şerife",
+        "Sedef",
+        "Gökhan",
+        "Deniz",
+        "Cem"
+    ],
+    "namesF": [
+        "Ayşe",
+        "Fatma",
+        "Hatice",
+        "Zeynep",
+        "Emine",
+        "Hülya",
+        "Gülay",
+        "Seda",
+        "Merve",
+        "İrem",
+        "Selin",
+        "Elif",
+        "Sevgi",
+        "Esra",
+        "Şeyma",
+        "Meltem",
+        "Begüm",
+        "Didem",
+        "Aslı",
+        "Ebru"
+    ],
+    "surnames": [
+        "Yılmaz",
+        "Kaya",
+        "Demir",
+        "Çelik",
+        "Öztürk",
+        "Arslan",
+        "Yıldırım",
+        "Tekin",
+        "Şahin",
+        "Çakır",
+        "Aksoy",
+        "Erdoğan",
+        "Aydın",
+        "Özdemir",
+        "Kılıç",
+        "Yılmazer",
+        "Topçu",
+        "Gürsoy",
+        "Koç",
+        "Karadeniz"
+    ],
+    "units": [
+        {
+            "typeName": "Yüzbaşı Captain",
+            "min": 1,
+            "max": 1,
+            "movement": 6,
+            "ranged": 2,
+            "melee": 2,
+            "armour": 0,
+            "abilities": [
+                "Tough",
+                "Mubarizun"
+            ],
+            "keywords": [
+                "ELITE",
+                "SULTANATE",
+                "THOUGH"
+            ],
+            "cost": {
+                "ducats": 70
+            },
+            "base": 32
+        },
+        {
+            "typeName": "Jabirean Alchemist",
+            "max": 1,
+            "movement": 6,
+            "ranged": 2,
+            "melee": 1,
+            "armour": 0,
+            "abilities": [
+                "Mastery of the Elements"
+            ],
+            "keywords": [
+                "ELITE",
+                "SULTANATE"
+            ],
+            "cost": {
+                "ducats": 55
+            },
+            "base": 32
+        },
+        {
+            "typeName": "Sultanate Assassin",
+            "max": 1,
+            "movement": 6,
+            "ranged": 1,
+            "melee": 2,
+            "armour": 0,
+            "abilities": [
+                "Time Slip",
+                "Temporal Assassin",
+                "Infiltrator"
+            ],
+            "keywords": [
+                "ELITE",
+                "SULTANATE",
+                "INFILTRATOR"
+            ],
+            "cost": {
+                "ducats": 85
+            },
+            "base": 32
+        },
+        {
+            "typeName": "Azebs",
+            "movement": 6,
+            "ranged": 0,
+            "melee": 0,
+            "armour": 0,
+            "keywords": [
+                "SULTANATE"
+            ],
+            "cost": {
+                "ducats": 25
+            },
+            "base": 32
+        },
+        {
+            "typeName": "Sultanate Sappers",
+            "max": 2,
+            "movement": 6,
+            "ranged": 0,
+            "melee": 0,
+            "armour": 0,
+            "abilities": [
+                "Mine-setting",
+                "De-mine",
+                "Dig In"
+            ],
+            "keywords": [
+                "SULTANATE"
+            ],
+            "cost": {
+                "ducats": 50
+            },
+            "base": 32
+        },
+        {
+            "typeName": "Lions of Jabir",
+            "max": 2,
+            "movement": 8,
+            "ranged": 0,
+            "melee": 1,
+            "armour": 0,
+            "abilities": [
+                "Artificial Body",
+                "Mauling",
+                "Lion's grace"
+            ],
+            "keywords": [
+                "SULTANATE"
+            ],
+            "cost": {
+                "ducats": 60
+            },
+            "base": 60
+        },
+        {
+            "typeName": "Janissaries",
+            "max": 6,
+            "movement": 6,
+            "ranged": 1,
+            "melee": 1,
+            "armour": 0,
+            "abilities": [
+                "Strong",
+                "Counter-Charge"
+            ],
+            "keywords": [
+                "SULTANATE",
+                "STRONG"
+            ],
+            "cost": {
+                "ducats": 55
+            },
+            "base": 32
+        },
+        {
+            "typeName": "Brazen Bull",
+            "max": 1,
+            "movement": 6,
+            "ranged": 0,
+            "melee": 2,
+            "armour": 0,
+            "abilities": [
+                "Tough",
+                "Strong",
+                "Artificial Body",
+                "Trample",
+                "Terrifying"
+            ],
+            "keywords": [
+                "SULTANATE",
+                "FEAR",
+                "STRONG",
+                "THOUGH"
+            ],
+            "cost": {
+                "ducats": 100
+            },
+            "base": 60
+        }
+    ],
+    "weapons": [
+        {
+            "typeName": "Jezzail",
+            "cost": {
+                "ducats": 7
+            }
+        },
+        {
+            "typeName": "Siege Jezzail",
+            "cost": {
+                "ducats": 30
+            }
+        },
+        {
+            "typeName": "Musket",
+            "cost": {
+                "ducats": 30
+            }
+        },
+        {
+            "typeName": "Pistol/Revolver",
+            "cost": {
+                "ducats": 10
+            }
+        },
+        {
+            "typeName": "Shotgun",
+            "cost": {
+                "ducats": 15
+            }
+        },
+        {
+            "typeName": "Sniper Rifle",
+            "cost": {
+                "ducats": 35
+            },
+            "unitNameFilter": {
+                "whitelist": [
+                    "Janissaries"
+                ]
+            },
+            "keywordFilter": {
+                "whitelist": [
+                    "ELITE"
+                ]
+            }
+        },
+        {
+            "typeName": "Grenades",
+            "cost": {
+                "ducats": 5
+            }
+        },
+        {
+            "typeName": "Machine Gun",
+            "limit": 1,
+            "cost": {
+                "ducats": 60
+            }
+        },
+        {
+            "typeName": "Flamethrower",
+            "limit": 3,
+            "cost": {
+                "ducats": 40
+            }
+        },
+        {
+            "typeName": "MURAD Bombard",
+            "limit": 1,
+            "cost": {
+                "ducats": 65
+            },
+            "unitNameFilter": {
+                "whitelist": [
+                    "Brazen Bull"
+                ]
+            }
+        },
+        {
+            "typeName": "Knife/Dagger",
+            "cost": {
+                "ducats": 1
+            }
+        },
+        {
+            "typeName": "Bayonet",
+            "cost": {
+                "ducats": 2
+            }
+        },
+        {
+            "typeName": "Trench Club",
+            "cost": {
+                "ducats": 3
+            }
+        },
+        {
+            "typeName": "Sword/Axe",
+            "cost": {
+                "ducats": 4
+            }
+        },
+        {
+            "typeName": "Trench Polearm",
+            "cost": {
+                "ducats": 7
+            }
+        },
+        {
+            "typeName": "Halberd-Gun",
+            "cost": {
+                "ducats": 20
+            },
+            "keywordFilter": {
+                "whitelist": [
+                    "ELITE"
+                ]
+            }
+        },
+        {
+            "typeName": "Great Sword/Axe",
+            "cost": {
+                "ducats": 15
+            }
+        },
+        {
+            "typeName": "Double-Handed Blunt Weapon",
+            "cost": {
+                "ducats": 12
+            }
+        },
+        {
+            "typeName": "Titan Zulfiqar",
+            "cost": {
+                "ducats": 35
+            },
+            "unitNameFilter": {
+                "whitelist": [
+                    "Brazen Bull"
+                ]
+            }
+        },
+        {
+            "typeName": "Assassin’s Dagger",
+            "cost": {
+                "ducats": 10
+            },
+            "unitNameFilter": {
+                "whitelist": [
+                    "Sultanate Assassin"
+                ]
+            }
+        }
+    ],
+    "armour": [
+        {
+            "typeName": "Standard Armour",
+            "cost": {
+                "ducats": 20
+            }
+        },
+        {
+            "typeName": "Heavy Armour",
+            "cost": {
+                "ducats": 40
+            },
+            "keywordFilter": {
+                "whitelist": [
+                    "ELITE"
+                ]
+            }
+        },
+        {
+            "typeName": "Alchemist Armour",
+            "cost": {
+                "ducats": 50
+            },
+            "keywordFilter": {
+                "whitelist": [
+                    "ELITE"
+                ]
+            }
+        },
+        {
+            "typeName": "Trench Shield",
+            "cost": {
+                "ducats": 15
+            }
+        }
+    ],
+    "equipment": [
+        {
+            "typeName": "Combat Helmet",
+            "cost": {
+                "ducats": 5
+            }
+        },
+        {
+            "typeName": "Gas Mask",
+            "cost": {
+                "ducats": 5
+            }
+        },
+        {
+            "typeName": "Shovel",
+            "cost": {
+                "ducats": 5
+            }
+        },
+        {
+            "typeName": "Medi-Kit",
+            "cost": {
+                "ducats": 10
+            }
+        },
+        {
+            "typeName": "Alchemical Ammunition",
+            "cost": {
+                "ducats": 3
+            }
+        },
+        {
+            "typeName": "Musical Instrument",
+            "cost": {
+                "ducats": 15
+            },
+            "limit": 1,
+            "keywordFilter": {
+                "blacklist": [
+                    "ELITE"
+                ]
+            }
+        },
+        {
+            "typeName": "Cloak of Alamut",
+            "cost": {
+                "ducats": 25
+            },
+            "limit": 1,
+            "keywordFilter": {
+                "whitelist": [
+                    "ELITE"
+                ]
+            }
+        },
+        {
+            "typeName": "Wind Amulet",
+            "cost": {
+                "ducats": 10
+            },
+            "limit": 2
+        },
+        {
+            "typeName": "Troop Flag",
+            "cost": {
+                "glory": 1
+            },
+            "limit": 1
+        },
+        {
+            "typeName": "Binoculars",
+            "cost": {
+                "ducats": 10
+            },
+            "keywordFilter": {
+                "whitelist": [
+                    "ELITE"
+                ]
+            }
+        },
+        {
+            "typeName": "Holy Relic",
+            "cost": {
+                "glory": 2
+            },
+            "keywordFilter": {
+                "whitelist": [
+                    "ELITE"
+                ]
+            }
+        }
+    ],
+    "uniqueWeapons": [
+        {
+            "typeName": "MURAD Bombard",
+            "hands": 1,
+            "range": 36,
+            "ranged": 0,
+            "keywords": [
+                "HEAVY"
+            ]
+        },
+        {
+            "typeName": "Flame Cannon",
+            "hands": 1,
+            "range": 12,
+            "ranged": 0,
+            "keywords": [
+                "CRITICAL"
+            ]
+        },
+        {
+            "typeName": "Titan Zulfiqar",
+            "hands": 1,
+            "keywords": [
+                "CRITICAL",
+                "HEAVY"
+            ],
+            "modifiers": [
+                {
+                    "injury": 2
+                }
+            ]
+        },
+        {
+            "typeName": "Assassin’s Dagger",
+            "hands": 1,
+            "keywords": [
+                "CRITICAL"
+            ],
+            "modifiers": [
+                {
+                    "injury": 1
+                }
+            ]
+        },
+        {
+            "typeName": "Halberd-Gun",
+            "hands": 2,
+            "range": 12,
+            "ranged": 0,
+            "melee": true,
+            "keywords": [
+                "ASSAULT"
+            ]
+        },
+        {
+            "typeName": "Siege Jezzail",
+            "hands": 2,
+            "range": 30,
+            "ranged": 0,
+            "keywords": [
+                "HEAVY"
+            ],
+            "modifiers": [
+                {
+                    "injury": 1
+                }
+            ]
+        }
+    ],
+    "uniqueArmour": [
+        {
+            "typeName": "Alchemist Armour",
+            "value": -2
+        }
+    ],
+    "uniqueEquipment": [
+        {
+            "typeName": "Alchemical Ammunition"
+        },
+        {
+            "typeName": "Cloak of Alamut"
+        },
+        {
+            "typeName": "Wind Amulet"
+        }
+    ]
+}

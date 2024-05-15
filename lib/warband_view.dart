@@ -98,47 +98,58 @@ class _WarbandViewState extends State<WarbandView> {
 
     return ExpansionTile(
       tilePadding: EdgeInsets.zero,
-      title: Row(children: [
-        CurrencyWidget(
-          cost: warrior.totalCost,
-        ),
-        SizedBox(
-          width: 240,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(warrior.name, style: gothRed24),
-              Text(
-                warrior.type.typeName,
-              )
-            ],
-          ),
-        ),
-        const VerticalDivider(),
-        Row(
-          children: [
-            statBox("Mov:", '${warrior.type.movement}"'),
-            statBox("Armour:", warrior.computeArmorValue(widget.armory)),
-          ],
-        ),
-        const Spacer(),
-        Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-          Row(
-            children: warrior.weapons
-                .map<Widget>((w) => ItemChip(text: w.typeName))
-                .toList(),
-          ),
-          Row(
-            children: warrior.armour
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(children: [
+            CurrencyWidget(
+              cost: warrior.totalCost,
+            ),
+            SizedBox(
+              width: 240,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(warrior.name, style: gothRed24),
+                  Text(
+                    warrior.type.typeName,
+                  )
+                ],
+              ),
+            ),
+            const VerticalDivider(),
+            Row(
+              children: [
+                statBox("Mov:", '${warrior.type.movement}"'),
+                statBox("Armour:", warrior.computeArmorValue(widget.armory)),
+              ],
+            ),
+          ]),
+          Container(
+            padding: const EdgeInsets.only(top: 4, left: 8, right: 8),
+            child: Wrap(
+                spacing: 8,
+                alignment: WrapAlignment.start,
+                children: warrior.weapons
                     .map<Widget>((w) => ItemChip(text: w.typeName))
-                    .toList() +
-                warrior.equipment
-                    .map<Widget>((w) => ItemChip(text: w.typeName))
-                    .toList(),
+                    .toList()),
           ),
-        ]),
-      ]),
-      childrenPadding: const EdgeInsets.all(16),
+          Container(
+            padding: const EdgeInsets.only(top: 4, left: 8, right: 8),
+            child: Wrap(
+              spacing: 8,
+              alignment: WrapAlignment.start,
+              children: warrior.armour
+                      .map<Widget>((w) => ItemChip(text: w.typeName))
+                      .toList() +
+                  warrior.equipment
+                      .map<Widget>((w) => ItemChip(text: w.typeName))
+                      .toList(),
+            ),
+          )
+        ],
+      ),
+      childrenPadding: const EdgeInsets.only(left: 16, right: 16),
       children: [
         Column(
           children: warrior
@@ -384,6 +395,7 @@ class _WarbandViewState extends State<WarbandView> {
         Row(
           children: [Text("Armour: ${def.value ?? 0}")],
         ),
+        const Spacer(),
         defaultItem != null && defaultItem.replacements != null
             ? replaceArmour(context, warrior, armour, defaultItem)
             : const SizedBox(),
