@@ -1,7 +1,35 @@
 import 'dart:collection';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:tc_thing/model/model.dart';
+
+class ItemStack {
+  ItemStack({ItemUse? item}) : _stack = item != null ? [item] : [];
+  List<ItemUse> _stack;
+
+  ItemUse get value {
+    assert(_stack.isNotEmpty, "this can not be empty, ever");
+    return _stack.last;
+  }
+
+  bool get isEmpty => _stack.isEmpty;
+
+  bool pop() {
+    _stack.removeLast();
+    return _stack.isEmpty;
+  }
+
+  void replace(ItemUse item) {
+    _stack.add(item);
+  }
+
+  ItemStack copy() {
+    ItemStack s = ItemStack();
+    s._stack = List.of(_stack);
+    return s;
+  }
+}
 
 class WarriorModel {
   WarriorModel(
@@ -11,50 +39,73 @@ class WarriorModel {
       required this.bucket,
       Armory? armory})
       : name = name ?? "Generated" {
-    if (armory != null) {
-      populateBuiltIn(armory);
+    if (armory != null) populateBuiltIn(armory);
+  }
+
+  WarriorModel copyWith({required String name, required int newUid}) {
+    var w = WarriorModel(name: name, uid: newUid, type: type, bucket: bucket);
+    w._items = [];
+    for (var it in _items) {
+      w._items.add(it.copy());
     }
+    return w;
   }
 
   String name = "Generated name?";
   final int uid;
   final Unit type;
-  List<WeaponUse> weapons = [];
-  List<ArmorUse> armour = [];
-  List<EquipmentUse> equipment = [];
   final int bucket;
 
-  WarriorModel copyWith({required String name, required int newUid}) {
-    var w = WarriorModel(name: name, uid: newUid, type: type, bucket: bucket);
-    w.weapons = List.of(weapons);
-    w.armour = List.of(armour);
-    w.equipment = List.of(equipment);
-    return w;
-  }
+  List<ItemStack> _items = [];
+  Iterable<WeaponUse> get weapons =>
+      _items.map((s) => s.value).whereType<WeaponUse>();
+  Iterable<ArmorUse> get armour =>
+      _items.map((s) => s.value).whereType<ArmorUse>();
+  Iterable<EquipmentUse> get equipment =>
+      _items.map((s) => s.value).whereType<EquipmentUse>();
 
   Currency get totalCost => baseCost + equipmentCost;
   Currency get baseCost => type.cost;
-  Currency get equipmentCost =>
-      weapons.fold<Currency>(Currency.free(), (v, w) => w.cost + v) +
-      armour.fold<Currency>(Currency.free(), (v, w) => w.cost + v) +
-      equipment.fold<Currency>(Currency.free(), (v, w) => w.cost + v);
+  Currency get equipmentCost => _items
+      .map((i) => i.value)
+      .fold<Currency>(Currency.free(), (v, w) => w.getCost + v);
+
+  void addItem(ItemUse item) {
+    _items.add(ItemStack(item: item));
+  }
+
+  void removeItem(ItemUse item) {
+    for (var it in _items) {
+      if (it.value.getName == item.getName) {
+        it.pop();
+      }
+    }
+    _items.removeWhere((innerList) => innerList.isEmpty);
+    assert(_items.where((s) => s.isEmpty).isEmpty);
+  }
+
+  void replace(ItemUse oldItem, ItemUse newItem) {
+    for (var stack in _items) {
+      if (stack.value.getName == oldItem.getName) stack.replace(newItem);
+    }
+  }
 
   void populateBuiltIn(Armory armory) {
     for (var item in type.defaultItems ?? []) {
       if (armory.isWeapon(item.itemName)) {
-        weapons.add(WeaponUse(
+        addItem(WeaponUse(
             typeName: item.itemName,
             removable: item.isRemovable,
             cost: item.getCost));
       }
       if (armory.isArmour(item.itemName)) {
-        armour.add(ArmorUse(
+        addItem(ArmorUse(
             typeName: item.itemName,
             removable: item.isRemovable,
             cost: item.getCost));
       }
       if (armory.isEquipment(item.itemName)) {
-        equipment.add(EquipmentUse(
+        addItem(EquipmentUse(
             typeName: item.itemName,
             removable: item.isRemovable,
             cost: item.getCost));
@@ -146,6 +197,8 @@ class WarriorModel {
   UnmodifiableListView<ArmorUse> availableArmours(
           Roster roster, Armory armory) =>
       UnmodifiableListView(roster.armour.where((armour) {
+        debugPrint("-> ${armour.getName}");
+
         if (!type.getArmourFilter.isAllowed(armour.typeName)) {
           return false;
         }

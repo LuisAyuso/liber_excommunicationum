@@ -57,14 +57,14 @@ class Currency {
   factory Currency.ducats(int v) => Currency(ducats: v);
   factory Currency.glory(int v) => Currency(glory: v);
 
-  // this will offset the value of other IFF not less than
-  // current value. if the currency is different, do nothing.
+  // the rule says, replacement weapons pay for the difference
+  // unless cost is less, in that case the difference is lost
   Currency offset(Currency other) {
     if (isDucats != other.isDucats) return other;
     final v = other - this;
-    if (v.ducats < 0 && v.glory == 0) return Currency.free();
-    if (v.glory < 0 && v.ducats == 0) return Currency.free();
-    return v;
+    if (v.ducats < 0 && v.glory == 0) return this;
+    if (v.glory < 0 && v.ducats == 0) return other;
+    return other;
   }
 
   Currency operator -(Currency other) {
@@ -125,7 +125,7 @@ class DefaultItem {
   bool? removable;
 
   Currency get getCost => cost ?? Currency.free();
-  bool get isRemovable => removable != null;
+  bool get isRemovable => removable ?? true;
 
   factory DefaultItem.fromJson(Map<String, dynamic> json) =>
       _$DefaultItemFromJson(json);

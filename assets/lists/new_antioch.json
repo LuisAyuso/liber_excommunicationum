@@ -144,6 +144,7 @@
             "defaultItems": [
                 {
                     "itemName": "Bolt Action Rifle",
+                    "removable": false,
                     "cost": {
                         "ducats": 10
                     },
@@ -225,7 +226,13 @@
             "defaultItems": [
                 {
                     "itemName": "Heavy Armour",
-                    "removable": false
+                    "removable": false,
+                    "replacements": {
+                        "policy": "anyFrom",
+                        "values": [
+                            "Machine Armour"
+                        ]
+                    }
                 }
             ],
             "abilities": [

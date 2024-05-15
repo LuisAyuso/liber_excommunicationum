@@ -185,7 +185,7 @@ class _WarbandViewState extends State<WarbandView> {
                               callback: (eq) {
                                 final e = widget.roster.weapons
                                     .firstWhere((w) => w.typeName == eq);
-                                wb.getUID(warrior.uid).weapons.add(e);
+                                wb.getUID(warrior.uid).addItem(e);
                                 wb.invalidate();
                                 Navigator.pop(context);
                               });
@@ -207,7 +207,7 @@ class _WarbandViewState extends State<WarbandView> {
                               callback: (eq) {
                                 final e = widget.roster.armour
                                     .firstWhere((w) => w.typeName == eq);
-                                wb.getUID(warrior.uid).armour.add(e);
+                                wb.getUID(warrior.uid).addItem(e);
                                 wb.invalidate();
                                 Navigator.pop(context);
                               });
@@ -229,7 +229,7 @@ class _WarbandViewState extends State<WarbandView> {
                               callback: (eq) {
                                 final e = widget.roster.equipment
                                     .firstWhere((w) => w.typeName == eq);
-                                wb.getUID(warrior.uid).equipment.add(e);
+                                wb.getUID(warrior.uid).addItem(e);
                                 wb.invalidate();
                                 Navigator.pop(context);
                               });
@@ -291,8 +291,7 @@ class _WarbandViewState extends State<WarbandView> {
         _editMode && weapon.isRemovable
             ? IconButton(
                 onPressed: () {
-                  warrior.weapons
-                      .removeWhere((d) => weapon.typeName == d.typeName);
+                  warrior.removeItem(weapon);
                   context.read<WarbandModel>().invalidate();
                 },
                 icon: const Icon(Icons.delete))
@@ -304,7 +303,7 @@ class _WarbandViewState extends State<WarbandView> {
   TextButton replaceWeapon(
     BuildContext context,
     WarriorModel warrior,
-    WeaponUse weapon,
+    WeaponUse oldWeapon,
     DefaultItem replaceableItem,
   ) {
     return TextButton(
@@ -314,36 +313,32 @@ class _WarbandViewState extends State<WarbandView> {
             context: context,
             builder: (BuildContext context) {
               final alterEgo = warrior.copyWith(name: "", newUid: -1);
-              alterEgo.weapons
-                  .removeWhere((d) => weapon.typeName == d.typeName);
+              alterEgo.removeItem(oldWeapon);
               final replacements = alterEgo
                   .availableWeapons(
                 widget.roster,
                 widget.armory,
               )
                   .where((item) {
-                if (item.getName == weapon.getName) return false;
+                if (item.getName == oldWeapon.getName) return false;
                 if (!replaceableItem.replacements!.isAllowed(item.getName)) {
                   return false;
                 }
-                final defA = widget.armory.findWeapon(weapon);
+                final defA = widget.armory.findWeapon(oldWeapon);
                 final defB = widget.armory.findWeapon(item);
                 return defA.canRanged == defB.canRanged;
               }).map((item) {
-                item.cost = weapon.cost.offset(item.cost);
+                item.cost = oldWeapon.cost.offset(item.cost);
                 return item;
               }).toList();
               return ItemChooser(
                   elements: replacements,
                   armory: widget.armory,
                   callback: (eq) {
-                    warrior.weapons
-                        .removeWhere((d) => weapon.typeName == d.typeName);
-                    final e = widget.roster.weapons
+                    final newWeapon = widget.roster.weapons
                         .firstWhere((w) => w.typeName == eq);
-                    warrior.weapons.add(e);
+                    warrior.replace(oldWeapon, newWeapon);
                     wb.invalidate();
-
                     Navigator.pop(context);
                   });
             });
@@ -352,32 +347,83 @@ class _WarbandViewState extends State<WarbandView> {
     );
   }
 
-  Widget armorLine(BuildContext context, ArmorUse a, WarriorModel warrior) {
-    final def = widget.armory.findArmour(a);
+  Widget armorLine(
+      BuildContext context, ArmorUse armour, WarriorModel warrior) {
+    final def = widget.armory.findArmour(armour);
+    final defaultItem = (warrior.type.defaultItems ?? [])
+        .where((eq) => eq.itemName == armour.typeName)
+        .firstOrNull;
     return Row(
       children: [
         SizedBox(
           width: 40,
           child: CurrencyWidget(
-            cost: a.cost,
+            cost: armour.cost,
             simultaneous: false,
           ),
         ),
-        SizedBox(width: 240, child: Text(a.typeName)),
-        const Divider(),
+        SizedBox(width: 240, child: Text(armour.typeName)),
+        const Spacer(),
         Row(
           children: [Text("Armour: ${def.value ?? 0}")],
         ),
-        const Spacer(),
-        _editMode && a.isRemovable
+        defaultItem != null && defaultItem.replacements != null
+            ? replaceArmour(context, warrior, armour, defaultItem)
+            : const SizedBox(),
+        _editMode && armour.isRemovable
             ? IconButton(
                 onPressed: () {
-                  warrior.armour.removeWhere((d) => a.typeName == d.typeName);
+                  warrior.removeItem(armour);
                   context.read<WarbandModel>().invalidate();
                 },
                 icon: const Icon(Icons.delete))
             : const SizedBox()
       ],
+    );
+  }
+
+  TextButton replaceArmour(
+    BuildContext context,
+    WarriorModel warrior,
+    ArmorUse oldArmour,
+    DefaultItem replaceableItem,
+  ) {
+    return TextButton(
+      onPressed: () {
+        var wb = context.read<WarbandModel>();
+        showModalBottomSheet(
+            context: context,
+            builder: (BuildContext context) {
+              final alterEgo = warrior.copyWith(name: "", newUid: -1);
+              alterEgo.removeItem(oldArmour);
+              final replacements = alterEgo
+                  .availableArmours(
+                widget.roster,
+                widget.armory,
+              )
+                  .where((item) {
+                debugPrint(item.getName);
+                final replacements = replaceableItem.replacements!;
+                if (item.getName == oldArmour.getName) return false;
+                if (!replacements.isAllowed(item.getName)) return false;
+                return true;
+              }).map((item) {
+                item.cost = oldArmour.cost.offset(item.cost);
+                return item;
+              }).toList();
+              return ItemChooser(
+                  elements: replacements,
+                  armory: widget.armory,
+                  callback: (eq) {
+                    final newArmour = widget.roster.armour
+                        .firstWhere((w) => w.typeName == eq);
+                    warrior.replace(oldArmour, newArmour);
+                    wb.invalidate();
+                    Navigator.pop(context);
+                  });
+            });
+      },
+      child: const Text("Replace"),
     );
   }
 
@@ -397,8 +443,7 @@ class _WarbandViewState extends State<WarbandView> {
         _editMode && e.isRemovable
             ? IconButton(
                 onPressed: () {
-                  warrior.equipment
-                      .removeWhere((d) => e.typeName == d.typeName);
+                  warrior.removeItem(e);
                   context.read<WarbandModel>().invalidate();
                 },
                 icon: const Icon(Icons.delete))

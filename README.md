@@ -28,13 +28,13 @@ Roster management
 - [x] Deactivate consumed units
 - [x] Yeoman bolt-rifle requirement
 - [ ] Combat engineer armor
-- [ ] Machine armour limits
+- [ ] Machine armour replacement!
 - [ ] Either list units base modifier, or add them to weapons as before
 - [ ] grenades, limit count, weapon type
 - [ ] Validate lists
   - [ ] Min characters
   - [x] Yeoman bolt-rifle or other ranged (any ranged)
-- [ ] Restore removed equipment after delete replacement
+- [x] Restore removed equipment after delete replacement
 
 ### Lists:
 - [x] Cult
