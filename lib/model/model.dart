@@ -149,7 +149,7 @@ class Unit {
   List<String> keywords = [];
   List<DefaultItem>? defaultItems;
   Currency cost = const Currency(ducats: 0);
-  int base = 25;
+  String base = "25";
   int? hands;
 
   int get getHands => hands ?? 2;

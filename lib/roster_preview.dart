@@ -226,7 +226,7 @@ class UnitDescription extends StatelessWidget {
                 Text(ranged),
                 Text(melee),
                 Text("${unit.armour}"),
-                Text("${unit.base}"),
+                Text(unit.base),
               ]),
             ],
           ),

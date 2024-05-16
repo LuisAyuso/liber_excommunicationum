@@ -86,7 +86,7 @@
             "cost": {
                 "ducats": 70
             },
-            "base": 32
+            "base": "32mm"
         },
         {
             "typeName": "Trench Cleric",
@@ -106,7 +106,7 @@
             "cost": {
                 "ducats": 60
             },
-            "base": 32
+            "base": "32mm"
         },
         {
             "typeName": "Sniper Priests",
@@ -127,7 +127,7 @@
             "cost": {
                 "ducats": 50
             },
-            "base": 25
+            "base": "25mm"
         },
         {
             "typeName": "Yeoman",
@@ -153,7 +153,7 @@
                     }
                 }
             ],
-            "base": 25
+            "base": "25mm"
         },
         {
             "typeName": "Trench Mole",
@@ -169,7 +169,7 @@
             "cost": {
                 "ducats": 40
             },
-            "base": 25
+            "base": "25mm"
         },
         {
             "typeName": "Shocktroopers",
@@ -187,7 +187,7 @@
             "cost": {
                 "ducats": 45
             },
-            "base": 25
+            "base": "25mm"
         },
         {
             "typeName": "Combat Engineers",
@@ -214,7 +214,7 @@
             "cost": {
                 "ducats": 45
             },
-            "base": 25
+            "base": "25mm"
         },
         {
             "typeName": "Mechanised Heavy Infantry",
@@ -244,7 +244,7 @@
             "cost": {
                 "ducats": 85
             },
-            "base": 32
+            "base": "32mm"
         },
         {
             "typeName": "Combat Medic",
@@ -281,7 +281,7 @@
             "cost": {
                 "ducats": 65
             },
-            "base": 25
+            "base": "25mm"
         }
     ],
     "weapons": [

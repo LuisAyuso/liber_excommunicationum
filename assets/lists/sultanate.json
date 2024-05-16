@@ -86,7 +86,7 @@
             "cost": {
                 "ducats": 70
             },
-            "base": 32
+            "base": "32mm"
         },
         {
             "typeName": "Jabirean Alchemist",
@@ -105,7 +105,7 @@
             "cost": {
                 "ducats": 55
             },
-            "base": 32
+            "base": "32mm"
         },
         {
             "typeName": "Sultanate Assassin",
@@ -127,7 +127,7 @@
             "cost": {
                 "ducats": 85
             },
-            "base": 32
+            "base": "32mm"
         },
         {
             "typeName": "Azebs",
@@ -141,7 +141,7 @@
             "cost": {
                 "ducats": 25
             },
-            "base": 32
+            "base": "32mm"
         },
         {
             "typeName": "Sultanate Sappers",
@@ -161,7 +161,7 @@
             "cost": {
                 "ducats": 50
             },
-            "base": 32
+            "base": "32mm"
         },
         {
             "typeName": "Lions of Jabir",
@@ -181,7 +181,7 @@
             "cost": {
                 "ducats": 60
             },
-            "base": 60
+            "base": "30x60mm oval base"
         },
         {
             "typeName": "Janissaries",
@@ -201,7 +201,7 @@
             "cost": {
                 "ducats": 55
             },
-            "base": 32
+            "base": "32mm"
         },
         {
             "typeName": "Brazen Bull",
@@ -226,7 +226,7 @@
             "cost": {
                 "ducats": 100
             },
-            "base": 60
+            "base": "60mm"
         }
     ],
     "weapons": [

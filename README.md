@@ -38,7 +38,7 @@ Roster management
 - [x] default weapons in special units, wolf not unarmed
 - [ ] keywords and special rules in weapon line
 - [ ] Equipment-dependent equipment: bayonet or alchemical ammo
-- [ ] Oval bases
+- [x] Oval bases
 - [ ] No unarmed penalty
 - [ ] No grenades allowed? 
 - [ ] Anagram 6 arms

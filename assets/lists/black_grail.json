@@ -49,7 +49,7 @@
             "cost": {
                 "ducats": 130
             },
-            "base": 40
+            "base": "40mm"
         },
         {
             "typeName": "Plague Knight",
@@ -71,7 +71,7 @@
             "cost": {
                 "ducats": 60
             },
-            "base": 32
+            "base": "32mm"
         },
         {
             "typeName": "Corpse Guard",
@@ -94,7 +94,7 @@
             "cost": {
                 "ducats": 55
             },
-            "base": 32
+            "base": "32mm"
         },
         {
             "typeName": "Hounds of the Black Grail",
@@ -116,7 +116,7 @@
             "cost": {
                 "ducats": 65
             },
-            "base": 60,
+            "base": "30x60mm oval base",
             "rangedWeaponFilter": {
                 "none": true
             },
@@ -149,7 +149,7 @@
             "cost": {
                 "ducats": 30
             },
-            "base": 25,
+            "base": "25mm",
             "rangedWeaponFilter": {
                 "none": true
             },
@@ -184,7 +184,7 @@
             "cost": {
                 "ducats": 55
             },
-            "base": 25,
+            "base": "25mm",
             "armourFilter": {
                 "whitelist": [
                     "Trench Shield"
@@ -217,7 +217,7 @@
             "cost": {
                 "ducats": 150
             },
-            "base": 25,
+            "base": "25mm",
             "armourFilter": {
                 "none": true
             },

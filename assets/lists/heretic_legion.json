@@ -86,7 +86,7 @@
             "cost": {
                 "ducats": 80
             },
-            "base": 32
+            "base": "32mm"
         },
         {
             "typeName": "Heretic Death Commando",
@@ -108,7 +108,7 @@
             "cost": {
                 "ducats": 90
             },
-            "base": 32,
+            "base": "32mm",
             "rangedWeaponFilter": {
                 "whitelist": [
                     "Silenced Pistol"
@@ -134,7 +134,7 @@
             "cost": {
                 "ducats": 65
             },
-            "base": 32
+            "base": "32mm"
         },
         {
             "typeName": "Heretic Trooper",
@@ -148,7 +148,7 @@
             "cost": {
                 "ducats": 30
             },
-            "base": 25
+            "base": "25mm"
         },
         {
             "typeName": "Legionnaire Melee",
@@ -162,7 +162,7 @@
             "cost": {
                 "ducats": 40
             },
-            "base": 25
+            "base": "25mm"
         },
         {
             "typeName": "Legionnaire Ranged",
@@ -176,7 +176,7 @@
             "cost": {
                 "ducats": 40
             },
-            "base": 25
+            "base": "25mm"
         },
         {
             "typeName": "Anointed Heavy Infantry",
@@ -194,7 +194,7 @@
             "cost": {
                 "ducats": 95
             },
-            "base": 32,
+            "base": "32mm",
             "defaultItems": [
                 {
                     "itemName": "Heavy Armour",
@@ -228,7 +228,7 @@
             "cost": {
                 "ducats": 140
             },
-            "base": 50,
+            "base": "50mm",
             "rangedWeaponFilter": {
                 "none": true
             },
@@ -275,7 +275,7 @@
             "cost": {
                 "ducats": 90
             },
-            "base": 25,
+            "base": "25mm",
             "rangedWeaponFilter": {
                 "none": true
             },

@@ -58,7 +58,7 @@
             "cost": {
                 "ducats": 80
             },
-            "base": 32
+            "base": "32mm"
         },
         {
             "typeName": "Castigator",
@@ -78,7 +78,7 @@
             "cost": {
                 "ducats": 50
             },
-            "base": 32
+            "base": "32mm"
         },
         {
             "typeName": "Communicant",
@@ -99,7 +99,7 @@
             "cost": {
                 "ducats": 100
             },
-            "base": 40
+            "base": "40mm"
         },
         {
             "typeName": "Trench Pilgrim",
@@ -116,7 +116,7 @@
             "cost": {
                 "ducats": 30
             },
-            "base": 25
+            "base": "25mm"
         },
         {
             "typeName": "Martyr Penitent",
@@ -130,7 +130,7 @@
             "cost": {
                 "ducats": 45
             },
-            "base": 25
+            "base": "25mm"
         },
         {
             "typeName": "Ecclesiastic Prisoners",
@@ -148,7 +148,7 @@
             "cost": {
                 "ducats": 55
             },
-            "base": 25,
+            "base": "25mm",
             "rangedWeaponFilter": {
                 "none": true
             },
@@ -179,7 +179,7 @@
             "cost": {
                 "ducats": 50
             },
-            "base": 25,
+            "base": "25mm",
             "rangedWeaponFilter": {
                 "whitelist": [
                     "Automatic Pistol"
@@ -208,7 +208,7 @@
             "cost": {
                 "ducats": 140
             },
-            "base": 50,
+            "base": "50mm",
             "defaultItems": [
                 {
                     "itemName": "Heavy Armour",

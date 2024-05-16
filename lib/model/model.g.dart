@@ -88,7 +88,7 @@ Unit _$UnitFromJson(Map<String, dynamic> json) => Unit()
       ?.map((e) => DefaultItem.fromJson(e as Map<String, dynamic>))
       .toList()
   ..cost = Currency.fromJson(json['cost'] as Map<String, dynamic>)
-  ..base = json['base'] as int
+  ..base = json['base'] as String
   ..hands = json['hands'] as int?
   ..rangedWeaponFilter = json['rangedWeaponFilter'] == null
       ? null
