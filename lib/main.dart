@@ -38,13 +38,16 @@ class WarbandChooser extends StatelessWidget {
         body: GridView.count(
           crossAxisCount: 2, // Number of columns in the grid
           children: [
-            warbandButton(context, "Heretic Cult", "assets/lists/cult.json"),
+            warbandButton(
+                context, "Heretic Legion", "assets/lists/heretic_legion.json"),
             warbandButton(context, "Trench Pilgrims",
                 "assets/lists/trench_pilgrims.json"),
             warbandButton(context, "The Principality of New Antioch",
                 "assets/lists/new_antioch.json"),
             warbandButton(
                 context, "The Iron Sultanate", "assets/lists/sultanate.json"),
+            warbandButton(context, "The Cult of the Black Grail",
+                "assets/lists/black_grail.json"),
           ],
         ),
       ),

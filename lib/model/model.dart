@@ -150,6 +150,9 @@ class Unit {
   List<DefaultItem>? defaultItems;
   Currency cost = const Currency(ducats: 0);
   int base = 25;
+  int? hands;
+
+  int get getHands => hands ?? 2;
 
   Filter? rangedWeaponFilter;
   Filter get getRangedWeaponFilter => rangedWeaponFilter ?? Filter();

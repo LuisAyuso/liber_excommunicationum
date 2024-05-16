@@ -201,8 +201,8 @@ void main() {
     validateArmory(armory);
   });
 
-  test('load cult list', () async {
-    testList('assets/lists/cult.json');
+  test('load heretic legion list', () async {
+    testList('assets/lists/heretic_legion.json');
   });
   test('load trench pilgrims list', () async {
     testList('assets/lists/trench_pilgrims.json');
@@ -213,6 +213,10 @@ void main() {
 
   test('load sultanate list', () async {
     testList('assets/lists/sultanate.json');
+  });
+
+  test('load black grail', () async {
+    testList('assets/lists/black_grail.json');
   });
 }
 

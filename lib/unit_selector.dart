@@ -9,6 +9,7 @@ import 'package:tc_thing/utils.dart';
 String makeName(List<String> names, List<String> surnames) {
   final random = Random();
   final name = names[random.nextInt(names.length)];
+  if (surnames.isEmpty) return name;
   final surname = surnames[random.nextInt(surnames.length)];
   return "$name $surname";
 }

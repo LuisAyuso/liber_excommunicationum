@@ -89,6 +89,7 @@ Unit _$UnitFromJson(Map<String, dynamic> json) => Unit()
       .toList()
   ..cost = Currency.fromJson(json['cost'] as Map<String, dynamic>)
   ..base = json['base'] as int
+  ..hands = json['hands'] as int?
   ..rangedWeaponFilter = json['rangedWeaponFilter'] == null
       ? null
       : Filter.fromJson(json['rangedWeaponFilter'] as Map<String, dynamic>)
@@ -115,6 +116,7 @@ Map<String, dynamic> _$UnitToJson(Unit instance) => <String, dynamic>{
       'defaultItems': instance.defaultItems,
       'cost': instance.cost,
       'base': instance.base,
+      'hands': instance.hands,
       'rangedWeaponFilter': instance.rangedWeaponFilter,
       'meleeWeaponFilter': instance.meleeWeaponFilter,
       'armourFilter': instance.armourFilter,
@@ -247,8 +249,8 @@ Map<String, dynamic> _$ModifierToJson(Modifier instance) => <String, dynamic>{
       'hit': instance.hit,
       'injury': instance.injury,
       'attacks': instance.attacks,
-      'type': _$ModifierTypeEnumMap[instance.type],
       'extra': instance.extra,
+      'type': _$ModifierTypeEnumMap[instance.type],
       'bonusType': _$BonusTypeEnumMap[instance.bonusType],
     };
 

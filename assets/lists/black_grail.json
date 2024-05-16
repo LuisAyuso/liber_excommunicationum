@@ -1,0 +1,495 @@
+{
+    "namesM": [
+        "Xul'kuth",
+        "Zy'gorth",
+        "Thal'gorak",
+        "Vor'thul",
+        "Kra'zul",
+        "Umbra'kai",
+        "Nyx'gara",
+        "Zarath'koth",
+        "Eldra'nar",
+        "Ygg'varoth",
+        "Neth'rax",
+        "Xar'zoth",
+        "Vex'loth",
+        "Za'gul",
+        "Thul'kai",
+        "Xyn'thar",
+        "Ylthar'gon",
+        "Zul'kara",
+        "Vulth'rax",
+        "Kyth'gor"
+    ],
+    "namesF": [],
+    "surnames": [],
+    "units": [
+        {
+            "typeName": "Lord of Tumours",
+            "min": 1,
+            "max": 1,
+            "movement": 6,
+            "ranged": 1,
+            "melee": 4,
+            "armour": 0,
+            "abilities": [
+                "Beelzebub’s Touch",
+                "Undead Fortitude",
+                "Tough",
+                "Fear",
+                "Strong"
+            ],
+            "keywords": [
+                "BLACK GRAIL",
+                "ELITE",
+                "THOUGH",
+                "STRONG",
+                "FEAR"
+            ],
+            "cost": {
+                "ducats": 130
+            },
+            "base": 40
+        },
+        {
+            "typeName": "Plague Knight",
+            "max": 1,
+            "movement": 6,
+            "ranged": 0,
+            "melee": 2,
+            "armour": 0,
+            "abilities": [
+                "Undead Fortitude",
+                "Fear",
+                "Strong"
+            ],
+            "keywords": [
+                "BLACK GRAIL",
+                "ELITE",
+                "FEAR"
+            ],
+            "cost": {
+                "ducats": 60
+            },
+            "base": 32
+        },
+        {
+            "typeName": "Corpse Guard",
+            "max": 2,
+            "movement": 6,
+            "ranged": 0,
+            "melee": 1,
+            "armour": 0,
+            "abilities": [
+                "Parasitic Tick",
+                "Bodyguard",
+                "Undead Fortitude",
+                "Fear"
+            ],
+            "keywords": [
+                "BLACK GRAIL",
+                "ELITE",
+                "FEAR"
+            ],
+            "cost": {
+                "ducats": 55
+            },
+            "base": 32
+        },
+        {
+            "typeName": "Hounds of the Black Grail",
+            "max": 3,
+            "movement": 8,
+            "ranged": 0,
+            "melee": 1,
+            "armour": 0,
+            "abilities": [
+                "Undead Fortitude",
+                "Frightening Speed",
+                "Fear"
+            ],
+            "keywords": [
+                "BLACK GRAIL",
+                "ELITE",
+                "FEAR"
+            ],
+            "cost": {
+                "ducats": 65
+            },
+            "base": 60,
+            "rangedWeaponFilter": {
+                "none": true
+            },
+            "meleeWeaponFilter": {
+                "none": true
+            },
+            "armourFilter": {
+                "none": true
+            },
+            "equipmentFilter": {
+                "none": true
+            }
+        },
+        {
+            "typeName": "Grail Thrall",
+            "movement": 4,
+            "ranged": 0,
+            "melee": -1,
+            "armour": 0,
+            "abilities": [
+                "Overwhelming Horde",
+                "Undead Fortitude",
+                "Fear"
+            ],
+            "keywords": [
+                "BLACK GRAIL",
+                "ELITE",
+                "FEAR"
+            ],
+            "cost": {
+                "ducats": 30
+            },
+            "base": 25,
+            "rangedWeaponFilter": {
+                "none": true
+            },
+            "meleeWeaponFilter": {
+                "none": true
+            },
+            "armourFilter": {
+                "none": true
+            },
+            "equipmentFilter": {
+                "none": true
+            }
+        },
+        {
+            "typeName": "Heralds of Beelzebub",
+            "movement": 10,
+            "ranged": 0,
+            "melee": 0,
+            "armour": 0,
+            "abilities": [
+                "Infected Proboscis",
+                "Maddening Buzz",
+                "Ignore Gas",
+                "Skirmisher",
+                "Fear"
+            ],
+            "keywords": [
+                "BLACK GRAIL",
+                "ELITE",
+                "FEAR"
+            ],
+            "cost": {
+                "ducats": 55
+            },
+            "base": 25,
+            "armourFilter": {
+                "whitelist": [
+                    "Trench Shield"
+                ]
+            },
+            "equipmentFilter": {
+                "none": true
+            }
+        },
+        {
+            "typeName": "Amalgam",
+            "movement": 6,
+            "ranged": 0,
+            "melee": 0,
+            "armour": 0,
+            "hands": 6,
+            "abilities": [
+                "Corpulent",
+                "Tough",
+                "Toxic",
+                "Trample",
+                "Unstoppable",
+                "Fear"
+            ],
+            "keywords": [
+                "BLACK GRAIL",
+                "THOUGH",
+                "FEAR"
+            ],
+            "cost": {
+                "ducats": 150
+            },
+            "base": 25,
+            "armourFilter": {
+                "none": true
+            },
+            "equipmentFilter": {
+                "none": true
+            }
+        }
+    ],
+    "weapons": [
+        {
+            "typeName": "Bolt Action Rifle",
+            "cost": {
+                "ducats": 10
+            }
+        },
+        {
+            "typeName": "Pistol/Revolver",
+            "cost": {
+                "ducats": 10
+            }
+        },
+        {
+            "typeName": "Musket",
+            "cost": {
+                "ducats": 5
+            }
+        },
+        {
+            "typeName": "Infested Riffle",
+            "cost": {
+                "ducats": 15
+            }
+        },
+        {
+            "typeName": "Corruption Belcher",
+            "cost": {
+                "ducats": 15
+            },
+            "limit": 2,
+            "keywordFilter": {
+                "whitelist": [
+                    "ELITE"
+                ]
+            }
+        },
+        {
+            "typeName": "Putrid Shotgun",
+            "cost": {
+                "ducats": 35
+            },
+            "limit": 2
+        },
+        {
+            "typeName": "Gas Grenades",
+            "cost": {
+                "ducats": 10
+            }
+        },
+        {
+            "typeName": "Parasite Grenades",
+            "cost": {
+                "ducats": 15
+            }
+        },
+        {
+            "typeName": "Viscera Cannon",
+            "cost": {
+                "ducats": 60
+            },
+            "limit": 1,
+            "keywordFilter": {
+                "whitelist": [
+                    "ELITE"
+                ]
+            }
+        },
+        {
+            "typeName": "Knife/Dagger",
+            "cost": {
+                "ducats": 1
+            }
+        },
+        {
+            "typeName": "Bayonet",
+            "cost": {
+                "ducats": 2
+            }
+        },
+        {
+            "typeName": "Trench Club",
+            "cost": {
+                "ducats": 3
+            }
+        },
+        {
+            "typeName": "Sword/Axe",
+            "cost": {
+                "ducats": 4
+            }
+        },
+        {
+            "typeName": "Trench Polearm",
+            "cost": {
+                "ducats": 7
+            }
+        },
+        {
+            "typeName": "Great Sword/Axe",
+            "cost": {
+                "ducats": 15
+            }
+        },
+        {
+            "typeName": "Double-Handed Blunt Weapon",
+            "cost": {
+                "ducats": 12
+            }
+        }
+    ],
+    "armour": [
+        {
+            "typeName": "Standard Armour",
+            "cost": {
+                "ducats": 20
+            }
+        },
+        {
+            "typeName": "Heavy Armour",
+            "cost": {
+                "ducats": 40
+            },
+            "keywordFilter": {
+                "whitelist": [
+                    "ELITE"
+                ]
+            }
+        },
+        {
+            "typeName": "Trench Shield",
+            "cost": {
+                "ducats": 15
+            }
+        },
+        {
+            "typeName": "Black Grail Shield",
+            "cost": {
+                "ducats": 20
+            },
+            "keywordFilter": {
+                "whitelist": [
+                    "ELITE"
+                ]
+            }
+        }
+    ],
+    "equipment": [
+        {
+            "typeName": "Combat Helmet",
+            "cost": {
+                "ducats": 5
+            }
+        },
+        {
+            "typeName": "Unholy Trinket",
+            "cost": {
+                "ducats": 15
+            },
+            "keywords": [
+                "CONSUMABLE"
+            ]
+        },
+        {
+            "typeName": "Unholy Relic",
+            "cost": {
+                "ducats": 30
+            },
+            "keywordFilter": {
+                "whitelist": [
+                    "ELITE"
+                ]
+            }
+        },
+        {
+            "typeName": "Troop Flag",
+            "cost": {
+                "glory": 1
+            }
+        },
+        {
+            "typeName": "Field Shrine",
+            "cost": {
+                "glory": 2
+            }
+        }
+    ],
+    "uniqueWeapons": [
+        {
+            "typeName": "Infested Riffle",
+            "hands": 2,
+            "range": 12
+        },
+        {
+            "typeName": "Corruption Belcher",
+            "hands": 2,
+            "range": 8,
+            "modifiers": [
+                {
+                    "injury": -1
+                }
+            ],
+            "keywords": [
+                "GAS"
+            ]
+        },
+        {
+            "typeName": "Putrid Shotgun",
+            "hands": 2,
+            "range": 12,
+            "modifiers": [
+                {
+                    "hit": 1
+                },
+                {
+                    "injury": 1
+                }
+            ],
+            "keywords": [
+                "ASSAULT"
+            ]
+        },
+        {
+            "typeName": "Viscera Cannon",
+            "hands": 2,
+            "range": 18,
+            "modifiers": [
+                {
+                    "hit": 2
+                }
+            ],
+            "keywords": [
+                "HEAVY"
+            ]
+        },
+        {
+            "typeName": "Plage Blade",
+            "hands": 1
+        },
+        {
+            "typeName": "Beelzebub’s Axe",
+            "hands": 2,
+            "keywords": [
+                "HEAVY"
+            ],
+            "modifiers": [
+                {
+                    "injury": 1
+                }
+            ]
+        },
+        {
+            "typeName": "Parasite Grenades",
+            "hands": 0,
+            "range": 8,
+            "keywords": [
+                "ASSAULT"
+            ]
+        }
+    ],
+    "uniqueArmour": [
+        {
+            "typeName": "Black Grail Shield",
+            "value": -1
+        }
+    ]
+}

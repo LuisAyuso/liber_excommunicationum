@@ -155,7 +155,7 @@ class WarriorModel {
           ? meleeCount(armory) <= 2
           : meleeCount(armory) <= 1;
   int freeHands(Armory armory) =>
-      2 -
+      type.getHands -
       getWeapons(armory)
           .where((w) => w.isMeleeWeapon)
           .fold(0, (v, w) => v + w.hands);
