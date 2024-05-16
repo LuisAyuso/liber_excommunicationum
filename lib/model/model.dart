@@ -151,8 +151,10 @@ class Unit {
   Currency cost = const Currency(ducats: 0);
   String base = "25";
   int? hands;
+  bool? unarmedPenalty;
 
   int get getHands => hands ?? 2;
+  bool get getUnarmedPenalty => unarmedPenalty ?? true;
 
   Filter? rangedWeaponFilter;
   Filter get getRangedWeaponFilter => rangedWeaponFilter ?? Filter();

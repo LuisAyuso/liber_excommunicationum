@@ -62,6 +62,10 @@ class WarriorModel {
   Iterable<WeaponUse> weaponsOrUnarmed(Armory armory) {
     final collection = weapons.toList();
     if (collection.where((wu) => armory.findWeapon(wu).canMelee).isEmpty) {
+      if (!type.getUnarmedPenalty) {
+        return [];
+      }
+
       return Iterable.generate(weapons.length + 1, (idx) {
         if (idx == 0) return WeaponUse.unarmed();
         return collection[idx - 1];
