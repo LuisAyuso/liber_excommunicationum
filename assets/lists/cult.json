@@ -211,8 +211,8 @@
             "max": 1,
             "movement": 8,
             "ranged": 0,
-            "melee": 3,
-            "armour": -2,
+            "melee": 0,
+            "armour": -3,
             "abilities": [
                 "Tough",
                 "Loping Dash",
@@ -240,7 +240,23 @@
             },
             "equipmentFilter": {
                 "none": true
-            }
+            },
+            "defaultItems": [
+                {
+                    "itemName": "Chainmaw",
+                    "removable": false,
+                    "const": {
+                        "ducats": 0
+                    }
+                },
+                {
+                    "itemName": "Shredding Claws",
+                    "removable": false,
+                    "const": {
+                        "ducats": 0
+                    }
+                }
+            ]
         },
         {
             "typeName": "Artillery Witches",
@@ -462,6 +478,22 @@
                     "ELITE"
                 ]
             }
+        },
+        {
+            "typeName": "Chainmaw",
+            "unitNameFilter": {
+                "whitelist": [
+                    "War Wolf Assault Beast"
+                ]
+            }
+        },
+        {
+            "typeName": "Shredding Claws",
+            "unitNameFilter": {
+                "whitelist": [
+                    "War Wolf Assault Beast"
+                ]
+            }
         }
     ],
     "armour": [
@@ -557,6 +589,39 @@
                     "Legionnaire Ranged"
                 ]
             }
+        }
+    ],
+    "uniqueWeapons": [
+        {
+            "typeName": "Chainmaw",
+            "hands": 2,
+            "keywords": [
+                "RISKY 3D"
+            ],
+            "modifiers": [
+                {
+                    "hit": 3
+                },
+                {
+                    "injury": 1
+                },
+                {
+                    "extra": "Ignore Armour"
+                }
+            ]
+        },
+        {
+            "typeName": "Shredding Claws",
+            "hands": 2,
+            "keywords": [],
+            "modifiers": [
+                {
+                    "hit": 1
+                },
+                {
+                    "injury": 1
+                }
+            ]
         }
     ]
 }

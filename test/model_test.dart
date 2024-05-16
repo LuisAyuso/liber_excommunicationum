@@ -217,6 +217,10 @@ void main() {
 }
 
 void validateArmory(Armory armory) {
+  for (var w in armory.weapons) {
+    expect(armory.weapons.where((elem) => elem.typeName == w.typeName),
+        hasLength(1));
+  }
   for (var weapon in armory.weapons) {
     debugPrint(weapon.typeName);
     expect(armory.isArmour(weapon.typeName), false);
@@ -226,10 +230,18 @@ void validateArmory(Armory armory) {
       expect(mod.cat(), predicate((v) => v != ModifierCategory.unknown));
     }
   }
+  for (var a in armory.armours) {
+    expect(armory.armours.where((elem) => elem.typeName == a.typeName),
+        hasLength(1));
+  }
   for (var armour in armory.armours) {
     expect(armory.isArmour(armour.typeName), true);
     expect(armory.isWeapon(armour.typeName), false);
     expect(armory.isEquipment(armour.typeName), false);
+  }
+  for (var e in armory.equipments) {
+    expect(armory.equipments.where((elem) => elem.typeName == e.typeName),
+        hasLength(1));
   }
   for (var equipment in armory.equipments) {
     expect(armory.isArmour(equipment.typeName), false);

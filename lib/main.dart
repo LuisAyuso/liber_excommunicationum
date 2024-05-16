@@ -106,7 +106,6 @@ class WarbandPage extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           var (roster, armory) = future.data!;
-          armory.extendWithUnique(roster);
           return WarbandView(
             title: title,
             roster: roster,
@@ -124,11 +123,7 @@ class WarbandPage extends StatelessWidget {
     data = await DefaultAssetBundle.of(context)
         .loadString("assets/lists/armory.json");
     var a = Armory.fromJson(jsonDecode(data));
-
-    a.weapons.addAll(r.uniqueWeapons ?? []);
-    a.armours.addAll(r.uniqueArmour ?? []);
-    a.equipments.addAll(r.uniqueEquipment ?? []);
-
+    a.extendWithUnique(r);
     return (r, a);
   }
 }
