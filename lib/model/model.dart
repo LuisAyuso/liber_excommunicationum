@@ -422,7 +422,7 @@ class Weapon extends Item {
 
   bool get canMelee => range == null || (melee ?? false);
   bool get canRanged => range != null;
-  bool get isFirearm => canRanged && !typeName.contains("Pistol");
+  bool get isFirearm => canRanged && !isPistol && !isGrenade;
   bool get isMeleeWeapon => !canRanged && canMelee;
   bool get isPistol => typeName.contains("Pistol");
   bool get isRifle => typeName.contains("Rifle");

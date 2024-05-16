@@ -103,7 +103,12 @@ class ItemDescription extends StatelessWidget {
                 def.isGrenade
                     ? const Text("Grenades")
                     : Text("${def.hands}-handed"),
-                def.range != null ? Text('${def.range}"') : const Text("Melee"),
+                Column(
+                  children: [
+                    def.canRanged ? Text('${def.range}"') : const SizedBox(),
+                    def.canMelee ? const Text("Melee") : const SizedBox(),
+                  ],
+                ),
                 Text(def.getModifiersString(Modifier(), ModifierType.any)),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

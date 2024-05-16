@@ -141,11 +141,11 @@ class WarriorModel {
       armour.map((w) => armory.findEquipment(w));
 
   int pistolsCount(Armory armory) =>
-      getWeapons(armory).fold(0, (v, w) => v + (w.isPistol ? 1 : 0));
+      getWeapons(armory).where((w) => w.isPistol).length;
   int firearmsCount(Armory armory) =>
-      getWeapons(armory).fold(0, (v, w) => v + (w.isFirearm ? 1 : 0));
+      getWeapons(armory).where((w) => w.isFirearm).length;
   int meleeCount(Armory armory) =>
-      getWeapons(armory).fold(0, (v, w) => v + (w.isMeleeWeapon ? 1 : 0));
+      getWeapons(armory).where((w) => w.isMeleeWeapon).length;
 
   bool allowPistol(Armory armory) =>
       (firearmsCount(armory) == 0 && pistolsCount(armory) < 2) ||
@@ -169,6 +169,11 @@ class WarriorModel {
   UnmodifiableListView<WeaponUse> availableWeapons(
       Roster roster, Armory armory) {
     return UnmodifiableListView(roster.weapons.where((weapon) {
+      // no repes
+      if (weapons.where((w) => w.getName == weapon.getName).isNotEmpty) {
+        return false;
+      }
+
       final def = armory.findWeapon(weapon);
 
       if (def.canMelee &&
@@ -190,8 +195,10 @@ class WarriorModel {
         return false;
       }
 
+      if (def.isGrenade) return true;
       if (def.isPistol && allowPistol(armory)) return true;
       if (def.isFirearm && firearmsCount(armory) < 1) return true;
+
       if (def.isMeleeWeapon && allowMelee(armory)) {
         return freeHands(armory) >= def.hands;
       }

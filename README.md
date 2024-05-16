@@ -30,7 +30,7 @@ Roster management
 - [ ] Combat engineer armor
 - [ ] Machine armour replacement!
 - [x] Either list units base modifier, or add them to weapons as before
-- [ ] grenades, limit count, weapon type
+- [x] grenades, limit count, weapon type
 - [ ] Validate lists
   - [ ] Min characters
   - [x] Yeoman bolt-rifle or other ranged (any ranged)
