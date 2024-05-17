@@ -14,15 +14,15 @@ enum ItemKind { weapon, armour, equipment }
 class FilterItem {
   FilterItem({
     this.bypassValue,
-      this.none,
-      this.allOf,
-      this.noneOf,
-      this.anyOf,
-      this.not,
-      this.unitKeyword,
-      this.unitName,
-      this.containsItem,
-      this.itemKind,
+    this.none,
+    this.allOf,
+    this.noneOf,
+    this.anyOf,
+    this.not,
+    this.unitKeyword,
+    this.unitName,
+    this.containsItem,
+    this.itemKind,
     this.itemName,
     this.rangedWeapon,
     this.meleeWeapon,
@@ -172,8 +172,8 @@ class Currency {
     if (isDucats != other.isDucats) return other;
     final v = other - this;
     if (v.ducats < 0 && v.glory == 0) return this;
-    if (v.glory < 0 && v.ducats == 0) return other;
-    return other;
+    if (v.glory < 0 && v.ducats == 0) return this;
+    return v;
   }
 
   Currency operator -(Currency other) {
@@ -202,6 +202,8 @@ class ItemReplacement {
 
   ReplacementPolicy policy = ReplacementPolicy.anyFrom;
   List<String>? values = [];
+  // FIXME: this is a hack to get the right value for mech-armour, fix properly
+  Currency? offsetCost;
 
   bool isAllowed(String itemName) {
     switch (policy) {
@@ -285,15 +287,18 @@ abstract class ItemUse {
 
 @JsonSerializable(explicitToJson: true)
 class WeaponUse extends ItemUse {
-  WeaponUse({String? typeName, bool? removable, Currency? cost})
+  WeaponUse(
+      {String? typeName,
+      Currency? cost,
+      this.removable,
+      this.filter,
+      this.limit})
       : typeName = typeName ?? "",
-        removable = removable ?? true,
         cost = cost ?? Currency.free();
 
   String typeName = "";
   Currency cost = const Currency(ducats: 0);
   bool? removable;
-
   FilterItem? filter;
   int? limit;
 
@@ -318,9 +323,13 @@ class WeaponUse extends ItemUse {
 
 @JsonSerializable(explicitToJson: true)
 class ArmorUse extends ItemUse {
-  ArmorUse({String? typeName, bool? removable, Currency? cost})
+  ArmorUse(
+      {String? typeName,
+      Currency? cost,
+      this.removable,
+      this.limit,
+      this.filter})
       : typeName = typeName ?? "",
-        removable = removable ?? true,
         cost = cost ?? Currency.free();
 
   String typeName = "";

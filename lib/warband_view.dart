@@ -194,10 +194,8 @@ class _WarbandViewState extends State<WarbandView> {
                           return ItemChooser(
                               elements: availableWeapons.toList(),
                               armory: widget.armory,
-                              callback: (eq) {
-                                final e = widget.roster.weapons
-                                    .firstWhere((w) => w.typeName == eq);
-                                wb.getUID(warrior.uid).addItem(e);
+                              callback: (use) {
+                                wb.getUID(warrior.uid).addItem(use);
                                 wb.invalidate();
                                 Navigator.pop(context);
                               });
@@ -216,10 +214,8 @@ class _WarbandViewState extends State<WarbandView> {
                           return ItemChooser(
                               elements: availableArmours.toList(),
                               armory: widget.armory,
-                              callback: (eq) {
-                                final e = widget.roster.armour
-                                    .firstWhere((w) => w.typeName == eq);
-                                wb.getUID(warrior.uid).addItem(e);
+                              callback: (use) {
+                                wb.getUID(warrior.uid).addItem(use);
                                 wb.invalidate();
                                 Navigator.pop(context);
                               });
@@ -238,10 +234,8 @@ class _WarbandViewState extends State<WarbandView> {
                           return ItemChooser(
                               elements: availableEquipment.toList(),
                               armory: widget.armory,
-                              callback: (eq) {
-                                final e = widget.roster.equipment
-                                    .firstWhere((w) => w.typeName == eq);
-                                wb.getUID(warrior.uid).addItem(e);
+                              callback: (use) {
+                                wb.getUID(warrior.uid).addItem(use);
                                 wb.invalidate();
                                 Navigator.pop(context);
                               });
@@ -336,35 +330,35 @@ class _WarbandViewState extends State<WarbandView> {
   ) {
     return TextButton(
       onPressed: () {
-        var wb = context.read<WarbandModel>();
+        final replacements = replaceableItem.replacements ?? ItemReplacement();
+        var wb = context.read()<WarbandModel>();
         showModalBottomSheet(
             context: context,
             builder: (BuildContext context) {
               final alterEgo = warrior.copyWith(name: "", newUid: -1);
               alterEgo.removeItem(oldWeapon);
-              final replacements = alterEgo
+              final candidates = alterEgo
                   .availableWeapons(
                 widget.roster,
                 widget.armory,
               )
                   .where((item) {
                 if (item.getName == oldWeapon.getName) return false;
-                if (!replaceableItem.replacements!.isAllowed(item.getName)) {
+                if (!replacements.isAllowed(item.getName)) {
                   return false;
                 }
                 final defA = widget.armory.findWeapon(oldWeapon);
                 final defB = widget.armory.findWeapon(item);
                 return defA.canRanged == defB.canRanged;
               }).map((item) {
-                item.cost = oldWeapon.cost.offset(item.cost);
+                final offsetCost = replacements.offsetCost ?? oldWeapon.cost;
+                item.cost = offsetCost.offset(item.cost);
                 return item;
               }).toList();
               return ItemChooser(
-                  elements: replacements,
+                  elements: candidates,
                   armory: widget.armory,
-                  callback: (eq) {
-                    final newWeapon = widget.roster.weapons
-                        .firstWhere((w) => w.typeName == eq);
+                  callback: (newWeapon) {
                     warrior.replace(oldWeapon, newWeapon);
                     wb.invalidate();
                     Navigator.pop(context);
@@ -420,32 +414,35 @@ class _WarbandViewState extends State<WarbandView> {
     return TextButton(
       onPressed: () {
         var wb = context.read<WarbandModel>();
+        final replacements = replaceableItem.replacements ?? ItemReplacement();
         showModalBottomSheet(
             context: context,
             builder: (BuildContext context) {
               final alterEgo = warrior.copyWith(name: "", newUid: -1);
               alterEgo.removeItem(oldArmour);
-              final replacements = alterEgo
+              final newCandidates = alterEgo
                   .availableArmours(
                 widget.roster,
                 widget.armory,
               )
                   .where((item) {
                 debugPrint(item.getName);
-                final replacements = replaceableItem.replacements!;
                 if (item.getName == oldArmour.getName) return false;
                 if (!replacements.isAllowed(item.getName)) return false;
                 return true;
               }).map((item) {
-                item.cost = oldArmour.cost.offset(item.cost);
-                return item;
+                final offsetCost = replacements.offsetCost ?? oldArmour.cost;
+                return ArmorUse(
+                    typeName: item.typeName,
+                    cost: offsetCost.offset(item.cost),
+                    removable: item.removable,
+                    filter: item.filter,
+                    limit: item.limit);
               }).toList();
               return ItemChooser(
-                  elements: replacements,
+                  elements: newCandidates,
                   armory: widget.armory,
-                  callback: (eq) {
-                    final newArmour = widget.roster.armour
-                        .firstWhere((w) => w.typeName == eq);
+                  callback: (newArmour) {
                     warrior.replace(oldArmour, newArmour);
                     wb.invalidate();
                     Navigator.pop(context);
@@ -490,7 +487,7 @@ class ItemChooser extends StatelessWidget {
     required this.armory,
     this.priceOffset = const Currency(),
   });
-  final void Function(String) callback;
+  final void Function(dynamic) callback;
   final List<dynamic> elements;
   final Armory armory;
   final Currency priceOffset;
@@ -505,7 +502,7 @@ class ItemChooser extends StatelessWidget {
         child: Center(
           child: ListView.separated(
             itemBuilder: (ctx, idx) => InkWell(
-              onTap: () => callback(elements[idx].typeName),
+              onTap: () => callback(elements[idx]),
               child: ItemDescription(
                 item: elements[idx],
                 armory: armory,

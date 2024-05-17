@@ -227,8 +227,14 @@
                 {
                     "itemName": "Heavy Armour",
                     "removable": false,
+                    "cost": {
+                        "ducats": 0
+                    },
                     "replacements": {
                         "policy": "anyFrom",
+                        "offsetCost": {
+                            "ducats": 40
+                        },
                         "values": [
                             "Machine Armour"
                         ]
