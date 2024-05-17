@@ -265,14 +265,14 @@
             "cost": {
                 "ducats": 35
             },
-            "unitNameFilter": {
-                "whitelist": [
-                    "Janissaries"
-                ]
-            },
-            "keywordFilter": {
-                "whitelist": [
-                    "ELITE"
+            "filter": {
+                "anyOf": [
+                    {
+                        "unitName": "Janissaries"
+                    },
+                    {
+                        "unitKeyword": "ELITE"
+                    }
                 ]
             }
         },
@@ -302,10 +302,8 @@
             "cost": {
                 "ducats": 65
             },
-            "unitNameFilter": {
-                "whitelist": [
-                    "Brazen Bull"
-                ]
+            "filter": {
+                "unitName": "Brazen Bull"
             }
         },
         {
@@ -343,10 +341,8 @@
             "cost": {
                 "ducats": 20
             },
-            "keywordFilter": {
-                "whitelist": [
-                    "ELITE"
-                ]
+            "filter": {
+                "unitKeyword": "ELITE"
             }
         },
         {
@@ -366,10 +362,8 @@
             "cost": {
                 "ducats": 35
             },
-            "unitNameFilter": {
-                "whitelist": [
-                    "Brazen Bull"
-                ]
+            "filter": {
+                "unitName": "Brazen Bull"
             }
         },
         {
@@ -377,10 +371,8 @@
             "cost": {
                 "ducats": 10
             },
-            "unitNameFilter": {
-                "whitelist": [
-                    "Sultanate Assassin"
-                ]
+            "filter": {
+                "unitName": "Sultanate Assassin"
             }
         }
     ],
@@ -396,10 +388,8 @@
             "cost": {
                 "ducats": 40
             },
-            "keywordFilter": {
-                "whitelist": [
-                    "ELITE"
-                ]
+            "filter": {
+                "unitKeyword": "ELITE"
             }
         },
         {
@@ -407,10 +397,8 @@
             "cost": {
                 "ducats": 50
             },
-            "keywordFilter": {
-                "whitelist": [
-                    "ELITE"
-                ]
+            "filter": {
+                "unitKeyword": "ELITE"
             }
         },
         {
@@ -452,15 +440,15 @@
             }
         },
         {
-            "typeName": "Musical Instrument",
+            "typeName": "Musician's Instrument",
             "cost": {
                 "ducats": 15
             },
             "limit": 1,
-            "keywordFilter": {
-                "blacklist": [
-                    "ELITE"
-                ]
+            "filter": {
+                "not": {
+                    "unitKeyword": "ELITE"
+                }
             }
         },
         {
@@ -469,10 +457,8 @@
                 "ducats": 25
             },
             "limit": 1,
-            "keywordFilter": {
-                "whitelist": [
-                    "ELITE"
-                ]
+            "filter": {
+                "unitKeyword": "ELITE"
             }
         },
         {
@@ -494,10 +480,8 @@
             "cost": {
                 "ducats": 10
             },
-            "keywordFilter": {
-                "whitelist": [
-                    "ELITE"
-                ]
+            "filter": {
+                "unitKeyword": "ELITE"
             }
         },
         {
@@ -505,10 +489,8 @@
             "cost": {
                 "glory": 2
             },
-            "keywordFilter": {
-                "whitelist": [
-                    "ELITE"
-                ]
+            "filter": {
+                "unitKeyword": "ELITE"
             }
         }
     ],
@@ -589,7 +571,17 @@
     ],
     "uniqueEquipment": [
         {
-            "typeName": "Alchemical Ammunition"
+            "typeName": "Alchemical Ammunition",
+            "filter": {
+                "anyOf": [
+                    {
+                        "containsItem": "Jezzail"
+                    },
+                    {
+                        "containsItem": "Siege Jezzail"
+                    }
+                ]
+            }
         },
         {
             "typeName": "Cloak of Alamut"

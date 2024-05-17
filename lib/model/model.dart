@@ -4,40 +4,147 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:tc_thing/model/warband.dart';
 
 part 'model.g.dart';
 
+enum ItemKind { weapon, armour, equipment }
+
 @JsonSerializable()
-class Filter {
-  Filter({this.whitelist, this.blacklist, this.none});
+class FilterItem {
+  FilterItem({
+    this.bypassValue,
+      this.none,
+      this.allOf,
+      this.noneOf,
+      this.anyOf,
+      this.not,
+      this.unitKeyword,
+      this.unitName,
+      this.containsItem,
+      this.itemKind,
+    this.itemName,
+    this.rangedWeapon,
+    this.meleeWeapon,
+  });
 
-  bool? none = false;
-  List<String>? whitelist;
-  List<String>? blacklist;
+  factory FilterItem.trueValue() => FilterItem(bypassValue: true);
+  factory FilterItem.falseValue() => FilterItem(bypassValue: false);
+  factory FilterItem.allOf(Iterable<FilterItem> all) =>
+      FilterItem(allOf: all.toList());
+  factory FilterItem.noneOf(Iterable<FilterItem> none) =>
+      FilterItem(noneOf: none.toList());
+  factory FilterItem.anyOf(Iterable<FilterItem> any) =>
+      FilterItem(anyOf: any.toList());
+  factory FilterItem.none() => FilterItem(none: true);
+  factory FilterItem.not(FilterItem filter) => FilterItem(not: filter);
 
-  factory Filter.whitelist(List<String> list) => Filter(whitelist: list);
-  factory Filter.blacklist(List<String> list) => Filter(blacklist: list);
-  factory Filter.none() => Filter(none: true);
-  factory Filter.any() => Filter();
+  bool? bypassValue;
+  bool? none;
+  List<FilterItem>? noneOf;
+  List<FilterItem>? anyOf;
+  List<FilterItem>? allOf;
+  FilterItem? not;
 
-  bool isAllowed(String typeName) {
+  String? unitKeyword;
+  String? unitName;
+  String? containsItem;
+  ItemKind? itemKind;
+  String? itemName;
+  bool? rangedWeapon;
+  bool? meleeWeapon;
+
+  int _count<T>(T? x) {
+    return x == null ? 0 : 1;
+  }
+
+  bool isItemAllowedFor(Item item, WarriorModel wm) {
+    assert(_count(bypassValue) +
+            _count(none) +
+            _count(noneOf) +
+            _count(anyOf) +
+            _count(allOf) +
+            _count(not) +
+            _count(unitKeyword) +
+            _count(unitName) +
+            _count(containsItem) +
+            _count(itemKind) +
+            _count(itemName) +
+            _count(rangedWeapon) +
+            _count(meleeWeapon) ==
+        1);
+
+    if (bypassValue != null) return bypassValue!;
+
     if (none ?? false) {
       return false;
     }
+    if (itemKind != null) {
+      return item.kind == itemKind;
+    }
+    if ((itemName ?? item.itemName) != item.itemName) {
+      return false;
+    }
 
-    bool allowed = true;
-    if (whitelist != null) {
-      allowed =
-          allowed && whitelist!.where((str) => str == typeName).isNotEmpty;
+    if (rangedWeapon != null) {
+      if (item is! Weapon) return false;
+      return rangedWeapon == item.canRanged;
     }
-    if (blacklist != null) {
-      allowed = allowed && blacklist!.where((str) => str == typeName).isEmpty;
+    if (meleeWeapon != null) {
+      if (item is! Weapon) return false;
+      if (item.canRanged) return false;
+      return meleeWeapon == item.canMelee;
     }
-    return allowed;
+
+    if (item is Weapon &&
+        !item.canRanged &&
+        meleeWeapon != null &&
+        item.canMelee != meleeWeapon) {
+      return false;
+    }
+
+    if (unitKeyword != null &&
+        wm.type.keywords.where((kw) => kw == unitKeyword).isEmpty) {
+      return false;
+    }
+    if (unitName != null && wm.type.typeName != unitName) {
+      return false;
+    }
+    if (containsItem != null &&
+        wm.items.where((it) => it.getName == containsItem).isEmpty) {
+      return false;
+    }
+
+    if ((noneOf ?? [])
+        .map((f) => f.isItemAllowedFor(item, wm))
+        .where((b) => b)
+        .isNotEmpty) {
+      return false;
+    }
+    if ((anyOf ?? [FilterItem.trueValue()])
+        .map((f) => f.isItemAllowedFor(item, wm))
+        .where((b) => b)
+        .isEmpty) {
+      return false;
+    }
+    final allTest = allOf ?? [];
+    if (allTest
+            .map((f) => f.isItemAllowedFor(item, wm))
+            .where((b) => b)
+            .length !=
+        allTest.length) {
+      return false;
+    }
+    if ((not ?? FilterItem.falseValue()).isItemAllowedFor(item, wm)) {
+      return false;
+    }
+
+    return true;
   }
 
-  factory Filter.fromJson(Map<String, dynamic> json) => _$FilterFromJson(json);
-  Map<String, dynamic> toJson() => _$FilterToJson(this);
+  factory FilterItem.fromJson(Map<String, dynamic> json) =>
+      _$FilterItemFromJson(json);
+  Map<String, dynamic> toJson() => _$FilterItemToJson(this);
 }
 
 @JsonSerializable()
@@ -156,14 +263,8 @@ class Unit {
   int get getHands => hands ?? 2;
   bool get getUnarmedPenalty => unarmedPenalty ?? true;
 
-  Filter? rangedWeaponFilter;
-  Filter get getRangedWeaponFilter => rangedWeaponFilter ?? Filter();
-  Filter? meleeWeaponFilter;
-  Filter get getMeleeWeaponFilter => meleeWeaponFilter ?? Filter();
-  Filter? armourFilter;
-  Filter get getArmourFilter => armourFilter ?? Filter();
-  Filter? equipmentFilter;
-  Filter get getEquipmentFilter => equipmentFilter ?? Filter();
+  FilterItem? filter;
+  FilterItem get getFilter => filter ?? FilterItem.trueValue();
 
   factory Unit.fromJson(Map<String, dynamic> json) {
     for (var e in json.entries) {
@@ -176,8 +277,7 @@ class Unit {
 
 abstract class ItemUse {
   String get getName;
-  Filter get getUnitNameFilter;
-  Filter get getKeywordFilter;
+  FilterItem get getFilter;
   bool get isRemovable;
   Currency get getCost;
   int get getLimit;
@@ -194,8 +294,7 @@ class WeaponUse extends ItemUse {
   Currency cost = const Currency(ducats: 0);
   bool? removable;
 
-  Filter? unitNameFilter;
-  Filter? keywordFilter;
+  FilterItem? filter;
   int? limit;
 
   @override
@@ -203,9 +302,7 @@ class WeaponUse extends ItemUse {
   @override
   Currency get getCost => cost;
   @override
-  Filter get getUnitNameFilter => unitNameFilter ?? Filter();
-  @override
-  Filter get getKeywordFilter => keywordFilter ?? Filter();
+  FilterItem get getFilter => filter ?? FilterItem.trueValue();
   @override
   bool get isRemovable => removable ?? true;
   @override
@@ -230,15 +327,12 @@ class ArmorUse extends ItemUse {
   Currency cost = Currency.free();
   bool? removable;
   int? limit;
+  FilterItem? filter;
 
   @override
   String get getName => typeName;
-  Filter? unitNameFilter;
   @override
-  Filter get getUnitNameFilter => unitNameFilter ?? Filter();
-  Filter? keywordFilter;
-  @override
-  Filter get getKeywordFilter => keywordFilter ?? Filter();
+  FilterItem get getFilter => filter ?? FilterItem.trueValue();
   @override
   bool get isRemovable => removable ?? true;
   @override
@@ -262,15 +356,12 @@ class EquipmentUse extends ItemUse {
   Currency cost = Currency.free();
   bool? removable;
   int? limit;
-  Filter? unitNameFilter;
-  Filter? keywordFilter;
+  FilterItem? filter;
 
   @override
   String get getName => typeName;
   @override
-  Filter get getUnitNameFilter => unitNameFilter ?? Filter();
-  @override
-  Filter get getKeywordFilter => keywordFilter ?? Filter();
+  FilterItem get getFilter => filter ?? FilterItem.trueValue();
   @override
   bool get isRemovable => removable ?? true;
   @override
@@ -310,6 +401,9 @@ class Roster {
 
 abstract class Item {
   UnmodifiableListView<String> get getKeywords;
+  ItemKind get kind;
+  FilterItem get getFilter;
+  String get itemName;
 }
 
 enum BonusType { dice, value }
@@ -385,7 +479,7 @@ class Modifier {
     return m;
   }
 
-  bool filter(ModifierType other) {
+  bool separate(ModifierType other) {
     switch (other) {
       case ModifierType.melee:
       case ModifierType.ranged:
@@ -417,13 +511,23 @@ class Modifier {
 
 @JsonSerializable(explicitToJson: true)
 class Weapon extends Item {
-  Weapon();
+  Weapon(
+      {String? typename,
+      int? hands,
+      this.range,
+      this.melee,
+      this.keywords,
+      this.modifiers})
+      : typeName = typename ?? "",
+        hands = hands ?? 1;
+
   String typeName = "";
   int hands = 1;
   int? range;
   bool? melee;
   List<String>? keywords;
   List<Modifier>? modifiers = [];
+  FilterItem? filter;
 
   bool get canMelee => range == null || (melee ?? false);
   bool get canRanged => range != null;
@@ -433,18 +537,25 @@ class Weapon extends Item {
   bool get isRifle => typeName.contains("Rifle");
   bool get isGrenade => hands == 0 && canRanged;
 
+  @override
+  ItemKind get kind => ItemKind.weapon;
+  @override
+  FilterItem get getFilter => filter ?? FilterItem.trueValue();
+  @override
+  String get itemName => typeName;
+
   UnmodifiableListView<Modifier> get getModifiers =>
       UnmodifiableListView(modifiers ?? []);
 
   String getModifiersString(Modifier baseValue, ModifierType type) {
     String res = "";
     if (!baseValue.isEmpty &&
-        (modifiers ?? []).where((mod) => mod.filter(type)).where((mod) {
+        (modifiers ?? []).where((mod) => mod.separate(type)).where((mod) {
           return baseValue.cat() == mod.cat();
         }).isEmpty) {
       res = baseValue.toString();
     }
-    return (modifiers ?? []).where((m) => m.filter(type)).fold<String>(res,
+    return (modifiers ?? []).where((m) => m.separate(type)).fold<String>(res,
         (acc, modifier) {
       final mod = modifier.offset(baseValue).toString();
       if (acc == "") {
@@ -480,15 +591,23 @@ class Weapon extends Item {
 
 @JsonSerializable(explicitToJson: true)
 class Armour extends Item {
-  Armour();
+  Armour({String? typename, this.value, this.special, this.keywords})
+      : typeName = typename ?? "";
   String typeName = "";
   int? value;
   List<String>? special = [];
   List<String>? keywords = [];
+  FilterItem? filter;
 
   @override
   UnmodifiableListView<String> get getKeywords =>
       UnmodifiableListView(keywords ?? []);
+  @override
+  ItemKind get kind => ItemKind.armour;
+  @override
+  FilterItem get getFilter => filter ?? FilterItem.trueValue();
+  @override
+  String get itemName => typeName;
 
   bool get isShield => typeName.contains("Shield");
   bool get isArmour => typeName.contains("Armour");
@@ -503,12 +622,19 @@ class Equipment extends Item {
   String typeName = "";
   bool? consumable;
   List<String>? keywords = [];
+  FilterItem? filter;
 
   bool get isConsumable => consumable ?? false;
 
   @override
+  ItemKind get kind => ItemKind.equipment;
+  @override
   UnmodifiableListView<String> get getKeywords =>
       UnmodifiableListView(keywords ?? []);
+  @override
+  FilterItem get getFilter => filter ?? FilterItem.trueValue();
+  @override
+  String get itemName => typeName;
 
   factory Equipment.fromJson(Map<String, dynamic> json) =>
       _$EquipmentFromJson(json);

@@ -118,16 +118,7 @@
             },
             "base": "30x60mm oval base",
             "unarmedPenalty": false,
-            "rangedWeaponFilter": {
-                "none": true
-            },
-            "meleeWeaponFilter": {
-                "none": true
-            },
-            "armourFilter": {
-                "none": true
-            },
-            "equipmentFilter": {
+            "filter": {
                 "none": true
             }
         },
@@ -152,16 +143,7 @@
             },
             "unarmedPenalty": false,
             "base": "25mm",
-            "rangedWeaponFilter": {
-                "none": true
-            },
-            "meleeWeaponFilter": {
-                "none": true
-            },
-            "armourFilter": {
-                "none": true
-            },
-            "equipmentFilter": {
+            "filter": {
                 "none": true
             }
         },
@@ -186,10 +168,10 @@
                 "ducats": 55
             },
             "base": "25mm",
-            "armourFilter": {
-                "whitelist": [
-                    "Trench Shield"
-                ]
+            "filter": {
+                "not": {
+                    "itemName": "Trench Shield"
+                }
             },
             "equipmentFilter": {
                 "none": true
@@ -264,10 +246,8 @@
                 "ducats": 15
             },
             "limit": 2,
-            "keywordFilter": {
-                "whitelist": [
-                    "ELITE"
-                ]
+            "filter": {
+                "unitKeyword": "ELITE"
             }
         },
         {
@@ -295,10 +275,8 @@
                 "ducats": 60
             },
             "limit": 1,
-            "keywordFilter": {
-                "whitelist": [
-                    "ELITE"
-                ]
+            "filter": {
+                "unitKeyword": "ELITE"
             }
         },
         {
@@ -360,10 +338,8 @@
             "cost": {
                 "ducats": 40
             },
-            "keywordFilter": {
-                "whitelist": [
-                    "ELITE"
-                ]
+            "filter": {
+                "unitKeyword": "ELITE"
             }
         },
         {
@@ -377,10 +353,8 @@
             "cost": {
                 "ducats": 20
             },
-            "keywordFilter": {
-                "whitelist": [
-                    "ELITE"
-                ]
+            "filter": {
+                "unitKeyword": "ELITE"
             }
         }
     ],
@@ -405,10 +379,8 @@
             "cost": {
                 "ducats": 30
             },
-            "keywordFilter": {
-                "whitelist": [
-                    "ELITE"
-                ]
+            "filter": {
+                "unitKeyword": "ELITE"
             }
         },
         {

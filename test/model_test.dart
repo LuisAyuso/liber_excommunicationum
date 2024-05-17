@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tc_thing/model/model.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:tc_thing/model/warband.dart';
 
 void testList(String listJson) async {
   String data = await rootBundle.loadString('assets/lists/armory.json');
@@ -120,28 +121,122 @@ void main() {
           "+1D to Hit; -1D to Injury");
     }
   });
+  test('weapons', () {
+    final gun = Weapon(typename: "pistol", range: 12, melee: true);
+    expect(gun.canRanged, true);
+    expect(gun.canMelee, true);
+    final gun2 = Weapon(typename: "gun", range: 12);
+    expect(gun2.canRanged, true);
+    expect(gun2.canMelee, false);
+    final gun3 = Weapon(typename: "gun");
+    expect(gun3.canRanged, false);
+    expect(gun3.canMelee, true);
+  });
 
   test('filters', () {
-    var f1 = Filter.blacklist(["a", "b", "c"]);
-    expect(f1.isAllowed("a"), false);
-    expect(f1.isAllowed("b"), false);
-    expect(f1.isAllowed("c"), false);
-    expect(f1.isAllowed("aaa"), true);
-    expect(f1.isAllowed("d"), true);
+    Unit u = Unit();
+    u.typeName = "warrior 1";
+    u.keywords = ["AAAA", "BBBB"];
+    WarriorModel wm = WarriorModel(uid: 1, type: u, bucket: 2);
+    wm.addItem(WeaponUse(typeName: "gun"));
+    wm.addItem(ArmorUse(typeName: "armour"));
 
-    var f2 = Filter.whitelist(["a", "b", "c"]);
-    expect(f2.isAllowed("a"), true);
-    expect(f2.isAllowed("b"), true);
-    expect(f2.isAllowed("c"), true);
-    expect(f2.isAllowed("aaa"), false);
-    expect(f2.isAllowed("d"), false);
+    final gun = Weapon(typename: "gun", range: 12);
+    final sword = Weapon(typename: "sword");
+    final armour = Armour(typename: "armour");
 
-    var f3 = Filter.none();
-    expect(f3.isAllowed("a"), false);
-    expect(f3.isAllowed("b"), false);
-    expect(f3.isAllowed("c"), false);
-    expect(f3.isAllowed("aaa"), false);
-    expect(f3.isAllowed("d"), false);
+    expect(FilterItem.none().isItemAllowedFor(gun, wm), false);
+    expect(FilterItem(unitKeyword: "AAAA").isItemAllowedFor(gun, wm), true);
+    expect(FilterItem(unitKeyword: "BBBB").isItemAllowedFor(gun, wm), true);
+    expect(FilterItem(unitKeyword: "CCCC").isItemAllowedFor(gun, wm), false);
+    expect(FilterItem(unitName: "something else").isItemAllowedFor(gun, wm),
+        false);
+    expect(FilterItem(unitName: "warrior 1").isItemAllowedFor(gun, wm), true);
+
+    expect(FilterItem(containsItem: "gun").isItemAllowedFor(gun, wm), true);
+    expect(FilterItem(containsItem: "armour").isItemAllowedFor(gun, wm), true);
+    expect(FilterItem(containsItem: "something else").isItemAllowedFor(gun, wm),
+        false);
+    expect(
+        FilterItem(itemKind: ItemKind.weapon).isItemAllowedFor(gun, wm), true);
+    expect(
+        FilterItem(itemKind: ItemKind.armour).isItemAllowedFor(gun, wm), false);
+    expect(FilterItem(itemKind: ItemKind.equipment).isItemAllowedFor(gun, wm),
+        false);
+    expect(FilterItem(itemKind: ItemKind.weapon).isItemAllowedFor(armour, wm),
+        false);
+    expect(FilterItem(itemKind: ItemKind.armour).isItemAllowedFor(armour, wm),
+        true);
+    expect(
+        FilterItem(itemKind: ItemKind.equipment).isItemAllowedFor(armour, wm),
+        false);
+
+    expect(
+        FilterItem.allOf([
+          FilterItem(containsItem: "gun"),
+          FilterItem(containsItem: "armour")
+        ]).isItemAllowedFor(gun, wm),
+        true);
+
+    expect(
+        FilterItem.anyOf([
+          FilterItem(containsItem: "gun"),
+          FilterItem(containsItem: "armour")
+        ]).isItemAllowedFor(gun, wm),
+        true);
+    expect(
+        FilterItem.anyOf([
+          FilterItem(containsItem: "gun"),
+          FilterItem(containsItem: "something else"),
+          FilterItem(containsItem: "armour")
+        ]).isItemAllowedFor(gun, wm),
+        true);
+    expect(
+        FilterItem.anyOf([
+          FilterItem(containsItem: "something else"),
+          FilterItem(containsItem: "armour")
+        ]).isItemAllowedFor(gun, wm),
+        true);
+    expect(
+        FilterItem.anyOf([
+          FilterItem(containsItem: "something else"),
+          FilterItem(containsItem: "not there")
+        ]).isItemAllowedFor(gun, wm),
+        false);
+    expect(
+        FilterItem.not(
+          FilterItem.anyOf([
+            FilterItem(containsItem: "something else"),
+            FilterItem(containsItem: "not there")
+          ]),
+        ).isItemAllowedFor(gun, wm),
+        true);
+
+    expect(FilterItem(rangedWeapon: true).isItemAllowedFor(gun, wm), true);
+    expect(FilterItem(rangedWeapon: false).isItemAllowedFor(gun, wm), false);
+    expect(FilterItem(meleeWeapon: true).isItemAllowedFor(sword, wm), true);
+    expect(FilterItem(meleeWeapon: false).isItemAllowedFor(sword, wm), false);
+    expect(FilterItem(rangedWeapon: true).isItemAllowedFor(armour, wm), false);
+    expect(FilterItem(rangedWeapon: false).isItemAllowedFor(armour, wm), false);
+    expect(FilterItem(meleeWeapon: false).isItemAllowedFor(armour, wm), false);
+    expect(FilterItem(meleeWeapon: true).isItemAllowedFor(armour, wm), false);
+  });
+
+  test('filter de-json', () {
+    deserialize(String str) => FilterItem.fromJson(jsonDecode(str));
+
+    expect(() => deserialize(""), throwsA(anything));
+    expect(deserialize("{}"), const TypeMatcher<FilterItem>());
+    expect(deserialize('{"unitKeyword": "KEYWORD"}'),
+        const TypeMatcher<FilterItem>());
+    expect(deserialize('{"unitName": "unit name"}'),
+        const TypeMatcher<FilterItem>());
+    expect(deserialize('{"unitContainsItem": "item name"}'),
+        const TypeMatcher<FilterItem>());
+    expect(
+        deserialize(
+            '{"allOf": [ {"unitContainsItem": "item name"}, {"unitContainsItem": "hello"}]}'),
+        const TypeMatcher<FilterItem>());
   });
 
   test('roster serialization', () {

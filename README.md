@@ -8,6 +8,7 @@ Roster management
 
 ### Refactors
 - [x] Move filter logic to model, keep frontend business-logic-free
+- [ ] Merge filterItem and replacements? somehow? otherwise use same patterns
 
 ## features
 - [ ] Unit preview
@@ -28,18 +29,20 @@ Roster management
 - [x] Deactivate consumed units
 - [x] Yeoman bolt-rifle requirement
 - [ ] Combat engineer armor
-- [ ] Machine armour replacement!
+- [x] Machine armour replacement!
 - [x] Either list units base modifier, or add them to weapons as before
 - [x] grenades, limit count, weapon type
-- [ ] Validate lists
-  - [ ] Min characters
-  - [x] Yeoman bolt-rifle or other ranged (any ranged)
+- [x] Yeoman bolt-rifle or other ranged (any ranged)
 - [x] Restore removed equipment after delete replacement
 - [x] default weapons in special units, wolf not unarmed
 - [ ] keywords and special rules in weapon line
-- [ ] Equipment-dependent equipment: bayonet or alchemical ammo
+- [x] Equipment-dependent equipment: bayonet or alchemical ammo
 - [x] Oval bases
-- [ ] No unarmed penalty
+- [x] No unarmed penalty
 - [ ] No grenades allowed? 
+- [x] One allowed ranged weapon and any other melee?
 - [ ] Anagram 6 arms
+- [ ] Unit Requirements (must have armour?)
+- [ ] Validate lists
+  - [ ] Min characters
 

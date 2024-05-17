@@ -109,9 +109,20 @@
                 "ducats": 90
             },
             "base": "32mm",
-            "rangedWeaponFilter": {
-                "whitelist": [
-                    "Silenced Pistol"
+            "filter": {
+                "anyOf": [
+                    {
+                        "itemName": "Silenced Pistol"
+                    },
+                    {
+                        "meleeWeapon": true
+                    },
+                    {
+                        "itemKind": "armour"
+                    },
+                    {
+                        "itemKind": "equipment"
+                    }
                 ]
             }
         },
@@ -320,10 +331,8 @@
             "cost": {
                 "ducats": 20
             },
-            "keywordFilter": {
-                "whitelist": [
-                    "ELITE"
-                ]
+            "filter": {
+                "unitKeyword": "ELITE"
             }
         },
         {
@@ -444,10 +453,8 @@
                 "ducats": 23
             },
             "limit": 2,
-            "keywordFilter": {
-                "whitelist": [
-                    "ELITE"
-                ]
+            "filter": {
+                "unitKeyword": "ELITE"
             }
         },
         {
@@ -462,10 +469,8 @@
             "cost": {
                 "ducats": 25
             },
-            "unitNameFilter": {
-                "whitelist": [
-                    "Heretic Death Commando"
-                ]
+            "filter": {
+                "unitName": "Heretic Death Commando"
             }
         },
         {
@@ -473,26 +478,20 @@
             "cost": {
                 "glory": 2
             },
-            "keywordFilter": {
-                "whitelist": [
-                    "ELITE"
-                ]
+            "filter": {
+                "unitKeyword": "ELITE"
             }
         },
         {
             "typeName": "Chainmaw",
-            "unitNameFilter": {
-                "whitelist": [
-                    "War Wolf Assault Beast"
-                ]
+            "filter": {
+                "unitName": "War Wolf Assault Beast"
             }
         },
         {
             "typeName": "Shredding Claws",
-            "unitNameFilter": {
-                "whitelist": [
-                    "War Wolf Assault Beast"
-                ]
+            "filter": {
+                "unitName": "War Wolf Assault Beast"
             }
         }
     ],
@@ -508,10 +507,8 @@
             "cost": {
                 "ducats": 40
             },
-            "keywordFilter": {
-                "whitelist": [
-                    "ELITE"
-                ]
+            "filter": {
+                "unitKeyword": "ELITE"
             }
         },
         {
@@ -582,11 +579,17 @@
                 "ducats": 5
             },
             "limit": 3,
-            "unitNameFilter": {
-                "whitelist": [
-                    "Heretic Trooper",
-                    "Legionnaire Melee",
-                    "Legionnaire Ranged"
+            "filter": {
+                "anyOf": [
+                    {
+                        "unitName": "Heretic Trooper"
+                    },
+                    {
+                        "unitName": "Legionnaire Melee"
+                    },
+                    {
+                        "unitName": "Legionnaire Ranged"
+                    }
                 ]
             }
         }

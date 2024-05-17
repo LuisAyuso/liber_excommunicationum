@@ -56,6 +56,7 @@ class WarriorModel {
   final int bucket;
 
   List<ItemStack> _items = [];
+  Iterable<ItemUse> get items => _items.map((s) => s.value);
   Iterable<WeaponUse> get weapons =>
       _items.map((s) => s.value).whereType<WeaponUse>();
 
@@ -172,32 +173,17 @@ class WarriorModel {
 // - two single-handed melee weapons.
   UnmodifiableListView<WeaponUse> availableWeapons(
       Roster roster, Armory armory) {
-    return UnmodifiableListView(roster.weapons.where((weapon) {
-      // no repes
-      if (weapons.where((w) => w.getName == weapon.getName).isNotEmpty) {
+    return UnmodifiableListView(roster.weapons.where((use) {
+      // no repetitions
+      if (weapons.where((w) => w.getName == use.getName).isNotEmpty) {
         return false;
       }
 
-      final def = armory.findWeapon(weapon);
+      final def = armory.findWeapon(use);
 
-      if (def.canMelee &&
-          !type.getMeleeWeaponFilter.isAllowed(weapon.typeName)) {
-        return false;
-      }
-
-      if (def.canRanged &&
-          !type.getRangedWeaponFilter.isAllowed(weapon.typeName)) {
-        return false;
-      }
-
-      if (!weapon.getUnitNameFilter.isAllowed(type.typeName)) {
-        return false;
-      }
-
-      if (!type.keywords.fold(false,
-          (v, keyword) => v || weapon.getKeywordFilter.isAllowed(keyword))) {
-        return false;
-      }
+      final filter =
+          FilterItem.allOf([use.getFilter, def.getFilter, type.getFilter]);
+      if (!filter.isItemAllowedFor(def, this)) return false;
 
       if (def.isGrenade) return true;
       if (def.isPistol && allowPistol(armory)) return true;
@@ -219,20 +205,12 @@ class WarriorModel {
   UnmodifiableListView<ArmorUse> availableArmours(
           Roster roster, Armory armory) =>
       UnmodifiableListView(roster.armour.where((armour) {
-        if (!type.getArmourFilter.isAllowed(armour.typeName)) {
-          return false;
-        }
-
-        if (!armour.getUnitNameFilter.isAllowed(type.typeName)) {
-          return false;
-        }
-
-        if (!type.keywords.fold(false,
-            (v, keyword) => v || armour.getKeywordFilter.isAllowed(keyword))) {
-          return false;
-        }
-
         final def = armory.findArmour(armour);
+
+        final filter =
+            FilterItem.allOf([armour.getFilter, def.getFilter, type.getFilter]);
+        if (!filter.isItemAllowedFor(def, this)) return false;
+
         if (def.isArmour && wearsBodyArmour(armory)) return false;
         if (def.isShield && wearsShield(armory)) return false;
 
@@ -242,20 +220,12 @@ class WarriorModel {
   UnmodifiableListView<EquipmentUse> availableEquipment(
       Roster roster, Armory armory) {
     return UnmodifiableListView(roster.equipment.where((equip) {
-      if (!type.getEquipmentFilter.isAllowed(equip.typeName)) {
-        return false;
-      }
-
-      if (!equip.getUnitNameFilter.isAllowed(type.typeName)) {
-        return false;
-      }
-
-      if (!type.keywords.fold(false,
-          (v, keyword) => v || equip.getKeywordFilter.isAllowed(keyword))) {
-        return false;
-      }
-
       final def = armory.findEquipment(equip);
+
+      final filter =
+          FilterItem.allOf([equip.getFilter, def.getFilter, type.getFilter]);
+      if (!filter.isItemAllowedFor(def, this)) return false;
+
       if (!def.isConsumable &&
           equipment.where((e) => e.typeName == def.typeName).isNotEmpty) {
         return false;

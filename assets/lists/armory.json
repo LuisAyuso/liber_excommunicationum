@@ -290,7 +290,26 @@
         },
         {
             "typeName": "Bayonet",
-            "hands": 2
+            "hands": 2,
+            "filter": {
+                "anyOf": [
+                    {
+                        "containsItem": "Bolt Action Rifle"
+                    },
+                    {
+                        "containsItem": "Automatic Rifle"
+                    },
+                    {
+                        "containsItem": "Shotgun"
+                    },
+                    {
+                        "containsItem": "Automatic Shotgun"
+                    },
+                    {
+                        "containsItem": "Submachine Gun"
+                    }
+                ]
+            }
         },
         {
             "typeName": "Sacrificial Knife",
@@ -497,7 +516,7 @@
             "typeName": "Binoculars"
         },
         {
-            "typeName": "Musical Instrument"
+            "typeName": "Musician's Instrument"
         }
     ]
 }
