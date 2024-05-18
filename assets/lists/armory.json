@@ -365,7 +365,7 @@
             "hands": 2,
             "modifiers": [
                 {
-                    "hit": 1,
+                    "hit": -1,
                     "extra": "for Chargers"
                 }
             ]
