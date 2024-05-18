@@ -145,11 +145,15 @@ class FilterItem {
 
     if (isBodyArmour != null) {
       if (item is! Armour) return false;
-      return item.type == ArmourType.bodyArmour;
+      return isBodyArmour!
+          ? item.type == ArmourType.bodyArmour
+          : item.type != ArmourType.bodyArmour;
     }
     if (isShield != null) {
       if (item is! Armour) return false;
-      return item.type == ArmourType.shield;
+      return isShield!
+          ? item.type == ArmourType.shield
+          : item.type != ArmourType.shield;
     }
 
     // warrior based ops

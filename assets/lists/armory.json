@@ -427,7 +427,14 @@
         {
             "typeName": "Trench Shield",
             "value": -1,
-            "type": "shield"
+            "type": "shield",
+            "filter": {
+                "noneOf": [
+                    {
+                        "containsItem": "Machine Armour"
+                    }
+                ]
+            }
         },
         {
             "typeName": "Standard Armour",
@@ -442,12 +449,29 @@
         {
             "typeName": "Machine Armour",
             "value": -3,
-            "type": "bodyArmour"
+            "type": "bodyArmour",
+            "filter": {
+                "noneOf": [
+                    {
+                        "containsItem": "Trench Shield"
+                    },
+                    {
+                        "containsItem": "Holy Icon Shield"
+                    }
+                ]
+            }
         },
         {
             "typeName": "Holy Icon Shield",
             "value": -1,
-            "type": "shield"
+            "type": "shield",
+            "filter": {
+                "noneOf": [
+                    {
+                        "containsItem": "Machine Armour"
+                    }
+                ]
+            }
         },
         {
             "typeName": "Holy Icon Armour",
