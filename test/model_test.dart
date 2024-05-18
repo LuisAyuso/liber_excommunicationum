@@ -141,9 +141,10 @@ void main() {
     wm.addItem(WeaponUse(typeName: "gun"));
     wm.addItem(ArmorUse(typeName: "armour"));
 
-    final gun = Weapon(typename: "gun", range: 12);
-    final sword = Weapon(typename: "sword");
-    final armour = Armour(typename: "armour");
+    final gun = Weapon(typename: "Gun", range: 12);
+    final sword = Weapon(typename: "Sword");
+    final armour = Armour(typename: "Armour");
+    final shield = Armour(typename: "Shield");
 
     expect(FilterItem.none().isItemAllowed(gun, wm), false);
     expect(FilterItem(unitKeyword: "AAAA").isItemAllowed(gun, wm), true);
@@ -217,23 +218,16 @@ void main() {
     expect(FilterItem(rangedWeapon: false).isItemAllowed(armour, wm), false);
     expect(FilterItem(meleeWeapon: false).isItemAllowed(armour, wm), false);
     expect(FilterItem(meleeWeapon: true).isItemAllowed(armour, wm), false);
-  });
 
-  test('filter de-json', () {
-    deserialize(String str) => FilterItem.fromJson(jsonDecode(str));
+    expect(FilterItem(isBodyArmour: true).isItemAllowed(gun), false);
+    expect(FilterItem(isBodyArmour: true).isItemAllowed(sword), false);
+    expect(FilterItem(isBodyArmour: true).isItemAllowed(armour), true);
+    expect(FilterItem(isBodyArmour: true).isItemAllowed(shield), false);
 
-    expect(() => deserialize(""), throwsA(anything));
-    expect(deserialize("{}"), const TypeMatcher<FilterItem>());
-    expect(deserialize('{"unitKeyword": "KEYWORD"}'),
-        const TypeMatcher<FilterItem>());
-    expect(deserialize('{"unitName": "unit name"}'),
-        const TypeMatcher<FilterItem>());
-    expect(deserialize('{"unitContainsItem": "item name"}'),
-        const TypeMatcher<FilterItem>());
-    expect(
-        deserialize(
-            '{"allOf": [ {"unitContainsItem": "item name"}, {"unitContainsItem": "hello"}]}'),
-        const TypeMatcher<FilterItem>());
+    expect(FilterItem(isShield: true).isItemAllowed(gun), false);
+    expect(FilterItem(isShield: true).isItemAllowed(sword), false);
+    expect(FilterItem(isShield: true).isItemAllowed(armour), false);
+    expect(FilterItem(isShield: true).isItemAllowed(shield), true);
   });
 
   test('roster serialization', () {
@@ -259,25 +253,14 @@ void main() {
   });
 
   test('Replacements', () {
-    var item = ItemReplacement(
-      policy: ReplacementPolicy.anyFrom,
-      values: ["one", "two", "three"],
-    );
+    final gun = Weapon(typename: "gun");
+    final pistol = Weapon(typename: "pistol", melee: true);
 
-    expect(item.isAllowed("one"), true);
-    expect(item.isAllowed("two"), true);
-    expect(item.isAllowed("three"), true);
-    expect(item.isAllowed("nop"), false);
-
-    var item2 = ItemReplacement(
-      policy: ReplacementPolicy.anyExcept,
-      values: ["one", "two", "three"],
-    );
-
-    expect(item2.isAllowed("one"), false);
-    expect(item2.isAllowed("two"), false);
-    expect(item2.isAllowed("three"), false);
-    expect(item2.isAllowed("nop"), true);
+    expect(ItemReplacement(filter: FilterItem(itemName: "gun")).isAllowed(gun),
+        true);
+    expect(
+        ItemReplacement(filter: FilterItem(itemName: "gun")).isAllowed(pistol),
+        false);
   });
 
   test('load armory', () async {

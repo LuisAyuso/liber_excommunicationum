@@ -171,10 +171,8 @@
                 "ducats": 50
             },
             "base": "25mm",
-            "rangedWeaponFilter": {
-                "whitelist": [
-                    "Automatic Pistol"
-                ]
+            "filter": {
+                "itemName": "Automatic Pistol"
             }
         },
         {
@@ -210,16 +208,7 @@
                     "removable": false
                 }
             ],
-            "rangedWeaponFilter": {
-                "none": true
-            },
-            "meleeWeaponFilter": {
-                "none": true
-            },
-            "armourFilter": {
-                "none": true
-            },
-            "equipmentFilter": {
+            "filter": {
                 "none": true
             }
         }

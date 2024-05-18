@@ -71,7 +71,21 @@
             "cost": {
                 "ducats": 60
             },
-            "base": "32mm"
+            "base": "32mm",
+            "defaultItems": [
+                {
+                    "itemName": "Standard Armour",
+                    "removable": false,
+                    "cost": {
+                        "ducats": 20
+                    },
+                    "replacements": {
+                        "filter": {
+                            "isBodyArmour": true
+                        }
+                    }
+                }
+            ]
         },
         {
             "typeName": "Corpse Guard",
@@ -110,7 +124,6 @@
             ],
             "keywords": [
                 "BLACK GRAIL",
-                "ELITE",
                 "FEAR"
             ],
             "cost": {
@@ -135,7 +148,6 @@
             ],
             "keywords": [
                 "BLACK GRAIL",
-                "ELITE",
                 "FEAR"
             ],
             "cost": {
@@ -161,7 +173,6 @@
             ],
             "keywords": [
                 "BLACK GRAIL",
-                "ELITE",
                 "FEAR"
             ],
             "cost": {
@@ -169,12 +180,17 @@
             },
             "base": "25mm",
             "filter": {
-                "not": {
-                    "itemName": "Trench Shield"
-                }
-            },
-            "equipmentFilter": {
-                "none": true
+                "noneOf": [
+                    {
+                        "itemKind": "equipment"
+                    },
+                    {
+                        "itemKind": "armour"
+                    },
+                    {
+                        "meleeWeapon": true
+                    }
+                ]
             },
             "defaultItems": [
                 {
@@ -207,11 +223,22 @@
                 "ducats": 150
             },
             "base": "25mm",
-            "armourFilter": {
-                "none": true
-            },
-            "equipmentFilter": {
-                "none": true
+            "filter": {
+                "allOff": [
+                    {
+                        "noneOf": [
+                            {
+                                "itemKind": "equipment"
+                            },
+                            {
+                                "itemKind": "armour"
+                            },
+                            {
+                                "meleeWeapon": true
+                            }
+                        ]
+                    }
+                ]
             }
         }
     ],

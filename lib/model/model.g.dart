@@ -28,6 +28,9 @@ FilterItem _$FilterItemFromJson(Map<String, dynamic> json) => FilterItem(
       itemName: json['itemName'] as String?,
       rangedWeapon: json['rangedWeapon'] as bool?,
       meleeWeapon: json['meleeWeapon'] as bool?,
+      isGrenade: json['isGrenade'] as bool?,
+      isBodyArmour: json['isBodyArmour'] as bool?,
+      isShield: json['isShield'] as bool?,
     );
 
 Map<String, dynamic> _$FilterItemToJson(FilterItem instance) =>
@@ -45,6 +48,9 @@ Map<String, dynamic> _$FilterItemToJson(FilterItem instance) =>
       'itemName': instance.itemName,
       'rangedWeapon': instance.rangedWeapon,
       'meleeWeapon': instance.meleeWeapon,
+      'isGrenade': instance.isGrenade,
+      'isBodyArmour': instance.isBodyArmour,
+      'isShield': instance.isShield,
     };
 
 const _$ItemKindEnumMap = {
@@ -65,26 +71,18 @@ Map<String, dynamic> _$CurrencyToJson(Currency instance) => <String, dynamic>{
 
 ItemReplacement _$ItemReplacementFromJson(Map<String, dynamic> json) =>
     ItemReplacement(
-      policy: $enumDecodeNullable(_$ReplacementPolicyEnumMap, json['policy']) ??
-          ReplacementPolicy.any,
-      values:
-          (json['values'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      filter: json['filter'] == null
+          ? null
+          : FilterItem.fromJson(json['filter'] as Map<String, dynamic>),
     )..offsetCost = json['offsetCost'] == null
         ? null
         : Currency.fromJson(json['offsetCost'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$ItemReplacementToJson(ItemReplacement instance) =>
     <String, dynamic>{
-      'policy': _$ReplacementPolicyEnumMap[instance.policy]!,
-      'values': instance.values,
+      'filter': instance.filter,
       'offsetCost': instance.offsetCost,
     };
-
-const _$ReplacementPolicyEnumMap = {
-  ReplacementPolicy.any: 'any',
-  ReplacementPolicy.anyExcept: 'anyExcept',
-  ReplacementPolicy.anyFrom: 'anyFrom',
-};
 
 DefaultItem _$DefaultItemFromJson(Map<String, dynamic> json) => DefaultItem(
       itemName: json['itemName'] as String? ?? "",

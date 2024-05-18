@@ -27,6 +27,8 @@ class FilterItem {
     this.rangedWeapon,
     this.meleeWeapon,
     this.isGrenade,
+    this.isBodyArmour,
+    this.isShield,
   });
 
   factory FilterItem.trueValue() => FilterItem(bypassValue: true);
@@ -57,15 +59,8 @@ class FilterItem {
   bool? rangedWeapon;
   bool? meleeWeapon;
   bool? isGrenade;
-
-  bool get isPrimitive => (bypassValue ?? false) || (none ?? false);
-  bool get isItemDependent =>
-      isPrimitive ||
-      (itemKind != null) ||
-      (itemName != null) ||
-      (rangedWeapon != null) ||
-      (meleeWeapon != null) ||
-      (isGrenade != null);
+  bool? isBodyArmour;
+  bool? isShield;
 
   int _count<T>(T? x) {
     return x == null ? 0 : 1;
@@ -85,7 +80,9 @@ class FilterItem {
             _count(itemName) +
             _count(rangedWeapon) +
             _count(meleeWeapon) +
-            _count(isGrenade) ==
+            _count(isGrenade) +
+            _count(isBodyArmour) +
+            _count(isShield) ==
         1);
 
     if (bypassValue != null) return bypassValue!;
@@ -110,14 +107,18 @@ class FilterItem {
       if (item.canRanged) return false;
       return meleeWeapon == item.canMelee;
     }
-    if (item is Weapon &&
-        !item.canRanged &&
-        meleeWeapon != null &&
-        item.canMelee != meleeWeapon) {
-      return false;
+    if (isGrenade != null) {
+      if (item is! Weapon) return false;
+      return item.isGrenade;
     }
-    if (item is Weapon && isGrenade != null && !item.isGrenade) {
-      return false;
+
+    if (isBodyArmour != null) {
+      if (item is! Armour) return false;
+      return item.isArmour;
+    }
+    if (isShield != null) {
+      if (item is! Armour) return false;
+      return item.isShield;
     }
 
     if (unitKeyword != null &&
@@ -250,26 +251,17 @@ class Currency {
   Map<String, dynamic> toJson() => _$CurrencyToJson(this);
 }
 
-enum ReplacementPolicy { any, anyExcept, anyFrom }
-
 @JsonSerializable()
 class ItemReplacement {
-  ItemReplacement({this.policy = ReplacementPolicy.any, this.values});
+  ItemReplacement({FilterItem? filter}) : filter = filter ?? FilterItem();
 
-  ReplacementPolicy policy = ReplacementPolicy.anyFrom;
-  List<String>? values = [];
+  FilterItem filter;
+
   // FIXME: this is a hack to get the right value for mech-armour, fix properly
   Currency? offsetCost;
 
-  bool isAllowed(String itemName) {
-    switch (policy) {
-      case ReplacementPolicy.any:
-        return true;
-      case ReplacementPolicy.anyExcept:
-        return (values ?? []).where((v) => v == itemName).isEmpty;
-      case ReplacementPolicy.anyFrom:
-        return (values ?? []).where((v) => v == itemName).isNotEmpty;
-    }
+  bool isAllowed(Item item) {
+    return filter.isItemAllowed(item);
   }
 
   factory ItemReplacement.fromJson(Map<String, dynamic> json) =>

@@ -240,16 +240,7 @@
                 "ducats": 140
             },
             "base": "50mm",
-            "rangedWeaponFilter": {
-                "none": true
-            },
-            "meleeWeaponFilter": {
-                "none": true
-            },
-            "armourFilter": {
-                "none": true
-            },
-            "equipmentFilter": {
+            "filter": {
                 "none": true
             },
             "defaultItems": [
@@ -287,16 +278,7 @@
                 "ducats": 90
             },
             "base": "25mm",
-            "rangedWeaponFilter": {
-                "none": true
-            },
-            "meleeWeaponFilter": {
-                "none": true
-            },
-            "armourFilter": {
-                "none": true
-            },
-            "equipmentFilter": {
+            "filter": {
                 "none": true
             }
         }

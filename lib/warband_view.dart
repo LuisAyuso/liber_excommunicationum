@@ -353,7 +353,7 @@ class _WarbandViewState extends State<WarbandView> {
               )
                   .where((item) {
                 if (item.getName == oldWeapon.getName) return false;
-                if (!replacements.isAllowed(item.getName)) {
+                if (!replacements.isAllowed(widget.armory.findItem(item))) {
                   return false;
                 }
                 final defA = widget.armory.findWeapon(oldWeapon);
@@ -437,8 +437,7 @@ class _WarbandViewState extends State<WarbandView> {
                   .where((item) {
                 debugPrint(item.getName);
                 if (item.getName == oldArmour.getName) return false;
-                if (!replacements.isAllowed(item.getName)) return false;
-                return true;
+                return replacements.isAllowed(widget.armory.findItem(item));
               }).map((item) {
                 final offsetCost = replacements.offsetCost ?? oldArmour.cost;
                 return ArmorUse(
