@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:tc_thing/model/model.dart';
+import 'package:tc_thing/utils.dart';
 
 class ItemStack {
   ItemStack({ItemUse? item}) : _stack = item != null ? [item] : [];
@@ -75,8 +76,8 @@ class WarriorModel {
     return collection;
   }
 
-  Iterable<ArmorUse> get armour =>
-      _items.map((s) => s.value).whereType<ArmorUse>();
+  Iterable<ArmourUse> get armour =>
+      _items.map((s) => s.value).whereType<ArmourUse>();
   Iterable<EquipmentUse> get equipment =>
       _items.map((s) => s.value).whereType<EquipmentUse>();
 
@@ -115,7 +116,7 @@ class WarriorModel {
             cost: item.getCost));
       }
       if (armory.isArmour(item.itemName)) {
-        addItem(ArmorUse(
+        addItem(ArmourUse(
             typeName: item.itemName,
             removable: item.isRemovable,
             cost: item.getCost));
@@ -213,7 +214,7 @@ class WarriorModel {
   bool wearsShield(Armory armory) =>
       getArmours(armory).where((a) => a.isShield).isNotEmpty;
 
-  UnmodifiableListView<ArmorUse> availableArmours(
+  UnmodifiableListView<ArmourUse> availableArmours(
           Roster roster, Armory armory) =>
       UnmodifiableListView(roster.armour.where((use) {
         // no repetitions

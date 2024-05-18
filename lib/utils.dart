@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class MyContent extends StatelessWidget {
@@ -15,7 +17,9 @@ class MyContent extends StatelessWidget {
   }
 }
 
-const Color tcRed = Color.fromARGB(255, 167, 51, 30);
+const Color tcRed = Color.fromARGB(255, 159, 60, 42);
+const Color secondary = Color.fromARGB(255, 159, 119, 42);
+const Color terciary = Color.fromARGB(255, 159, 42, 82);
 
 const TextStyle gothRed24 = TextStyle(
   fontFamily: "CloisterBlack",
@@ -30,9 +34,28 @@ const TextStyle gothBlack20 = TextStyle(
   fontSize: 20,
 );
 
+const TextStyle gothBlack24bold = TextStyle(
+  fontFamily: "CloisterBlack",
+  fontWeight: FontWeight.w600,
+  fontSize: 24,
+);
+
+const TextStyle gothBlack24 = TextStyle(
+  fontFamily: "CloisterBlack",
+  fontWeight: FontWeight.w400,
+  fontSize: 24,
+);
+
 const TextStyle gothBlackBig = TextStyle(
   fontFamily: "CloisterBlack",
   fontWeight: FontWeight.w400,
   fontSize: 36,
-  color: tcRed,
 );
+
+String makeName(List<String> names, List<String> surnames) {
+  final random = Random();
+  final name = names[random.nextInt(names.length)];
+  if (surnames.isEmpty) return name;
+  final surname = surnames[random.nextInt(surnames.length)];
+  return "$name $surname";
+}

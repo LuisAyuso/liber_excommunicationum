@@ -17,11 +17,19 @@ class RosterPreview extends StatelessWidget {
         child: Scaffold(
             appBar: AppBar(
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-              title: const Text("Roster Preview"),
-              bottom: const TabBar(tabs: [
-                Tab(text: "Units"),
-                Tab(text: "Weapons, Armours, & Equipment"),
-              ]),
+              title: const Text(
+                "Roster Preview",
+                style: gothBlack24,
+              ),
+              bottom: const TabBar(
+                tabs: [
+                  Tab(
+                    text: "Units",
+                  ),
+                  Tab(text: "Weapons, Armours,\n & Equipment"),
+                ],
+                labelStyle: gothBlack20,
+              ),
             ),
             body: Container(
               padding: const EdgeInsets.all(16),
@@ -65,7 +73,7 @@ class ItemDescription extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (item is WeaponUse) return weaponDescription(item as WeaponUse);
-    if (item is ArmorUse) return armorDescription(item as ArmorUse);
+    if (item is ArmourUse) return armorDescription(item as ArmourUse);
     if (item is EquipmentUse) return equipmentDescription(item as EquipmentUse);
     assert(false, "unreachable");
     return const SizedBox();
@@ -112,7 +120,7 @@ class ItemDescription extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: (def.keywords ?? [])
-                      .map((kw) => ItemChip(text: kw))
+                      .map((kw) => ItemChip(item: kw))
                       .toList(),
                 )
               ]),
@@ -123,7 +131,7 @@ class ItemDescription extends StatelessWidget {
     );
   }
 
-  Widget armorDescription(ArmorUse item) {
+  Widget armorDescription(ArmourUse item) {
     return Column(
       children: [
         Row(
@@ -232,11 +240,11 @@ class UnitDescription extends StatelessWidget {
         ),
         Row(
           children: (unit.defaultItems ?? [])
-              .map((elem) => ItemChip(text: elem.itemName))
+              .map((elem) => ItemChip(item: elem.itemName))
               .toList(),
         ),
         Row(
-          children: unit.keywords.map((elem) => ItemChip(text: elem)).toList(),
+          children: unit.keywords.map((elem) => ItemChip(item: elem)).toList(),
         )
       ],
     );

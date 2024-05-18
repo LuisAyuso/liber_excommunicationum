@@ -139,7 +139,7 @@ void main() {
     u.keywords = ["AAAA", "BBBB"];
     WarriorModel wm = WarriorModel(uid: 1, type: u, bucket: 2);
     wm.addItem(WeaponUse(typeName: "gun"));
-    wm.addItem(ArmorUse(typeName: "armour"));
+    wm.addItem(ArmourUse(typeName: "armour"));
 
     final gun = Weapon(typename: "Gun", range: 12);
     final sword = Weapon(typename: "Sword");

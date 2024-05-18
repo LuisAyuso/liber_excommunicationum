@@ -21,7 +21,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Liber Excommunicationum',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color.fromARGB(255, 228, 217, 9),
+            primary: tcRed,
+            secondary: secondary,
+            tertiary: terciary,
+            surface: Colors.white,
+            brightness: Brightness.light),
         useMaterial3: true,
       ),
       home: const WarbandChooser(),
@@ -78,10 +84,8 @@ class WarbandChooser extends StatelessWidget {
             children: [
               Text(
                 name,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: gothBlack24bold,
+                textAlign: TextAlign.center,
               ),
             ],
           ),

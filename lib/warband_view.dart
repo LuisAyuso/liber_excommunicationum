@@ -37,14 +37,21 @@ class _WarbandViewState extends State<WarbandView> {
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Row(children: [
             CurrencyWidget(cost: context.watch<WarbandModel>().cost),
-            Text(widget.title),
+            const SizedBox(width: 8),
+            Text(
+              widget.title,
+              style: gothBlack24,
+            ),
             const Spacer(),
             InkWell(
               child: const Icon(Icons.note),
               onTap: () => openRosterPreview(context),
             ),
             const VerticalDivider(),
-            const Text("Edit:"),
+            const Text(
+              "Edit:",
+              style: gothBlack24,
+            ),
             Switch(value: _editMode, onChanged: (v) => edit = v)
           ]),
         ),
@@ -133,8 +140,9 @@ class _WarbandViewState extends State<WarbandView> {
             child: Wrap(
                 spacing: 8,
                 alignment: WrapAlignment.start,
+                runSpacing: 2,
                 children: warrior.weapons
-                    .map<Widget>((w) => ItemChip(text: w.typeName))
+                    .map<Widget>((w) => ItemChip(item: w))
                     .toList()),
           ),
           Container(
@@ -143,10 +151,10 @@ class _WarbandViewState extends State<WarbandView> {
               spacing: 8,
               alignment: WrapAlignment.start,
               children: warrior.armour
-                      .map<Widget>((w) => ItemChip(text: w.typeName))
+                      .map<Widget>((w) => ItemChip(item: w))
                       .toList() +
                   warrior.equipment
-                      .map<Widget>((w) => ItemChip(text: w.typeName))
+                      .map<Widget>((w) => ItemChip(item: w))
                       .toList(),
             ),
           )
@@ -179,7 +187,7 @@ class _WarbandViewState extends State<WarbandView> {
   UnmodifiableListView<Widget> editControls(
     WarriorModel warrior,
     Iterable<WeaponUse> availableWeapons,
-    Iterable<ArmorUse> availableArmours,
+    Iterable<ArmourUse> availableArmours,
     Iterable<EquipmentUse> availableEquipment,
     int unitCount,
   ) {
@@ -192,6 +200,8 @@ class _WarbandViewState extends State<WarbandView> {
                 : () {
                     var wb = context.read<WarbandModel>();
                     showModalBottomSheet(
+                        backgroundColor: Colors.black,
+                        //Theme.of(context).scaffoldBackgroundColor,
                         context: context,
                         builder: (BuildContext context) {
                           return ItemChooser(
@@ -216,6 +226,8 @@ class _WarbandViewState extends State<WarbandView> {
                 : () {
                     var wb = context.read<WarbandModel>();
                     showModalBottomSheet(
+                        backgroundColor:
+                            Theme.of(context).scaffoldBackgroundColor,
                         context: context,
                         builder: (BuildContext context) {
                           return ItemChooser(
@@ -236,6 +248,8 @@ class _WarbandViewState extends State<WarbandView> {
                 : () {
                     var wb = context.read<WarbandModel>();
                     showModalBottomSheet(
+                        backgroundColor:
+                            Theme.of(context).scaffoldBackgroundColor,
                         context: context,
                         builder: (BuildContext context) {
                           return ItemChooser(
@@ -342,6 +356,7 @@ class _WarbandViewState extends State<WarbandView> {
         var wb = context.read<WarbandModel>();
         final replacements = replaceableItem.replacements ?? ItemReplacement();
         showModalBottomSheet(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             context: context,
             builder: (BuildContext context) {
               final alterEgo = warrior.copyWith(name: "", newUid: -1);
@@ -379,7 +394,7 @@ class _WarbandViewState extends State<WarbandView> {
   }
 
   Widget armorLine(
-      BuildContext context, ArmorUse armour, WarriorModel warrior) {
+      BuildContext context, ArmourUse armour, WarriorModel warrior) {
     final def = widget.armory.findArmour(armour);
     final defaultItem = (warrior.type.defaultItems ?? [])
         .where((eq) => eq.itemName == armour.typeName)
@@ -417,7 +432,7 @@ class _WarbandViewState extends State<WarbandView> {
   TextButton replaceArmour(
     BuildContext context,
     WarriorModel warrior,
-    ArmorUse oldArmour,
+    ArmourUse oldArmour,
     DefaultItem replaceableItem,
   ) {
     return TextButton(
@@ -425,6 +440,7 @@ class _WarbandViewState extends State<WarbandView> {
         var wb = context.read<WarbandModel>();
         final replacements = replaceableItem.replacements ?? ItemReplacement();
         showModalBottomSheet(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             context: context,
             builder: (BuildContext context) {
               final alterEgo = warrior.copyWith(name: "", newUid: -1);
@@ -440,7 +456,7 @@ class _WarbandViewState extends State<WarbandView> {
                 return replacements.isAllowed(widget.armory.findItem(item));
               }).map((item) {
                 final offsetCost = replacements.offsetCost ?? oldArmour.cost;
-                return ArmorUse(
+                return ArmourUse(
                     typeName: item.typeName,
                     cost: offsetCost.offset(item.cost),
                     removable: item.removable,
@@ -583,14 +599,47 @@ class _ItemChooserState extends State<ItemChooser> {
 }
 
 class ItemChip extends StatelessWidget {
-  const ItemChip({super.key, required this.text});
-  final String text;
+  const ItemChip({super.key, required this.item});
+  final dynamic item;
+
+  String get name {
+    if (item is Item) return item.itemName;
+    if (item is ItemUse) return item.getName;
+    return item.toString();
+  }
+
+  static const int _alpha = 200;
 
   @override
   Widget build(BuildContext context) {
-    return Chip(
-      label: Text(text),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    color() {
+      if (item is WeaponUse || item is Weapon) {
+        return Theme.of(context).colorScheme.primary;
+      }
+      if (item is ArmourUse || item is Armour) {
+        return Theme.of(context).colorScheme.secondary;
+      }
+      if (item is Equipment || item is EquipmentUse) {
+        return Theme.of(context).colorScheme.tertiary;
+      }
+      return Colors.black;
+    }
+
+    return Container(
+      padding: const EdgeInsets.only(left: 8, right: 8),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(width: 2, color: color()),
+        color: color().withAlpha(_alpha),
+      ),
+      child: Text(
+        name,
+        style: TextStyle(
+            fontWeight: FontWeight.w100,
+            color: color().withAlpha(_alpha).computeLuminance() > 0.5
+                ? Colors.black
+                : Colors.white),
+      ),
     );
   }
 }
@@ -618,6 +667,7 @@ class CurrencyWidget extends StatelessWidget {
       width: _width,
       height: _height,
       child: CircleAvatar(
+        backgroundColor: Theme.of(context).colorScheme.primary.withAlpha(50),
         child: _simultaneous
             ? Stack(children: [
                 _cost.glory > 0

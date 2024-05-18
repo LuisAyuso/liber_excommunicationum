@@ -382,8 +382,8 @@ class WeaponUse extends ItemUse {
 }
 
 @JsonSerializable(explicitToJson: true)
-class ArmorUse extends ItemUse {
-  ArmorUse(
+class ArmourUse extends ItemUse {
+  ArmourUse(
       {String? typeName,
       Currency? cost,
       this.removable,
@@ -409,9 +409,9 @@ class ArmorUse extends ItemUse {
   @override
   Currency get getCost => cost;
 
-  factory ArmorUse.fromJson(Map<String, dynamic> json) =>
-      _$ArmorUseFromJson(json);
-  Map<String, dynamic> toJson() => _$ArmorUseToJson(this);
+  factory ArmourUse.fromJson(Map<String, dynamic> json) =>
+      _$ArmourUseFromJson(json);
+  Map<String, dynamic> toJson() => _$ArmourUseToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -452,7 +452,7 @@ class Roster {
   List<String> surnames = [];
   List<Unit> units = [];
   List<WeaponUse> weapons = [];
-  List<ArmorUse> armour = [];
+  List<ArmourUse> armour = [];
   List<EquipmentUse> equipment = [];
 
   List<Weapon>? uniqueWeapons = [];
@@ -744,7 +744,7 @@ class Armory {
   }
 
   Armour findArmour(dynamic a) {
-    if (a is ArmorUse) return findArmour(a.typeName);
+    if (a is ArmourUse) return findArmour(a.typeName);
     return armours.firstWhere((def) => def.typeName == a);
   }
 
@@ -769,7 +769,7 @@ class Armory {
 
   Item findItem(ItemUse item) {
     if (item is WeaponUse) return findWeapon(item);
-    if (item is ArmorUse) return findArmour(item);
+    if (item is ArmourUse) return findArmour(item);
     return findEquipment(item as EquipmentUse);
   }
 }
