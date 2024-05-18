@@ -339,8 +339,8 @@ class _WarbandViewState extends State<WarbandView> {
   ) {
     return TextButton(
       onPressed: () {
+        var wb = context.read<WarbandModel>();
         final replacements = replaceableItem.replacements ?? ItemReplacement();
-        var wb = context.read()<WarbandModel>();
         showModalBottomSheet(
             context: context,
             builder: (BuildContext context) {
