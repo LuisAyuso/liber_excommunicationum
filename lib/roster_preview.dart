@@ -60,14 +60,14 @@ class ItemDescription extends StatelessWidget {
     required this.item,
     required this.armory,
   });
-  final dynamic item;
+  final ItemUse item;
   final Armory armory;
 
   @override
   Widget build(BuildContext context) {
-    if (item is WeaponUse) return weaponDescription(item);
-    if (item is ArmorUse) return armorDescription(item);
-    if (item is EquipmentUse) return equipmentDescription(item);
+    if (item is WeaponUse) return weaponDescription(item as WeaponUse);
+    if (item is ArmorUse) return armorDescription(item as ArmorUse);
+    if (item is EquipmentUse) return equipmentDescription(item as EquipmentUse);
     assert(false, "unreachable");
     return const SizedBox();
   }

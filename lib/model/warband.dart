@@ -183,7 +183,7 @@ class WarriorModel {
 
       final filter =
           FilterItem.allOf([use.getFilter, def.getFilter, type.getFilter]);
-      if (!filter.isItemAllowedFor(def, this)) return false;
+      if (!filter.isItemAllowed(def, this)) return false;
 
       if (def.isGrenade) return true;
       if (def.isPistol && allowPistol(armory)) return true;
@@ -209,7 +209,7 @@ class WarriorModel {
 
         final filter =
             FilterItem.allOf([armour.getFilter, def.getFilter, type.getFilter]);
-        if (!filter.isItemAllowedFor(def, this)) return false;
+        if (!filter.isItemAllowed(def, this)) return false;
 
         if (def.isArmour && wearsBodyArmour(armory)) return false;
         if (def.isShield && wearsShield(armory)) return false;
@@ -224,7 +224,7 @@ class WarriorModel {
 
       final filter =
           FilterItem.allOf([equip.getFilter, def.getFilter, type.getFilter]);
-      if (!filter.isItemAllowedFor(def, this)) return false;
+      if (!filter.isItemAllowed(def, this)) return false;
 
       if (!def.isConsumable &&
           equipment.where((e) => e.typeName == def.typeName).isNotEmpty) {

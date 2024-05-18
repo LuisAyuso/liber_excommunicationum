@@ -89,6 +89,9 @@ class _WarbandViewState extends State<WarbandView> {
     );
   }
 
+  final FilterItem onlyRanged = FilterItem(rangedWeapon: true);
+  final FilterItem onlyMelee = FilterItem(meleeWeapon: true);
+
   Widget warriorLine(BuildContext context, WarriorModel warrior) {
     final unitCount = context
         .read<WarbandModel>()
@@ -194,6 +197,10 @@ class _WarbandViewState extends State<WarbandView> {
                           return ItemChooser(
                               elements: availableWeapons.toList(),
                               armory: widget.armory,
+                              filter: ItemChooserFilterDelegate(filters: {
+                                "Ranged": onlyRanged,
+                                "Melee": onlyMelee,
+                              }),
                               callback: (use) {
                                 wb.getUID(warrior.uid).addItem(use);
                                 wb.invalidate();
@@ -479,37 +486,94 @@ class _WarbandViewState extends State<WarbandView> {
   }
 }
 
-class ItemChooser extends StatelessWidget {
+class ItemChooserFilterDelegate {
+  const ItemChooserFilterDelegate({required Map<String, FilterItem> filters})
+      : _filters = filters;
+
+  final Map<String, FilterItem> _filters;
+
+  UnmodifiableListView<FilterItem> get getFilters => UnmodifiableListView(
+      _filters.entries.map((entry) => entry.value).toList());
+  UnmodifiableListView<ButtonSegment<FilterItem>> get buttonSegments =>
+      UnmodifiableListView(_filters.entries
+          .map((entry) => ButtonSegment<FilterItem>(
+              value: entry.value, label: Text(entry.key)))
+          .toList());
+}
+
+class ItemChooser extends StatefulWidget {
   const ItemChooser({
     super.key,
     required this.callback,
     required this.elements,
     required this.armory,
     this.priceOffset = const Currency(),
+    this.filter,
   });
-  final void Function(dynamic) callback;
-  final List<dynamic> elements;
+  final void Function(ItemUse) callback;
+  final List<ItemUse> elements;
   final Armory armory;
   final Currency priceOffset;
+  final ItemChooserFilterDelegate? filter;
+
+  @override
+  State<ItemChooser> createState() => _ItemChooserState();
+}
+
+class _ItemChooserState extends State<ItemChooser> {
+  late Set<FilterItem> _currentFilter;
+
+  FilterItem get asFilter => FilterItem.anyOf(_currentFilter.toList());
+  UnmodifiableListView<ItemUse> get items {
+    final filter = asFilter;
+    return UnmodifiableListView(widget.elements
+        .where((item) => filter.isItemAllowed(widget.armory.findItem(item)))
+        .toList());
+  }
+
+  @override
+  void initState() {
+    _currentFilter =
+        widget.filter?.getFilters.toSet() ?? {FilterItem.trueValue()};
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final list = items;
     return Container(
       height: MediaQuery.of(context).size.height * 0.5,
       color: Colors.white,
       child: Container(
         padding: const EdgeInsets.all(16),
         child: Center(
-          child: ListView.separated(
-            itemBuilder: (ctx, idx) => InkWell(
-              onTap: () => callback(elements[idx]),
-              child: ItemDescription(
-                item: elements[idx],
-                armory: armory,
+          child: Column(
+            children: [
+              widget.filter != null
+                  ? SegmentedButton<FilterItem>(
+                      segments: widget.filter?.buttonSegments ?? [],
+                      selected: _currentFilter,
+                      multiSelectionEnabled: true,
+                      onSelectionChanged: (filter) {
+                        setState(() {
+                          _currentFilter = filter;
+                        });
+                      })
+                  : const SizedBox(),
+              Expanded(
+                child: ListView.separated(
+                  itemBuilder: (ctx, idx) => InkWell(
+                    onTap: () => widget.callback(list[idx]),
+                    child: ItemDescription(
+                      item: list[idx],
+                      armory: widget.armory,
+                    ),
+                  ),
+                  separatorBuilder: (ctx, idx) => const Divider(),
+                  itemCount: list.length,
+                ),
               ),
-            ),
-            separatorBuilder: (ctx, idx) => const Divider(),
-            itemCount: elements.length,
+            ],
           ),
         ),
       ),

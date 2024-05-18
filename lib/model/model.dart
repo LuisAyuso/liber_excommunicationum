@@ -26,6 +26,7 @@ class FilterItem {
     this.itemName,
     this.rangedWeapon,
     this.meleeWeapon,
+    this.isGrenade,
   });
 
   factory FilterItem.trueValue() => FilterItem(bypassValue: true);
@@ -38,6 +39,7 @@ class FilterItem {
       FilterItem(anyOf: any.toList());
   factory FilterItem.none() => FilterItem(none: true);
   factory FilterItem.not(FilterItem filter) => FilterItem(not: filter);
+  factory FilterItem.grenade() => FilterItem(isGrenade: true);
 
   bool? bypassValue;
   bool? none;
@@ -49,16 +51,27 @@ class FilterItem {
   String? unitKeyword;
   String? unitName;
   String? containsItem;
+
   ItemKind? itemKind;
   String? itemName;
   bool? rangedWeapon;
   bool? meleeWeapon;
+  bool? isGrenade;
+
+  bool get isPrimitive => (bypassValue ?? false) || (none ?? false);
+  bool get isItemDependent =>
+      isPrimitive ||
+      (itemKind != null) ||
+      (itemName != null) ||
+      (rangedWeapon != null) ||
+      (meleeWeapon != null) ||
+      (isGrenade != null);
 
   int _count<T>(T? x) {
     return x == null ? 0 : 1;
   }
 
-  bool isItemAllowedFor(Item item, WarriorModel wm) {
+  bool isItemAllowed(Item item, [WarriorModel? warrior]) {
     assert(_count(bypassValue) +
             _count(none) +
             _count(noneOf) +
@@ -71,7 +84,8 @@ class FilterItem {
             _count(itemKind) +
             _count(itemName) +
             _count(rangedWeapon) +
-            _count(meleeWeapon) ==
+            _count(meleeWeapon) +
+            _count(isGrenade) ==
         1);
 
     if (bypassValue != null) return bypassValue!;
@@ -79,6 +93,7 @@ class FilterItem {
     if (none ?? false) {
       return false;
     }
+
     if (itemKind != null) {
       return item.kind == itemKind;
     }
@@ -95,51 +110,92 @@ class FilterItem {
       if (item.canRanged) return false;
       return meleeWeapon == item.canMelee;
     }
-
     if (item is Weapon &&
         !item.canRanged &&
         meleeWeapon != null &&
         item.canMelee != meleeWeapon) {
       return false;
     }
-
-    if (unitKeyword != null &&
-        wm.type.keywords.where((kw) => kw == unitKeyword).isEmpty) {
+    if (item is Weapon && isGrenade != null && !item.isGrenade) {
       return false;
     }
-    if (unitName != null && wm.type.typeName != unitName) {
+
+    if (unitKeyword != null &&
+        warrior != null &&
+        warrior.type.keywords.where((kw) => kw == unitKeyword).isEmpty) {
+      return false;
+    }
+    if (unitName != null &&
+        warrior != null &&
+        warrior.type.typeName != unitName) {
       return false;
     }
     if (containsItem != null &&
-        wm.items.where((it) => it.getName == containsItem).isEmpty) {
+        warrior != null &&
+        warrior.items.where((it) => it.getName == containsItem).isEmpty) {
       return false;
     }
 
-    if ((noneOf ?? [])
-        .map((f) => f.isItemAllowedFor(item, wm))
-        .where((b) => b)
-        .isNotEmpty) {
+    if (noneOf
+            ?.map((f) => f.isItemAllowed(item, warrior))
+            .where((b) => b)
+            .isNotEmpty ??
+        false) {
       return false;
     }
-    if ((anyOf ?? [FilterItem.trueValue()])
-        .map((f) => f.isItemAllowedFor(item, wm))
-        .where((b) => b)
-        .isEmpty) {
+    if (anyOf
+            ?.map((f) => f.isItemAllowed(item, warrior))
+            .where((b) => b)
+            .isEmpty ??
+        false) {
       return false;
     }
+
     final allTest = allOf ?? [];
     if (allTest
-            .map((f) => f.isItemAllowedFor(item, wm))
+            .map((f) => f.isItemAllowed(item, warrior))
             .where((b) => b)
             .length !=
         allTest.length) {
       return false;
     }
-    if ((not ?? FilterItem.falseValue()).isItemAllowedFor(item, wm)) {
+    if (not?.isItemAllowed(item, warrior) ?? false) {
       return false;
     }
 
     return true;
+  }
+
+  @override
+  String toString() {
+    if (none ?? false) return "none";
+    if (bypassValue != null) return "$bypassValue";
+
+    if (itemKind != null) return "itemKind: $itemKind";
+    if (itemName != null) return "itemName: $itemName";
+
+    if (rangedWeapon != null) return "rangedWeapon";
+    if (meleeWeapon != null) return "meleeWeapon";
+    if (isGrenade != null) return "grenade";
+
+    if (unitKeyword != null) return "unitKeyword: $unitKeyword";
+    if (unitName != null) return "unitName: $unitName";
+    if (containsItem != null) return "containsItem: $containsItem";
+
+    if (noneOf != null) {
+      return "noneOf[${noneOf!.map((e) => e.toString()).join(",")}]";
+    }
+    if (anyOf != null) {
+      return "anyOf[${anyOf!.map((e) => e.toString()).join(",")}]";
+    }
+    if (allOf != null) {
+      return "allOf[${allOf!.map((e) => e.toString()).join(",")}]";
+    }
+    if (not != null) {
+      return "![$not]";
+    }
+
+    return "INVALID FILTER!!";
   }
 
   factory FilterItem.fromJson(Map<String, dynamic> json) =>
@@ -693,5 +749,11 @@ class Armory {
     weapons.addAll(roster.uniqueWeapons ?? []);
     armours.addAll(roster.uniqueArmour ?? []);
     equipments.addAll(roster.uniqueEquipment ?? []);
+  }
+
+  Item findItem(ItemUse item) {
+    if (item is WeaponUse) return findWeapon(item);
+    if (item is ArmorUse) return findArmour(item);
+    return findEquipment(item as EquipmentUse);
   }
 }
