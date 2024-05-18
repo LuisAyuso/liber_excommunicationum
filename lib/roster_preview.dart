@@ -12,45 +12,44 @@ class RosterPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MyContent(
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text("Roster Preview"),
-        ),
-        body: Container(
-          padding: const EdgeInsets.all(16),
-          child: ListView.separated(
-              itemBuilder: (context, idx) => entry(idx),
-              separatorBuilder: (context, idx) => makeDivider(idx),
-              itemCount: roster.units.length + roster.items.length),
-        ),
+      child: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+            appBar: AppBar(
+              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+              title: const Text("Roster Preview"),
+              bottom: const TabBar(tabs: [
+                Tab(text: "Units"),
+                Tab(text: "Weapons, Armours, & Equipment"),
+              ]),
+            ),
+            body: Container(
+              padding: const EdgeInsets.all(16),
+              child: TabBarView(
+                children: [
+                  ListView.separated(
+                    itemBuilder: (context, idx) =>
+                        UnitDescription(unit: roster.units[idx]),
+                    separatorBuilder: (context, idx) => const Divider(),
+                    itemCount: roster.units.length,
+                  ),
+                  //const Text(
+                  //  "Weapons, Armour\n & Equipment",
+                  //  style: gothBlackBig,
+                  //),
+                  ListView.separated(
+                    itemBuilder: (context, idx) => ItemDescription(
+                      item: roster.items[idx],
+                      armory: armory,
+                    ),
+                    separatorBuilder: (context, idx) => const Divider(),
+                    itemCount: roster.items.length,
+                  ),
+                ],
+              ),
+            )),
       ),
     );
-  }
-
-  Widget makeDivider(int idx) {
-    if (idx == roster.units.length - 1) {
-      return const Column(children: [
-        Divider(),
-        Text(
-          "Weapons, Armour\n & Equipment",
-          style: gothBlackBig,
-        ),
-      ]);
-    }
-
-    return const Divider();
-  }
-
-  Widget entry(int idx) {
-    if (idx < roster.units.length) {
-      return UnitDescription(unit: roster.units[idx]);
-    } else {
-      return ItemDescription(
-        item: roster.items[idx - roster.units.length],
-        armory: armory,
-      );
-    }
   }
 }
 
