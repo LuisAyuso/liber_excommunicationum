@@ -264,12 +264,14 @@ class _WarbandViewState extends State<WarbandView> {
                   icon: const Icon(Icons.copy),
                 )
               : const SizedBox(),
-          IconButton(
-            onPressed: () {
-              context.read<WarbandModel>().removeUID(warrior.uid);
-            },
-            icon: const Icon(Icons.delete),
-          )
+          (warrior.type.min ?? 0) >= unitCount
+              ? const SizedBox()
+              : IconButton(
+                  onPressed: () {
+                    context.read<WarbandModel>().removeUID(warrior.uid);
+                  },
+                  icon: const Icon(Icons.delete),
+                )
         ]),
       ]);
     } else {

@@ -237,6 +237,8 @@ class WarriorModel {
 }
 
 class WarbandModel extends ChangeNotifier {
+  WarbandModel();
+
   final List<WarriorModel> _items = [];
   int _id = 0;
 
@@ -271,5 +273,18 @@ class WarbandModel extends ChangeNotifier {
 
   void invalidate() {
     notifyListeners();
+  }
+
+  factory WarbandModel.prefill(Roster roster, Armory armory) {
+    var wm = WarbandModel();
+    int bucket = 0;
+    for (var unit in roster.units) {
+      for (var i = 0; i < (unit.min ?? 0); i++) {
+        wm.add(WarriorModel(
+            uid: wm.nextUID(), type: unit, bucket: bucket, armory: armory));
+      }
+      bucket++;
+    }
+    return wm;
   }
 }

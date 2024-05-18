@@ -97,9 +97,7 @@ class WarbandPage extends StatelessWidget {
   final String title;
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => WarbandModel(),
-      builder: (context, _) => FutureBuilder(
+    return FutureBuilder(
         future: loadJson(context),
         builder: (context, future) {
           if (future.hasError) {
@@ -109,14 +107,15 @@ class WarbandPage extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           var (roster, armory) = future.data!;
-          return WarbandView(
-            title: title,
-            roster: roster,
-            armory: armory,
+          return ChangeNotifierProvider(
+            create: (_) => WarbandModel.prefill(roster, armory),
+            builder: (context, _) => WarbandView(
+              title: title,
+              roster: roster,
+              armory: armory,
+            ),
           );
-        },
-      ),
-    );
+        });
   }
 
   Future<(Roster, Armory)> loadJson(context) async {
