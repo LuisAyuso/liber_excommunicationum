@@ -121,7 +121,6 @@ class FilterItem {
     }
 
     // item based ops
-
     if (itemKind != null) {
       return item.kind == itemKind;
     }
@@ -135,8 +134,8 @@ class FilterItem {
     }
     if (meleeWeapon != null) {
       if (item is! Weapon) return false;
-      if (item.canRanged) return false;
-      return meleeWeapon == item.canMelee;
+      // exclusive melee
+      return item.canRanged != meleeWeapon! && meleeWeapon == item.canMelee;
     }
     if (isGrenade != null) {
       if (item is! Weapon) return false;
@@ -157,7 +156,6 @@ class FilterItem {
     }
 
     // warrior based ops
-
     if (unitKeyword != null &&
         warrior != null &&
         warrior.type.keywords.where((kw) => kw == unitKeyword).isEmpty) {
@@ -185,9 +183,9 @@ class FilterItem {
     if (itemKind != null) return "itemKind: $itemKind";
     if (itemName != null) return "itemName: $itemName";
 
-    if (rangedWeapon != null) return "rangedWeapon";
-    if (meleeWeapon != null) return "meleeWeapon";
-    if (isGrenade != null) return "grenade";
+    if (rangedWeapon != null) return "rangedWeapon ${rangedWeapon!}";
+    if (meleeWeapon != null) return "meleeWeapon ${meleeWeapon!}";
+    if (isGrenade != null) return "grenade ${isGrenade!}";
 
     if (unitKeyword != null) return "unitKeyword: $unitKeyword";
     if (unitName != null) return "unitName: $unitName";
@@ -641,6 +639,9 @@ class Weapon extends Item {
     if (canMelee) return "Melee";
     return "Ranged";
   }
+
+  @override
+  String toString() => typeName;
 
   @override
   UnmodifiableListView<String> get getKeywords =>
