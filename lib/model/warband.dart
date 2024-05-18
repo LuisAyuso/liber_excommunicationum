@@ -174,20 +174,31 @@ class WarriorModel {
   UnmodifiableListView<WeaponUse> availableWeapons(
       Roster roster, Armory armory) {
     return UnmodifiableListView(roster.weapons.where((use) {
-      // no repetitions
-      if (weapons.where((w) => w.getName == use.getName).isNotEmpty) {
+      final def = armory.findWeapon(use);
+
+      // no repetitions except pistols
+      if (!def.isPistol &&
+          weapons.where((w) => w.getName == use.getName).isNotEmpty) {
         return false;
       }
-
-      final def = armory.findWeapon(use);
 
       final filter =
           FilterItem.allOf([use.getFilter, def.getFilter, type.getFilter]);
       if (!filter.isItemAllowed(def, this)) return false;
 
+      // Bypass of normal algorithm for the Amalgam, as many weapons as hands
+      if (!type.hasBackpack) {
+        final handsInUse = getWeapons(armory).fold(0, (v, w) => v + w.hands) +
+            getArmours(armory).where((a) => a.isShield).length +
+            def.hands;
+        return (handsInUse <= type.getHands);
+      }
+
       if (def.isGrenade) return true;
       if (def.isPistol && allowPistol(armory)) return true;
-      if (def.isFirearm && firearmsCount(armory) < 1) return true;
+      if (def.isFirearm && firearmsCount(armory) < 1) {
+        return true;
+      }
 
       if (def.isMeleeWeapon && allowMelee(armory)) {
         return freeHands(armory) >= def.hands;
@@ -198,20 +209,32 @@ class WarriorModel {
   }
 
   bool wearsBodyArmour(Armory armory) =>
-      getArmours(armory).where((a) => a.isArmour).isNotEmpty;
+      getArmours(armory).where((a) => a.isBodyArmour).isNotEmpty;
   bool wearsShield(Armory armory) =>
       getArmours(armory).where((a) => a.isShield).isNotEmpty;
 
   UnmodifiableListView<ArmorUse> availableArmours(
           Roster roster, Armory armory) =>
-      UnmodifiableListView(roster.armour.where((armour) {
-        final def = armory.findArmour(armour);
+      UnmodifiableListView(roster.armour.where((use) {
+        // no repetitions
+        if (armour.where((w) => w.getName == use.getName).isNotEmpty) {
+          return false;
+        }
+
+        final def = armory.findArmour(use);
 
         final filter =
-            FilterItem.allOf([armour.getFilter, def.getFilter, type.getFilter]);
+            FilterItem.allOf([use.getFilter, def.getFilter, type.getFilter]);
         if (!filter.isItemAllowed(def, this)) return false;
 
-        if (def.isArmour && wearsBodyArmour(armory)) return false;
+        // Bypass of normal algorithm for the Amalgam, as many weapons as hands
+        if (!type.hasBackpack && def.isShield) {
+          final handsInUse = getWeapons(armory).fold(0, (v, w) => v + w.hands) +
+              getArmours(armory).where((a) => a.isShield).length;
+          return ((handsInUse + 1) <= type.getHands);
+        }
+
+        if (def.isBodyArmour && wearsBodyArmour(armory)) return false;
         if (def.isShield && wearsShield(armory)) return false;
 
         return true;

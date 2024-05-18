@@ -123,6 +123,7 @@ Unit _$UnitFromJson(Map<String, dynamic> json) => Unit()
   ..base = json['base'] as String
   ..hands = json['hands'] as int?
   ..unarmedPenalty = json['unarmedPenalty'] as bool?
+  ..backpack = json['backpack'] as bool?
   ..filter = json['filter'] == null
       ? null
       : FilterItem.fromJson(json['filter'] as Map<String, dynamic>);
@@ -142,6 +143,7 @@ Map<String, dynamic> _$UnitToJson(Unit instance) => <String, dynamic>{
       'base': instance.base,
       'hands': instance.hands,
       'unarmedPenalty': instance.unarmedPenalty,
+      'backpack': instance.backpack,
       'filter': instance.filter,
     };
 
@@ -308,6 +310,7 @@ Armour _$ArmourFromJson(Map<String, dynamic> json) => Armour(
       keywords: (json['keywords'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
+      type: $enumDecodeNullable(_$ArmourTypeEnumMap, json['type']),
     )
       ..typeName = json['typeName'] as String
       ..filter = json['filter'] == null
@@ -317,10 +320,17 @@ Armour _$ArmourFromJson(Map<String, dynamic> json) => Armour(
 Map<String, dynamic> _$ArmourToJson(Armour instance) => <String, dynamic>{
       'typeName': instance.typeName,
       'value': instance.value,
+      'type': _$ArmourTypeEnumMap[instance.type]!,
       'special': instance.special,
       'keywords': instance.keywords,
       'filter': instance.filter?.toJson(),
     };
+
+const _$ArmourTypeEnumMap = {
+  ArmourType.bodyArmour: 'bodyArmour',
+  ArmourType.shield: 'shield',
+  ArmourType.other: 'other',
+};
 
 Equipment _$EquipmentFromJson(Map<String, dynamic> json) => Equipment()
   ..typeName = json['typeName'] as String

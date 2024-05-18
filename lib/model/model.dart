@@ -85,58 +85,14 @@ class FilterItem {
             _count(isShield) ==
         1);
 
+    // primitive ops
     if (bypassValue != null) return bypassValue!;
 
     if (none ?? false) {
       return false;
     }
 
-    if (itemKind != null) {
-      return item.kind == itemKind;
-    }
-    if ((itemName ?? item.itemName) != item.itemName) {
-      return false;
-    }
-
-    if (rangedWeapon != null) {
-      if (item is! Weapon) return false;
-      return rangedWeapon == item.canRanged;
-    }
-    if (meleeWeapon != null) {
-      if (item is! Weapon) return false;
-      if (item.canRanged) return false;
-      return meleeWeapon == item.canMelee;
-    }
-    if (isGrenade != null) {
-      if (item is! Weapon) return false;
-      return item.isGrenade;
-    }
-
-    if (isBodyArmour != null) {
-      if (item is! Armour) return false;
-      return item.isArmour;
-    }
-    if (isShield != null) {
-      if (item is! Armour) return false;
-      return item.isShield;
-    }
-
-    if (unitKeyword != null &&
-        warrior != null &&
-        warrior.type.keywords.where((kw) => kw == unitKeyword).isEmpty) {
-      return false;
-    }
-    if (unitName != null &&
-        warrior != null &&
-        warrior.type.typeName != unitName) {
-      return false;
-    }
-    if (containsItem != null &&
-        warrior != null &&
-        warrior.items.where((it) => it.getName == containsItem).isEmpty) {
-      return false;
-    }
-
+    // boolean ops
     if (noneOf
             ?.map((f) => f.isItemAllowed(item, warrior))
             .where((b) => b)
@@ -161,6 +117,56 @@ class FilterItem {
       return false;
     }
     if (not?.isItemAllowed(item, warrior) ?? false) {
+      return false;
+    }
+
+    // item based ops
+
+    if (itemKind != null) {
+      return item.kind == itemKind;
+    }
+    if (itemName != null) {
+      return itemName == item.itemName;
+    }
+
+    if (rangedWeapon != null) {
+      if (item is! Weapon) return false;
+      return rangedWeapon == item.canRanged;
+    }
+    if (meleeWeapon != null) {
+      if (item is! Weapon) return false;
+      if (item.canRanged) return false;
+      return meleeWeapon == item.canMelee;
+    }
+    if (isGrenade != null) {
+      if (item is! Weapon) return false;
+      return item.isGrenade;
+    }
+
+    if (isBodyArmour != null) {
+      if (item is! Armour) return false;
+      return item.type == ArmourType.bodyArmour;
+    }
+    if (isShield != null) {
+      if (item is! Armour) return false;
+      return item.type == ArmourType.shield;
+    }
+
+    // warrior based ops
+
+    if (unitKeyword != null &&
+        warrior != null &&
+        warrior.type.keywords.where((kw) => kw == unitKeyword).isEmpty) {
+      return false;
+    }
+    if (unitName != null &&
+        warrior != null &&
+        warrior.type.typeName != unitName) {
+      return false;
+    }
+    if (containsItem != null &&
+        warrior != null &&
+        warrior.items.where((it) => it.getName == containsItem).isEmpty) {
       return false;
     }
 
@@ -310,7 +316,11 @@ class Unit {
   int? hands;
   bool? unarmedPenalty;
 
+  /// if the unit has not backpack, it needs to allocate all equipment to the hands
+  bool? backpack;
+
   int get getHands => hands ?? 2;
+  bool get hasBackpack => backpack ?? true;
   bool get getUnarmedPenalty => unarmedPenalty ?? true;
 
   FilterItem? filter;
@@ -590,7 +600,7 @@ class Weapon extends Item {
   bool get canRanged => range != null;
   bool get isFirearm => canRanged && !isPistol && !isGrenade;
   bool get isMeleeWeapon => !canRanged && canMelee;
-  bool get isPistol => typeName.contains("Pistol");
+  bool get isPistol => hands == 1 && range != null;
   bool get isRifle => typeName.contains("Rifle");
   bool get isGrenade => hands == 0 && canRanged;
 
@@ -646,12 +656,21 @@ class Weapon extends Item {
   }
 }
 
+enum ArmourType { bodyArmour, shield, other }
+
 @JsonSerializable(explicitToJson: true)
 class Armour extends Item {
-  Armour({String? typename, this.value, this.special, this.keywords})
-      : typeName = typename ?? "";
+  Armour(
+      {String? typename,
+      this.value,
+      this.special,
+      this.keywords,
+      ArmourType? type})
+      : typeName = typename ?? "",
+        type = type ?? ArmourType.other;
   String typeName = "";
   int? value;
+  ArmourType type;
   List<String>? special = [];
   List<String>? keywords = [];
   FilterItem? filter;
@@ -666,8 +685,8 @@ class Armour extends Item {
   @override
   String get itemName => typeName;
 
-  bool get isShield => typeName.contains("Shield");
-  bool get isArmour => typeName.contains("Armour");
+  bool get isShield => type == ArmourType.shield;
+  bool get isBodyArmour => type == ArmourType.bodyArmour;
   factory Armour.fromJson(Map<String, dynamic> json) => _$ArmourFromJson(json);
   Map<String, dynamic> toJson() => _$ArmourToJson(this);
 }

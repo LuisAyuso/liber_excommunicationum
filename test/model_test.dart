@@ -143,8 +143,9 @@ void main() {
 
     final gun = Weapon(typename: "Gun", range: 12);
     final sword = Weapon(typename: "Sword");
-    final armour = Armour(typename: "Armour");
-    final shield = Armour(typename: "Shield");
+    final grenade = Weapon(typename: "Grenades", range: 0, hands: 0);
+    final armour = Armour(typename: "Armour", type: ArmourType.bodyArmour);
+    final shield = Armour(typename: "Trench Shield", type: ArmourType.shield);
 
     expect(FilterItem.none().isItemAllowed(gun, wm), false);
     expect(FilterItem(unitKeyword: "AAAA").isItemAllowed(gun, wm), true);
@@ -228,6 +229,17 @@ void main() {
     expect(FilterItem(isShield: true).isItemAllowed(sword), false);
     expect(FilterItem(isShield: true).isItemAllowed(armour), false);
     expect(FilterItem(isShield: true).isItemAllowed(shield), true);
+
+    {
+      const regression =
+          '{ "anyOf": [ { "itemName": "Trench Shield" }, { "noneOf": [ { "itemKind": "equipment" }, { "itemKind": "armour" }, { "isGrenade": true } ] } ] }';
+      final f = FilterItem.fromJson(jsonDecode(regression));
+      expect(f.isItemAllowed(gun), true);
+      expect(f.isItemAllowed(sword), true);
+      expect(f.isItemAllowed(armour), false);
+      expect(f.isItemAllowed(grenade), false);
+      expect(f.isItemAllowed(shield), true);
+    }
   });
 
   test('roster serialization', () {

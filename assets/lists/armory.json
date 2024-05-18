@@ -290,7 +290,7 @@
         },
         {
             "typeName": "Bayonet",
-            "hands": 2,
+            "hands": 0,
             "filter": {
                 "anyOf": [
                     {
@@ -426,27 +426,33 @@
     "armours": [
         {
             "typeName": "Trench Shield",
-            "value": -1
+            "value": -1,
+            "type": "shield"
         },
         {
             "typeName": "Standard Armour",
-            "value": -1
+            "value": -1,
+            "type": "bodyArmour"
         },
         {
             "typeName": "Heavy Armour",
-            "value": -2
+            "value": -2,
+            "type": "bodyArmour"
         },
         {
             "typeName": "Machine Armour",
-            "value": -3
+            "value": -3,
+            "type": "bodyArmour"
         },
         {
             "typeName": "Holy Icon Shield",
-            "value": -1
+            "value": -1,
+            "type": "shield"
         },
         {
             "typeName": "Holy Icon Armour",
-            "value": -1
+            "value": -1,
+            "type": "bodyArmour"
         }
     ],
     "equipments": [

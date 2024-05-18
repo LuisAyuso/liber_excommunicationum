@@ -206,6 +206,7 @@
             "melee": 0,
             "armour": 0,
             "hands": 6,
+            "backpack": false,
             "abilities": [
                 "Corpulent",
                 "Tough",
@@ -224,7 +225,10 @@
             },
             "base": "25mm",
             "filter": {
-                "allOff": [
+                "anyOf": [
+                    {
+                        "itemName": "Trench Shield"
+                    },
                     {
                         "noneOf": [
                             {
@@ -234,7 +238,7 @@
                                 "itemKind": "armour"
                             },
                             {
-                                "meleeWeapon": true
+                                "isGrenade": true
                             }
                         ]
                     }
@@ -503,7 +507,8 @@
     "uniqueArmour": [
         {
             "typeName": "Black Grail Shield",
-            "value": -1
+            "value": -1,
+            "type": "shield"
         }
     ]
 }

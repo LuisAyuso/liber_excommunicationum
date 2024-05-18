@@ -566,7 +566,8 @@
     "uniqueArmour": [
         {
             "typeName": "Alchemist Armour",
-            "value": -2
+            "value": -2,
+            "type": "bodyArmour"
         }
     ],
     "uniqueEquipment": [
