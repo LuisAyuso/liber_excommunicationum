@@ -305,7 +305,11 @@ class WarbandModel extends ChangeNotifier {
     for (var unit in roster.units) {
       for (var i = 0; i < (unit.min ?? 0); i++) {
         wm.add(WarriorModel(
-            uid: wm.nextUID(), type: unit, bucket: bucket, armory: armory));
+            name: makeName(roster.namesM, roster.surnames),
+            uid: wm.nextUID(),
+            type: unit,
+            bucket: bucket,
+            armory: armory));
       }
       bucket++;
     }
