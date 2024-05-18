@@ -1,4 +1,23 @@
 {
+    "elitePrefixes": [
+        "Reverend",
+        "Father",
+        "Pastor",
+        "Bishop",
+        "Archbishop",
+        "Cardinal",
+        "Pope",
+        "Deacon",
+        "Elder",
+        "Brother",
+        "Monsignor",
+        "Canon",
+        "Prelate",
+        "Chaplain",
+        "Abbot",
+        "Vicar",
+        "Priest"
+    ],
     "namesM": [
         "Cain",
         "Judas",
@@ -12,7 +31,30 @@
         "Haman"
     ],
     "namesF": [
-        "Brunhilde"
+        "Brunhilde",
+        "Adelaide",
+        "Adelheid",
+        "Aethel",
+        "Aethelthryth",
+        "Alda",
+        "Alfreda",
+        "Bertha",
+        "Brunhilda",
+        "Clotilde",
+        "Edith",
+        "Ethel",
+        "Etheldreda",
+        "Elfriede",
+        "Freya",
+        "Gertrude",
+        "Hilda",
+        "Hildegard",
+        "Ingrid",
+        "Lieselotte",
+        "Matilda",
+        "Mildred",
+        "Ursula",
+        "Wilhelmina"
     ],
     "surnames": [
         "Zolner",
@@ -99,7 +141,16 @@
             "cost": {
                 "ducats": 100
             },
-            "base": "40mm"
+            "base": "40mm",
+            "defaultItems": [
+                {
+                    "itemName": "The Communicant Cross",
+                    "removable": false,
+                    "cost": {
+                        "ducats": 0
+                    }
+                }
+            ]
         },
         {
             "typeName": "Trench Pilgrim",
@@ -139,19 +190,34 @@
             "melee": -1,
             "armour": 0,
             "abilities": [
-                "Martyrdom Device",
                 "Mad Dash"
             ],
             "keywords": [
                 "PILGRIM"
             ],
             "cost": {
-                "ducats": 55
+                "ducats": 20
             },
             "base": "25mm",
             "filter": {
                 "none": true
-            }
+            },
+            "defaultItems": [
+                {
+                    "itemName": "Iron Capirote",
+                    "removable": false,
+                    "cost": {
+                        "ducats": 0
+                    }
+                },
+                {
+                    "itemName": "Martyrdom Device",
+                    "removable": false,
+                    "cost": {
+                        "ducats": 35
+                    }
+                }
+            ]
         },
         {
             "typeName": "Stigmatic Nuns",
@@ -171,8 +237,22 @@
                 "ducats": 50
             },
             "base": "25mm",
+            "defaultSex": "female",
             "filter": {
-                "itemName": "Automatic Pistol"
+                "anyOf": [
+                    {
+                        "meleeWeapon": true
+                    },
+                    {
+                        "itemName": "Automatic Pistol"
+                    },
+                    {
+                        "itemKind": "armour"
+                    },
+                    {
+                        "itemKind": "equipment"
+                    }
+                ]
             }
         },
         {
@@ -181,10 +261,8 @@
             "movement": 6,
             "ranged": 0,
             "melee": 1,
-            "armour": 0,
+            "armour": -1,
             "abilities": [
-                "Catherine Wheel",
-                "Bonebreaker Mace",
                 "Tough",
                 "Fear",
                 "Broken on the Wheel"
@@ -205,6 +283,14 @@
                 },
                 {
                     "itemName": "Combat Helmet",
+                    "removable": false
+                },
+                {
+                    "itemName": "Catherine Wheel",
+                    "removable": false
+                },
+                {
+                    "itemName": "Bonebreaker Mace",
                     "removable": false
                 }
             ],
@@ -346,6 +432,24 @@
                 "ducats": 15
             },
             "limit": 1
+        },
+        {
+            "typeName": "Martyrdom Device",
+            "filter": {
+                "unitName": "Ecclesiastic Prisoners"
+            }
+        },
+        {
+            "typeName": "Catherine Wheel",
+            "filter": {
+                "unitName": "Anchorite Shrine"
+            }
+        },
+        {
+            "typeName": "Bonebreaker Mace",
+            "filter": {
+                "unitName": "Anchorite Shrine"
+            }
         }
     ],
     "armour": [
@@ -441,6 +545,50 @@
             "cost": {
                 "ducats": 15
             }
+        },
+        {
+            "typeName": "The Communicant Cross",
+            "filter": {
+                "unitName": "Communicant"
+            }
+        }
+    ],
+    "uniqueWeapons": [
+        {
+            "typeName": "Martyrdom Device",
+            "range": 3
+        },
+        {
+            "typeName": "Catherine Wheel",
+            "modifiers": [
+                {
+                    "hit": 3,
+                    "extra": "CRITICAL"
+                },
+                {
+                    "injury": 3,
+                    "extra": "adding all 3"
+                }
+            ]
+        },
+        {
+            "typeName": "Bonebreaker Mace",
+            "modifiers": [
+                {
+                    "hit": 1
+                },
+                {
+                    "injury": 1
+                }
+            ],
+            "keywords": [
+                "CRITICAL"
+            ]
+        }
+    ],
+    "uniqueEquipment": [
+        {
+            "typeName": "The Communicant Cross"
         }
     ]
 }

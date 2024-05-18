@@ -37,8 +37,10 @@ class WarriorModel {
       required this.uid,
       required this.type,
       required this.bucket,
+      Sex? sex,
       Armory? armory})
       : name = name ?? "Generated" {
+    sex = sex ?? type.sex;
     if (armory != null) populateBuiltIn(armory);
   }
 
@@ -55,6 +57,9 @@ class WarriorModel {
   final int uid;
   final Unit type;
   final int bucket;
+
+  Sex? sex;
+  Sex get getSex => sex ?? Sex.custom;
 
   List<ItemStack> _items = [];
   Iterable<ItemUse> get items => _items.map((s) => s.value);
@@ -133,9 +138,7 @@ class WarriorModel {
   int computeArmorValue(Armory armory) {
     return type.armour +
         armour
-            .map((a) =>
-                armory.armours.firstWhere((e) => e.typeName == a.typeName))
-            .map((a) => a.value ?? 0)
+            .map((a) => armory.findArmour(a).value ?? 0)
             .fold(0, (a, b) => a + b);
   }
 
@@ -305,7 +308,7 @@ class WarbandModel extends ChangeNotifier {
     for (var unit in roster.units) {
       for (var i = 0; i < (unit.min ?? 0); i++) {
         wm.add(WarriorModel(
-            name: makeName(roster.namesM, roster.surnames),
+            name: makeName(roster, unit.sex, unit.isElite),
             uid: wm.nextUID(),
             type: unit,
             bucket: bucket,

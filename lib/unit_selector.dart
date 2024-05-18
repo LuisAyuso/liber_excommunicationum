@@ -32,7 +32,8 @@ class UnitSelector extends StatelessWidget {
     );
   }
 
-  Widget makeUnitEntry(BuildContext context, Unit unit, Roster r, int idx) {
+  Widget makeUnitEntry(
+      BuildContext context, Unit unit, Roster roster, int idx) {
     return Builder(builder: (context) {
       final currentList = context.watch<WarbandModel>();
       int count = 0;
@@ -48,7 +49,7 @@ class UnitSelector extends StatelessWidget {
             ? () {
                 var wb = context.read<WarbandModel>();
                 wb.add(WarriorModel(
-                    name: makeName(r.namesM, r.surnames),
+                    name: makeName(roster, unit.sex, unit.isElite),
                     uid: wb.nextUID(),
                     type: unit,
                     bucket: idx,

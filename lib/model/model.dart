@@ -299,6 +299,8 @@ class DefaultItem {
   Map<String, dynamic> toJson() => _$DefaultItemToJson(this);
 }
 
+enum Sex { male, female, custom }
+
 @JsonSerializable()
 class Unit {
   Unit();
@@ -317,6 +319,7 @@ class Unit {
   String base = "25";
   int? hands;
   bool? unarmedPenalty;
+  Sex? defaultSex;
 
   /// if the unit has not backpack, it needs to allocate all equipment to the hands
   bool? backpack;
@@ -324,6 +327,8 @@ class Unit {
   int get getHands => hands ?? 2;
   bool get hasBackpack => backpack ?? true;
   bool get getUnarmedPenalty => unarmedPenalty ?? true;
+  bool get isElite => keywords.contains("ELITE");
+  Sex get sex => defaultSex ?? Sex.male;
 
   FilterItem? filter;
   FilterItem get getFilter => filter ?? FilterItem.trueValue();
@@ -447,6 +452,7 @@ class EquipmentUse extends ItemUse {
 class Roster {
   Roster();
 
+  List<String> elitePrefixes = [];
   List<String> namesM = [];
   List<String> namesF = [];
   List<String> surnames = [];

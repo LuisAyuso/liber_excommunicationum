@@ -1,4 +1,8 @@
 {
+    "elitePrefixes": [
+        "Prince",
+        "Lord"
+    ],
     "namesM": [
         "Xul'kuth",
         "Zy'gorth",
@@ -21,7 +25,28 @@
         "Vulth'rax",
         "Kyth'gor"
     ],
-    "namesF": [],
+    "namesF": [
+        "Xul'kuth",
+        "Zy'gorth",
+        "Thal'gorak",
+        "Vor'thul",
+        "Kra'zul",
+        "Umbra'kai",
+        "Nyx'gara",
+        "Zarath'koth",
+        "Eldra'nar",
+        "Ygg'varoth",
+        "Neth'rax",
+        "Xar'zoth",
+        "Vex'loth",
+        "Za'gul",
+        "Thul'kai",
+        "Xyn'thar",
+        "Ylthar'gon",
+        "Zul'kara",
+        "Vulth'rax",
+        "Kyth'gor"
+    ],
     "surnames": [],
     "units": [
         {

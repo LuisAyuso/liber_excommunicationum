@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:tc_thing/model/model.dart';
 
 class MyContent extends StatelessWidget {
   const MyContent({super.key, required this.child});
@@ -52,10 +53,22 @@ const TextStyle gothBlackBig = TextStyle(
   fontSize: 36,
 );
 
-String makeName(List<String> names, List<String> surnames) {
+String makeName(Roster roster, Sex sex, bool elite) {
+  final prefixes = roster.elitePrefixes;
+  final names = sex == Sex.male ? roster.namesM : roster.namesF;
+  final surnames = roster.surnames;
+
   final random = Random();
+  String prefix = "";
+  if (elite && prefixes.isNotEmpty) {
+    prefix = prefixes[random.nextInt(prefixes.length)];
+    if (prefix[prefix.length - 1] != '-') prefix = "$prefix ";
+  }
+
   final name = names[random.nextInt(names.length)];
-  if (surnames.isEmpty) return name;
-  final surname = surnames[random.nextInt(surnames.length)];
-  return "$name $surname";
+  String surname = "";
+  if (surnames.isNotEmpty) {
+    surname = " ${surnames[random.nextInt(surnames.length)]}";
+  }
+  return "$prefix$name$surname";
 }

@@ -1,4 +1,23 @@
 {
+    "elitePrefixes": [
+        "Herr",
+        "Graf",
+        "Freiherr",
+        "Baron",
+        "Herzog",
+        "Kaiser",
+        "Doktor",
+        "Professor",
+        "Meister",
+        "Hochwürden",
+        "Hochgeboren",
+        "Hochwohlgeboren",
+        "Ritter",
+        "Kapitan",
+        "Oberst",
+        "General",
+        "Pfarrer"
+    ],
     "namesM": [
         "Mortimer",
         "Egon",

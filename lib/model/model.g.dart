@@ -123,6 +123,7 @@ Unit _$UnitFromJson(Map<String, dynamic> json) => Unit()
   ..base = json['base'] as String
   ..hands = json['hands'] as int?
   ..unarmedPenalty = json['unarmedPenalty'] as bool?
+  ..defaultSex = $enumDecodeNullable(_$SexEnumMap, json['defaultSex'])
   ..backpack = json['backpack'] as bool?
   ..filter = json['filter'] == null
       ? null
@@ -143,9 +144,15 @@ Map<String, dynamic> _$UnitToJson(Unit instance) => <String, dynamic>{
       'base': instance.base,
       'hands': instance.hands,
       'unarmedPenalty': instance.unarmedPenalty,
+      'defaultSex': _$SexEnumMap[instance.defaultSex],
       'backpack': instance.backpack,
       'filter': instance.filter,
     };
+
+const _$SexEnumMap = {
+  Sex.male: 'male',
+  Sex.female: 'female',
+};
 
 WeaponUse _$WeaponUseFromJson(Map<String, dynamic> json) => WeaponUse(
       typeName: json['typeName'] as String?,
@@ -209,6 +216,8 @@ Map<String, dynamic> _$EquipmentUseToJson(EquipmentUse instance) =>
     };
 
 Roster _$RosterFromJson(Map<String, dynamic> json) => Roster()
+  ..elitePrefixes =
+      (json['elitePrefixes'] as List<dynamic>).map((e) => e as String).toList()
   ..namesM = (json['namesM'] as List<dynamic>).map((e) => e as String).toList()
   ..namesF = (json['namesF'] as List<dynamic>).map((e) => e as String).toList()
   ..surnames =
@@ -236,6 +245,7 @@ Roster _$RosterFromJson(Map<String, dynamic> json) => Roster()
       .toList();
 
 Map<String, dynamic> _$RosterToJson(Roster instance) => <String, dynamic>{
+      'elitePrefixes': instance.elitePrefixes,
       'namesM': instance.namesM,
       'namesF': instance.namesF,
       'surnames': instance.surnames,

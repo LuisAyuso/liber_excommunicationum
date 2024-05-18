@@ -1,4 +1,25 @@
 {
+    "elitePrefixes": [
+        "Bey",
+        "Han",
+        "Pasha",
+        "Sultan",
+        "Ağa",
+        "Khan",
+        "Emir",
+        "Sheikh",
+        "Malik",
+        "Mullah",
+        "Effendi",
+        "Hakim",
+        "Sayyid",
+        "Mirza",
+        "Al-",
+        "Abu",
+        "Bin",
+        "Dawla",
+        "Hajji"
+    ],
     "namesM": [
         "Ahmet",
         "Mehmet",

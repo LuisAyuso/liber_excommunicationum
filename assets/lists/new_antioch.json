@@ -1,4 +1,23 @@
 {
+    "elitePrefixes": [
+        "Sir",
+        "Lord",
+        "Duke",
+        "Earl",
+        "Baron",
+        "Viscount",
+        "Prince",
+        "Dr.",
+        "Professor",
+        "Master",
+        "Honorable",
+        "Judge",
+        "Captain",
+        "Major",
+        "Colonel",
+        "General",
+        "Reverend"
+    ],
     "namesM": [
         "William",
         "James",
@@ -260,6 +279,7 @@
             "ranged": 0,
             "melee": 0,
             "armour": 0,
+            "defaultSex": "female",
             "defaultItems": [
                 {
                     "itemName": "Misericordia",

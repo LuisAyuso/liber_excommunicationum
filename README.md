@@ -2,11 +2,19 @@
 
 Roster management
 
+## Todo list
+
+## App Features
+- [ ] Static storage
+- [ ] Export/print
+
 ### UI
 - [x] Back from unit selector
 - [ ] Problem with width, lines too long. Too much info.
 - [ ] Keywords and special rules in weapon line
-- [ ] Tabs in lists units/weapons
+- [x] Tabs in lists units/weapons
+- [x] Change names
+
 
 ### Refactors
 - [x] Move filter logic to model, keep frontend business-logic-free
@@ -14,7 +22,7 @@ Roster management
 - [ ] Be idiomatic with null: https://stackoverflow.com/questions/17006664/what-is-the-dart-null-checking-idiom-or-best-practice
 
 
-## Features
+### Game Logic
 - [x] Unarmed: if no melee equipped, add the "unarmed" weapon profile
 - [x] Edit mode vs play mode
 - [x] List-dependent armory

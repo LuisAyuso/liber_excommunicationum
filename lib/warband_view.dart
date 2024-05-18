@@ -120,7 +120,22 @@ class _WarbandViewState extends State<WarbandView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(warrior.name, style: gothRed24),
+                  _editMode
+                      ? NameEditor(
+                          name: warrior.name,
+                          onChange: (newSex, name) {
+                            // this is the sex change function, anytime!
+                            warrior.name = name ??
+                                makeName(widget.roster, newSex,
+                                    warrior.type.isElite);
+                            warrior.sex = newSex;
+                            context.read<WarbandModel>().invalidate();
+                          },
+                        )
+                      : Text(
+                          warrior.name,
+                          style: gothRed24,
+                        ),
                   Text(
                     warrior.type.typeName,
                   )
@@ -271,9 +286,10 @@ class _WarbandViewState extends State<WarbandView> {
                   onPressed: () {
                     var wbm = context.read<WarbandModel>();
                     wbm.add(warrior.copyWith(
-                        name: makeName(
-                            widget.roster.namesM, widget.roster.surnames),
-                        newUid: wbm.nextUID()));
+                      name: makeName(widget.roster, warrior.type.sex,
+                          warrior.type.isElite),
+                      newUid: wbm.nextUID(),
+                    ));
                   },
                   icon: const Icon(Icons.copy),
                 )
@@ -451,7 +467,6 @@ class _WarbandViewState extends State<WarbandView> {
                 widget.armory,
               )
                   .where((item) {
-                debugPrint(item.getName);
                 if (item.getName == oldArmour.getName) return false;
                 return replacements.isAllowed(widget.armory.findItem(item));
               }).map((item) {
@@ -499,6 +514,113 @@ class _WarbandViewState extends State<WarbandView> {
                 icon: const Icon(Icons.delete))
             : const SizedBox()
       ],
+    );
+  }
+}
+
+class NameEditor extends StatefulWidget {
+  const NameEditor({super.key, required this.name, required this.onChange});
+  final String name;
+  final Function(Sex, String? name) onChange;
+
+  @override
+  State<NameEditor> createState() => _NameEditorState();
+}
+
+enum NameEditorState { display, choose, write }
+
+enum SexEditorState { none, male, female, custom, back }
+
+class _NameEditorState extends State<NameEditor> {
+  NameEditorState _editing = NameEditorState.display;
+  final textController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return switch (_editing) {
+      NameEditorState.display => display(context),
+      NameEditorState.choose => choose(context),
+      NameEditorState.write => write(context),
+    };
+  }
+
+  Widget display(BuildContext context) {
+    return Row(children: [
+      SizedBox(width: 180, child: Text(widget.name, style: gothRed24)),
+      IconButton(
+        onPressed: () {
+          setState(() {
+            _editing = NameEditorState.choose;
+          });
+        },
+        icon: const Icon(Icons.edit),
+      )
+    ]);
+  }
+
+  Widget choose(BuildContext context) {
+    return SegmentedButton<SexEditorState>(
+      segments: const [
+        ButtonSegment<SexEditorState>(
+            value: SexEditorState.male, icon: Icon(Icons.male)),
+        ButtonSegment<SexEditorState>(
+            value: SexEditorState.female, icon: Icon(Icons.female)),
+        ButtonSegment<SexEditorState>(
+            value: SexEditorState.custom, icon: Icon(Icons.edit)),
+        ButtonSegment<SexEditorState>(
+            value: SexEditorState.back, icon: Icon(Icons.undo)),
+      ],
+      selected: const <SexEditorState>{SexEditorState.none},
+      onSelectionChanged: (v) {
+        switch (v.first) {
+          case SexEditorState.none:
+          case SexEditorState.back:
+            setState(() {
+              _editing = NameEditorState.display;
+            });
+            break;
+          case SexEditorState.male:
+            widget.onChange(Sex.male, null);
+            setState(() {
+              _editing = NameEditorState.display;
+            });
+            break;
+          case SexEditorState.female:
+            widget.onChange(Sex.female, null);
+            setState(() {
+              _editing = NameEditorState.display;
+            });
+            break;
+          case SexEditorState.custom:
+            setState(() {
+              _editing = NameEditorState.write;
+            });
+        }
+      },
+    );
+  }
+
+  Widget write(BuildContext context) {
+    return TextField(
+      decoration: InputDecoration(
+          border: const UnderlineInputBorder(),
+          labelText: 'New name',
+          suffixIcon: IconButton(
+              onPressed: () {
+                setState(() {
+                  _editing = NameEditorState.display;
+                });
+              },
+              icon: const Icon(Icons.undo))),
+      controller: textController,
+      onEditingComplete: () {
+        if (textController.text.isNotEmpty) {
+          widget.onChange(Sex.custom, textController.text);
+        }
+        setState(() {
+          _editing = NameEditorState.display;
+        });
+      },
     );
   }
 }
