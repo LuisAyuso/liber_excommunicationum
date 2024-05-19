@@ -1,4 +1,5 @@
 {
+    "version": "v1.3.2",
     "elitePrefixes": [
         "Herr",
         "Graf",
@@ -219,7 +220,8 @@
                 "Strong"
             ],
             "keywords": [
-                "HERETIC"
+                "HERETIC",
+                "STRONG"
             ],
             "cost": {
                 "ducats": 95

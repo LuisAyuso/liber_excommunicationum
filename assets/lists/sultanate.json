@@ -1,4 +1,5 @@
 {
+    "version": "v1.3.2",
     "elitePrefixes": [
         "Bey",
         "Han",
@@ -162,7 +163,7 @@
             "cost": {
                 "ducats": 25
             },
-            "base": "32mm"
+            "base": "25mm"
         },
         {
             "typeName": "Sultanate Sappers",
@@ -182,7 +183,7 @@
             "cost": {
                 "ducats": 50
             },
-            "base": "32mm"
+            "base": "25mm"
         },
         {
             "typeName": "Lions of Jabir",
@@ -222,7 +223,7 @@
             "cost": {
                 "ducats": 55
             },
-            "base": "32mm"
+            "base": "25mm"
         },
         {
             "typeName": "Brazen Bull",
@@ -247,7 +248,10 @@
             "cost": {
                 "ducats": 100
             },
-            "base": "60mm"
+            "base": "60mm",
+            "filter": {
+                "itemKeyword": "HEAVY"
+            }
         }
     ],
     "weapons": [
@@ -266,7 +270,7 @@
         {
             "typeName": "Musket",
             "cost": {
-                "ducats": 30
+                "ducats": 5
             }
         },
         {
@@ -320,6 +324,15 @@
         {
             "typeName": "MURAD Bombard",
             "limit": 1,
+            "cost": {
+                "ducats": 50
+            },
+            "filter": {
+                "unitName": "Brazen Bull"
+            }
+        },
+        {
+            "typeName": "Flame Cannon",
             "cost": {
                 "ducats": 65
             },
@@ -451,7 +464,7 @@
         {
             "typeName": "Medi-Kit",
             "cost": {
-                "ducats": 10
+                "ducats": 5
             }
         },
         {
@@ -530,8 +543,17 @@
             "hands": 1,
             "range": 12,
             "ranged": 0,
+            "modifiers": [
+                {
+                    "extra": "Hits automatically everyone in line"
+                },
+                {
+                    "extra": "Ignores Armour"
+                }
+            ],
             "keywords": [
-                "CRITICAL"
+                "CRITICAL",
+                "FIRE"
             ]
         },
         {

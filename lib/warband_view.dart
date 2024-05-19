@@ -201,9 +201,9 @@ class _WarbandViewState extends State<WarbandView> {
 
   UnmodifiableListView<Widget> editControls(
     WarriorModel warrior,
-    Iterable<WeaponUse> availableWeapons,
-    Iterable<ArmourUse> availableArmours,
-    Iterable<EquipmentUse> availableEquipment,
+    UnmodifiableListView<WeaponUse> availableWeapons,
+    UnmodifiableListView<ArmourUse> availableArmours,
+    UnmodifiableListView<EquipmentUse> availableEquipment,
     int unitCount,
   ) {
     if (_editMode) {

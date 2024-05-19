@@ -1,4 +1,5 @@
 {
+    "version": "v1.3.2",
     "weapons": [
         {
             "typeName": "Pistol/Revolver",
@@ -38,7 +39,7 @@
             "modifiers": [
                 {
                     "hit": 1,
-                    "extra": "in Cover"
+                    "extra": "shots from Cover"
                 }
             ]
         },
@@ -64,6 +65,11 @@
             "ranged": 0,
             "keywords": [
                 "ASSAULT"
+            ],
+            "modifiers": [
+                {
+                    "attacks": 2
+                }
             ]
         },
         {

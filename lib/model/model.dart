@@ -56,6 +56,8 @@ class FilterItem {
 
   ItemKind? itemKind;
   String? itemName;
+  String? itemKeyword;
+
   bool? rangedWeapon;
   bool? meleeWeapon;
   bool? isGrenade;
@@ -78,6 +80,7 @@ class FilterItem {
             _count(containsItem) +
             _count(itemKind) +
             _count(itemName) +
+            _count(itemKeyword) +
             _count(rangedWeapon) +
             _count(meleeWeapon) +
             _count(isGrenade) +
@@ -126,6 +129,9 @@ class FilterItem {
     }
     if (itemName != null) {
       return itemName == item.itemName;
+    }
+    if (itemKeyword != null) {
+      return item.getKeywords.where((kw) => kw == itemKeyword).isNotEmpty;
     }
 
     if (rangedWeapon != null) {
@@ -452,6 +458,7 @@ class EquipmentUse extends ItemUse {
 class Roster {
   Roster();
 
+  String version = "Unversioned";
   List<String> elitePrefixes = [];
   List<String> namesM = [];
   List<String> namesF = [];
@@ -732,6 +739,7 @@ class Equipment extends Item {
 class Armory {
   Armory();
 
+  String version = "Unversioned";
   List<Weapon> weapons = [];
   List<Armour> armours = [];
   List<Equipment> equipments = [];
