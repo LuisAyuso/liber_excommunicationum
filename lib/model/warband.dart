@@ -92,11 +92,12 @@ class WarriorModel {
       .map((i) => i.value)
       .fold<Currency>(Currency.free(), (v, w) => w.getCost + v);
 
-  void addItem(ItemUse item) {
+  void addItem(ItemUse item, Armory armoury) {
     _items.add(ItemStack(item: item));
+    removeInvalid(armoury);
   }
 
-  void removeItem(ItemUse item) {
+  void removeItem(ItemUse item, Armory armoury) {
     for (var it in _items) {
       if (it.value.getName == item.getName) {
         it.pop();
@@ -104,33 +105,61 @@ class WarriorModel {
     }
     _items.removeWhere((innerList) => innerList.isEmpty);
     assert(_items.where((s) => s.isEmpty).isEmpty);
+
+    removeInvalid(armoury);
   }
 
-  void replace(ItemUse oldItem, ItemUse newItem) {
+  void removeInvalid(Armory armoury) {
+    List<ItemUse> toRemove = [];
+    for (var s in _items) {
+      final item = s.value;
+
+      final def = armoury.findItem(item);
+      final filter =
+          FilterItem.allOf([item.getFilter, def.getFilter, type.getFilter]);
+      if (!filter.isItemAllowed(def, this)) {
+        toRemove.add(item);
+      }
+    }
+
+    for (var item in toRemove) {
+      removeItem(item, armoury);
+    }
+  }
+
+  void replace(ItemUse oldItem, ItemUse newItem, Armory armory) {
     for (var stack in _items) {
       if (stack.value.getName == oldItem.getName) stack.replace(newItem);
     }
+
+    removeInvalid(armory);
   }
 
   void populateBuiltIn(Armory armory) {
     for (var item in type.defaultItems ?? []) {
       if (armory.isWeapon(item.itemName)) {
-        addItem(WeaponUse(
+        addItem(
+            WeaponUse(
             typeName: item.itemName,
             removable: item.isRemovable,
-            cost: item.getCost));
+                cost: item.getCost),
+            armory);
       }
       if (armory.isArmour(item.itemName)) {
-        addItem(ArmourUse(
+        addItem(
+            ArmourUse(
             typeName: item.itemName,
             removable: item.isRemovable,
-            cost: item.getCost));
+                cost: item.getCost),
+            armory);
       }
       if (armory.isEquipment(item.itemName)) {
-        addItem(EquipmentUse(
+        addItem(
+            EquipmentUse(
             typeName: item.itemName,
             removable: item.isRemovable,
-            cost: item.getCost));
+                cost: item.getCost),
+            armory);
       }
     }
   }
@@ -141,6 +170,8 @@ class WarriorModel {
             .map((a) => armory.findArmour(a).value ?? 0)
             .fold(0, (a, b) => a + b);
   }
+
+  bool get isStrong => type.keywords.contains("STRONG");
 
   Iterable<Weapon> getWeapons(Armory armory) =>
       weapons.map((w) => armory.findWeapon(w));

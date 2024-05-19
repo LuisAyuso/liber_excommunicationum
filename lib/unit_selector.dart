@@ -57,7 +57,10 @@ class UnitSelector extends StatelessWidget {
                 Navigator.pop(context);
               }
             : null,
-        child: UnitDescription(unit: unit),
+        child: UnitDescription(
+          unit: unit,
+          armory: armory,
+        ),
       );
     });
   }

@@ -216,7 +216,6 @@ class _WarbandViewState extends State<WarbandView> {
                     var wb = context.read<WarbandModel>();
                     showModalBottomSheet(
                         backgroundColor: Colors.black,
-                        //Theme.of(context).scaffoldBackgroundColor,
                         context: context,
                         builder: (BuildContext context) {
                           return ItemChooser(
@@ -227,7 +226,9 @@ class _WarbandViewState extends State<WarbandView> {
                                 "Melee": onlyMelee,
                               }),
                               callback: (use) {
-                                wb.getUID(warrior.uid).addItem(use);
+                                wb
+                                    .getUID(warrior.uid)
+                                    .addItem(use, widget.armory);
                                 wb.invalidate();
                                 Navigator.pop(context);
                               });
@@ -249,7 +250,9 @@ class _WarbandViewState extends State<WarbandView> {
                               elements: availableArmours.toList(),
                               armory: widget.armory,
                               callback: (use) {
-                                wb.getUID(warrior.uid).addItem(use);
+                                wb
+                                    .getUID(warrior.uid)
+                                    .addItem(use, widget.armory);
                                 wb.invalidate();
                                 Navigator.pop(context);
                               });
@@ -271,7 +274,9 @@ class _WarbandViewState extends State<WarbandView> {
                               elements: availableEquipment.toList(),
                               armory: widget.armory,
                               callback: (use) {
-                                wb.getUID(warrior.uid).addItem(use);
+                                wb
+                                    .getUID(warrior.uid)
+                                    .addItem(use, widget.armory);
                                 wb.invalidate();
                                 Navigator.pop(context);
                               });
@@ -352,7 +357,7 @@ class _WarbandViewState extends State<WarbandView> {
         _editMode && weapon.isRemovable
             ? IconButton(
                 onPressed: () {
-                  warrior.removeItem(weapon);
+                  warrior.removeItem(weapon, widget.armory);
                   context.read<WarbandModel>().invalidate();
                 },
                 icon: const Icon(Icons.delete))
@@ -376,7 +381,7 @@ class _WarbandViewState extends State<WarbandView> {
             context: context,
             builder: (BuildContext context) {
               final alterEgo = warrior.copyWith(name: "", newUid: -1);
-              alterEgo.removeItem(oldWeapon);
+              alterEgo.removeItem(oldWeapon, widget.armory);
               final candidates = alterEgo
                   .availableWeapons(
                 widget.roster,
@@ -399,7 +404,7 @@ class _WarbandViewState extends State<WarbandView> {
                   elements: candidates,
                   armory: widget.armory,
                   callback: (newWeapon) {
-                    warrior.replace(oldWeapon, newWeapon);
+                    warrior.replace(oldWeapon, newWeapon, widget.armory);
                     wb.invalidate();
                     Navigator.pop(context);
                   });
@@ -436,7 +441,7 @@ class _WarbandViewState extends State<WarbandView> {
         _editMode && armour.isRemovable
             ? IconButton(
                 onPressed: () {
-                  warrior.removeItem(armour);
+                  warrior.removeItem(armour, widget.armory);
                   context.read<WarbandModel>().invalidate();
                 },
                 icon: const Icon(Icons.delete))
@@ -460,7 +465,7 @@ class _WarbandViewState extends State<WarbandView> {
             context: context,
             builder: (BuildContext context) {
               final alterEgo = warrior.copyWith(name: "", newUid: -1);
-              alterEgo.removeItem(oldArmour);
+              alterEgo.removeItem(oldArmour, widget.armory);
               final newCandidates = alterEgo
                   .availableArmours(
                 widget.roster,
@@ -482,7 +487,7 @@ class _WarbandViewState extends State<WarbandView> {
                   elements: newCandidates,
                   armory: widget.armory,
                   callback: (newArmour) {
-                    warrior.replace(oldArmour, newArmour);
+                    warrior.replace(oldArmour, newArmour, widget.armory);
                     wb.invalidate();
                     Navigator.pop(context);
                   });
@@ -508,7 +513,7 @@ class _WarbandViewState extends State<WarbandView> {
         _editMode && e.isRemovable
             ? IconButton(
                 onPressed: () {
-                  warrior.removeItem(e);
+                  warrior.removeItem(e, widget.armory);
                   context.read<WarbandModel>().invalidate();
                 },
                 icon: const Icon(Icons.delete))

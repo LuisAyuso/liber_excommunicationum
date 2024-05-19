@@ -122,13 +122,13 @@ void main() {
     }
   });
   test('weapons', () {
-    final gun = Weapon(typename: "pistol", range: 12, melee: true);
+    final gun = Weapon(typeName: "pistol", range: 12, melee: true);
     expect(gun.canRanged, true);
     expect(gun.canMelee, true);
-    final gun2 = Weapon(typename: "gun", range: 12);
+    final gun2 = Weapon(typeName: "gun", range: 12);
     expect(gun2.canRanged, true);
     expect(gun2.canMelee, false);
-    final gun3 = Weapon(typename: "gun");
+    final gun3 = Weapon(typeName: "gun");
     expect(gun3.canRanged, false);
     expect(gun3.canMelee, true);
   });
@@ -137,15 +137,23 @@ void main() {
     Unit u = Unit();
     u.typeName = "warrior 1";
     u.keywords = ["AAAA", "BBBB"];
-    WarriorModel wm = WarriorModel(uid: 1, type: u, bucket: 2);
-    wm.addItem(WeaponUse(typeName: "gun"));
-    wm.addItem(ArmourUse(typeName: "armour"));
 
-    final gun = Weapon(typename: "Gun", range: 12);
-    final sword = Weapon(typename: "Sword");
-    final grenade = Weapon(typename: "Grenades", range: 0, hands: 0);
+    final gun = Weapon(typeName: "Gun", range: 12);
+    final sword = Weapon(typeName: "Sword");
+    final grenade = Weapon(typeName: "Grenades", range: 0, hands: 0);
     final armour = Armour(typename: "Armour", type: ArmourType.bodyArmour);
     final shield = Armour(typename: "Trench Shield", type: ArmourType.shield);
+
+    var armory = Armory();
+    armory.add(gun);
+    armory.add(sword);
+    armory.add(grenade);
+    armory.add(armour);
+    armory.add(shield);
+
+    WarriorModel wm = WarriorModel(uid: 1, type: u, bucket: 2);
+    wm.addItem(WeaponUse(typeName: "Gun"), armory);
+    wm.addItem(ArmourUse(typeName: "Armour"), armory);
 
     expect(FilterItem.none().isItemAllowed(gun, wm), false);
     expect(FilterItem(unitKeyword: "AAAA").isItemAllowed(gun, wm), true);
@@ -155,8 +163,8 @@ void main() {
         FilterItem(unitName: "something else").isItemAllowed(gun, wm), false);
     expect(FilterItem(unitName: "warrior 1").isItemAllowed(gun, wm), true);
 
-    expect(FilterItem(containsItem: "gun").isItemAllowed(gun, wm), true);
-    expect(FilterItem(containsItem: "armour").isItemAllowed(gun, wm), true);
+    expect(FilterItem(containsItem: "Gun").isItemAllowed(gun, wm), true);
+    expect(FilterItem(containsItem: "Armour").isItemAllowed(gun, wm), true);
     expect(FilterItem(containsItem: "something else").isItemAllowed(gun, wm),
         false);
     expect(FilterItem(itemKind: ItemKind.weapon).isItemAllowed(gun, wm), true);
@@ -172,34 +180,34 @@ void main() {
 
     expect(
         FilterItem.allOf([
-          FilterItem(containsItem: "gun"),
-          FilterItem(containsItem: "armour")
+          FilterItem(containsItem: "Gun"),
+          FilterItem(containsItem: "Armour")
         ]).isItemAllowed(gun, wm),
         true);
 
     expect(
         FilterItem.anyOf([
-          FilterItem(containsItem: "gun"),
-          FilterItem(containsItem: "armour")
+          FilterItem(containsItem: "Gun"),
+          FilterItem(containsItem: "Armour")
         ]).isItemAllowed(gun, wm),
         true);
     expect(
         FilterItem.anyOf([
-          FilterItem(containsItem: "gun"),
-          FilterItem(containsItem: "something else"),
-          FilterItem(containsItem: "armour")
+          FilterItem(containsItem: "Gun"),
+          FilterItem(containsItem: "Something else"),
+          FilterItem(containsItem: "Armour")
         ]).isItemAllowed(gun, wm),
         true);
     expect(
         FilterItem.anyOf([
-          FilterItem(containsItem: "something else"),
-          FilterItem(containsItem: "armour")
+          FilterItem(containsItem: "Something else"),
+          FilterItem(containsItem: "Armour")
         ]).isItemAllowed(gun, wm),
         true);
     expect(
         FilterItem.anyOf([
-          FilterItem(containsItem: "something else"),
-          FilterItem(containsItem: "not there")
+          FilterItem(containsItem: "Something else"),
+          FilterItem(containsItem: "Not there")
         ]).isItemAllowed(gun, wm),
         false);
     expect(
@@ -265,8 +273,8 @@ void main() {
   });
 
   test('Replacements', () {
-    final gun = Weapon(typename: "gun");
-    final pistol = Weapon(typename: "pistol", melee: true);
+    final gun = Weapon(typeName: "gun");
+    final pistol = Weapon(typeName: "pistol", melee: true);
 
     expect(ItemReplacement(filter: FilterItem(itemName: "gun")).isAllowed(gun),
         true);
