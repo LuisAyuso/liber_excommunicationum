@@ -22,6 +22,13 @@ const Color tcRed = Color.fromARGB(255, 159, 60, 42);
 const Color secondary = Color.fromARGB(255, 159, 119, 42);
 const Color terciary = Color.fromARGB(255, 159, 42, 82);
 
+const TextStyle gothRedBig = TextStyle(
+  fontFamily: "CloisterBlack",
+  fontWeight: FontWeight.w600,
+  fontSize: 48,
+  color: tcRed,
+);
+
 const TextStyle gothRed24 = TextStyle(
   fontFamily: "CloisterBlack",
   fontWeight: FontWeight.w400,

@@ -1,10 +1,11 @@
 # Liber Excommunicationum
 
-Roster management
+Roster management tool for Trench Crusade
+
 
 ## Todo list
 
-## App Features
+### App Features
 - [ ] Static storage
 - [ ] Export/print
 
@@ -41,7 +42,7 @@ Roster management
 - [x] Add minimum unit count
 - [x] Deactivate consumed units
 - [x] Yeoman bolt-rifle requirement
-- [ ] Combat engineer armor
+- [x] Combat engineer armor
 - [x] Machine armour replacement!
 - [x] Either list units base modifier, or add them to weapons as before
 - [x] Grenades, limit count, weapon type
@@ -56,8 +57,7 @@ Roster management
 - [x] Anagram 6 arms
 - [x] Unit Requirements (must have armour?)
   - Model unit with default armour
-- [ ] Consumables
+- [x] Consumables
 - [ ] Unit flavous that must be all equal (legionaries)
 - [ ] Better model silenced gun
-- [ ] Validate lists. Do I want to do this? Can we keep it valid as it builds?
 
