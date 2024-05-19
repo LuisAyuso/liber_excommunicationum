@@ -491,6 +491,7 @@ abstract class Item {
   ItemKind get kind;
   FilterItem get getFilter;
   String get itemName;
+  bool get isConsumable;
 }
 
 enum BonusType { dice, value }
@@ -630,6 +631,8 @@ class Weapon extends Item {
   FilterItem get getFilter => filter ?? FilterItem.trueValue();
   @override
   String get itemName => typeName;
+  @override
+  bool get isConsumable => keywords?.contains("CONSUMABLE") ?? false;
 
   UnmodifiableListView<Modifier> get getModifiers =>
       UnmodifiableListView(modifiers ?? []);
@@ -707,6 +710,8 @@ class Armour extends Item {
   FilterItem get getFilter => filter ?? FilterItem.trueValue();
   @override
   String get itemName => typeName;
+  @override
+  bool get isConsumable => keywords?.contains("CONSUMABLE") ?? false;
 
   bool get isShield => type == ArmourType.shield;
   bool get isBodyArmour => type == ArmourType.bodyArmour;
@@ -723,8 +728,6 @@ class Equipment extends Item {
   List<String>? keywords = [];
   FilterItem? filter;
 
-  bool get isConsumable => consumable ?? false;
-
   @override
   ItemKind get kind => ItemKind.equipment;
   @override
@@ -734,6 +737,9 @@ class Equipment extends Item {
   FilterItem get getFilter => filter ?? FilterItem.trueValue();
   @override
   String get itemName => typeName;
+  @override
+  bool get isConsumable =>
+      (consumable ?? false) || (keywords?.contains("CONSUMABLE") ?? false);
 
   factory Equipment.fromJson(Map<String, dynamic> json) =>
       _$EquipmentFromJson(json);

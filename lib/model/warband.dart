@@ -215,6 +215,7 @@ class WarriorModel {
 
       // no repetitions except pistols
       if (!def.isPistol &&
+          !def.isConsumable &&
           weapons.where((w) => w.getName == use.getName).isNotEmpty) {
         return false;
       }
@@ -253,12 +254,13 @@ class WarriorModel {
   UnmodifiableListView<ArmourUse> availableArmours(
           Roster roster, Armory armory) =>
       UnmodifiableListView(roster.armour.where((use) {
+        final def = armory.findArmour(use);
+
         // no repetitions
-        if (armour.where((w) => w.getName == use.getName).isNotEmpty) {
+        if (!def.isConsumable &&
+            armour.where((w) => w.getName == use.getName).isNotEmpty) {
           return false;
         }
-
-        final def = armory.findArmour(use);
 
         final filter =
             FilterItem.allOf([use.getFilter, def.getFilter, type.getFilter]);
