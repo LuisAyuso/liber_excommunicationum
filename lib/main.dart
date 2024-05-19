@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:tc_thing/model/model.dart';
 import 'package:tc_thing/model/warband.dart';
@@ -48,7 +49,7 @@ class Wellcome extends StatelessWidget {
               "Liber Excommunicationum",
               style: gothRedBig,
             ),
-            const Text("Beta 0.1"),
+            const Text("Beta 0.2"),
             const Spacer(),
             Container(
                 padding: const EdgeInsets.all(48),
@@ -93,6 +94,48 @@ class WarbandChooser extends StatelessWidget {
   Widget build(BuildContext context) {
     return MyContent(
       child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          automaticallyImplyLeading: false,
+          title: const Text("Liber Excommunicationum", style: gothBlack24),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  showModalBottomSheet(
+                      backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor,
+                      context: context,
+                      builder: (BuildContext context) {
+                        return FutureBuilder(
+                            future: loadSaved(),
+                            builder: (context, future) {
+                              if (future.hasError) {
+                                return const Text("Failed to load roster");
+                              }
+                              if (!future.hasData) {
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              }
+
+                              return Column(
+                                  children: future.data!
+                                      .map<Widget>((save) => Row(
+                                            children: [
+                                              Text(save),
+                                              IconButton(
+                                                  onPressed: () =>
+                                                      deleteSaved(save),
+                                                  icon:
+                                                      const Icon(Icons.remove))
+                                            ],
+                                          ))
+                                      .toList());
+                            });
+                      });
+                },
+                icon: const Icon(Icons.save))
+          ],
+        ),
         body: GridView.count(
           crossAxisCount: 2, // Number of columns in the grid
           children: [
@@ -145,6 +188,16 @@ class WarbandChooser extends StatelessWidget {
       ),
     );
   }
+
+  Future<void> deleteSaved(String key) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove(key);
+  }
+
+  Future<Set<String>> loadSaved() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getKeys();
+  }
 }
 
 class WarbandPage extends StatelessWidget {
@@ -154,27 +207,28 @@ class WarbandPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: loadJson(context),
-        builder: (context, future) {
-          if (future.hasError) {
-            return const Text("Failed to load roster");
-          }
-          if (!future.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          var (roster, armory) = future.data!;
-          return ChangeNotifierProvider(
-            create: (_) => WarbandModel.prefill(roster, armory),
-            builder: (context, _) => WarbandView(
-              title: title,
-              roster: roster,
-              armory: armory,
-            ),
-          );
-        });
+      future: loadJson(context),
+      builder: (context, future) {
+        if (future.hasError) {
+          return const Text("Failed to load roster");
+        }
+        if (!future.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        var (roster, armory, wb) = future.data!;
+        return ChangeNotifierProvider(
+          create: (_) => wb ?? WarbandModel.prefill(roster, armory),
+          builder: (context, _) => WarbandView(
+            title: title,
+            roster: roster,
+            armory: armory,
+          ),
+        );
+      },
+    );
   }
 
-  Future<(Roster, Armory)> loadJson(context) async {
+  Future<(Roster, Armory, WarbandModel?)> loadJson(context) async {
     var data = await DefaultAssetBundle.of(context).loadString(asset);
     final r = Roster.fromJson(jsonDecode(data));
 
@@ -182,6 +236,19 @@ class WarbandPage extends StatelessWidget {
         .loadString("assets/lists/armory.json");
     var a = Armory.fromJson(jsonDecode(data));
     a.extendWithUnique(r);
-    return (r, a);
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (prefs.containsKey(title)) {
+        final list = prefs.getString(title);
+        final wb = WarbandModel.fromJson(jsonDecode(list!));
+        return (r, a, wb);
+      }
+    } catch (e) {
+      debugPrint("load list dropped");
+    }
+
+    await Future.delayed(const Duration(milliseconds: 500));
+    return (r, a, null);
   }
 }

@@ -1,7 +1,9 @@
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tc_thing/model/model.dart';
 import 'package:tc_thing/model/warband.dart';
 import 'package:tc_thing/roster_preview.dart';
@@ -36,7 +38,17 @@ class _WarbandViewState extends State<WarbandView> {
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Row(children: [
-            CurrencyWidget(cost: context.watch<WarbandModel>().cost),
+            FutureBuilder(
+                future: saveValue(context.watch<WarbandModel>()),
+                builder: (context, future) {
+                  if (future.hasError) {
+                    return const Icon(Icons.error);
+                  }
+                  if (!future.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  return CurrencyWidget(cost: future.data!.cost);
+                }),
             const SizedBox(width: 8),
             Text(
               widget.title,
@@ -520,6 +532,13 @@ class _WarbandViewState extends State<WarbandView> {
             : const SizedBox()
       ],
     );
+  }
+
+  Future<WarbandModel> saveValue(WarbandModel model) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(widget.title, jsonEncode(model.toJson()));
+    await Future.delayed(const Duration(milliseconds: 500));
+    return model;
   }
 }
 

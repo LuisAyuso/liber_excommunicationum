@@ -292,6 +292,7 @@ const _$BonusTypeEnumMap = {
 };
 
 Weapon _$WeaponFromJson(Map<String, dynamic> json) => Weapon(
+      typeName: json['typeName'] as String?,
       hands: json['hands'] as int?,
       range: json['range'] as int?,
       melee: json['melee'] as bool?,
@@ -301,11 +302,9 @@ Weapon _$WeaponFromJson(Map<String, dynamic> json) => Weapon(
       modifiers: (json['modifiers'] as List<dynamic>?)
           ?.map((e) => Modifier.fromJson(e as Map<String, dynamic>))
           .toList(),
-    )
-      ..typeName = json['typeName'] as String
-      ..filter = json['filter'] == null
-          ? null
-          : FilterItem.fromJson(json['filter'] as Map<String, dynamic>);
+    )..filter = json['filter'] == null
+        ? null
+        : FilterItem.fromJson(json['filter'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$WeaponToJson(Weapon instance) => <String, dynamic>{
       'typeName': instance.typeName,

@@ -3,34 +3,43 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:tc_thing/model/model.dart';
 import 'package:tc_thing/utils.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'warband.g.dart';
+
+@JsonSerializable(explicitToJson: true)
 class ItemStack {
-  ItemStack({ItemUse? item}) : _stack = item != null ? [item] : [];
-  List<ItemUse> _stack;
+  ItemStack({ItemUse? item}) : privateStack = item != null ? [item] : [];
+  List<ItemUse> privateStack;
 
   ItemUse get value {
-    assert(_stack.isNotEmpty, "this can not be empty, ever");
-    return _stack.last;
+    assert(privateStack.isNotEmpty, "this can not be empty, ever");
+    return privateStack.last;
   }
 
-  bool get isEmpty => _stack.isEmpty;
+  bool get isEmpty => privateStack.isEmpty;
 
   bool pop() {
-    _stack.removeLast();
-    return _stack.isEmpty;
+    privateStack.removeLast();
+    return privateStack.isEmpty;
   }
 
   void replace(ItemUse item) {
-    _stack.add(item);
+    privateStack.add(item);
   }
 
   ItemStack copy() {
     ItemStack s = ItemStack();
-    s._stack = List.of(_stack);
+    s.privateStack = List.of(privateStack);
     return s;
   }
+
+  factory ItemStack.fromJson(Map<String, dynamic> json) =>
+      _$ItemStackFromJson(json);
+  Map<String, dynamic> toJson() => _$ItemStackToJson(this);
 }
 
+@JsonSerializable(explicitToJson: true)
 class WarriorModel {
   WarriorModel(
       {String? name,
@@ -46,25 +55,25 @@ class WarriorModel {
 
   WarriorModel copyWith({required String name, required int newUid}) {
     var w = WarriorModel(name: name, uid: newUid, type: type, bucket: bucket);
-    w._items = [];
-    for (var it in _items) {
-      w._items.add(it.copy());
+    w.privateItems = [];
+    for (var it in privateItems) {
+      w.privateItems.add(it.copy());
     }
     return w;
   }
 
   String name = "Generated name?";
-  final int uid;
-  final Unit type;
-  final int bucket;
+  int uid;
+  Unit type;
+  int bucket;
 
   Sex? sex;
   Sex get getSex => sex ?? Sex.custom;
 
-  List<ItemStack> _items = [];
-  Iterable<ItemUse> get items => _items.map((s) => s.value);
+  List<ItemStack> privateItems = [];
+  Iterable<ItemUse> get items => privateItems.map((s) => s.value);
   Iterable<WeaponUse> get weapons =>
-      _items.map((s) => s.value).whereType<WeaponUse>();
+      privateItems.map((s) => s.value).whereType<WeaponUse>();
 
   Iterable<WeaponUse> weaponsOrUnarmed(Armory armory) {
     final collection = weapons.toList();
@@ -82,36 +91,35 @@ class WarriorModel {
   }
 
   Iterable<ArmourUse> get armour =>
-      _items.map((s) => s.value).whereType<ArmourUse>();
+      privateItems.map((s) => s.value).whereType<ArmourUse>();
   Iterable<EquipmentUse> get equipment =>
-      _items.map((s) => s.value).whereType<EquipmentUse>();
+      privateItems.map((s) => s.value).whereType<EquipmentUse>();
 
   Currency get totalCost => baseCost + equipmentCost;
   Currency get baseCost => type.cost;
-  Currency get equipmentCost => _items
+  Currency get equipmentCost => privateItems
       .map((i) => i.value)
       .fold<Currency>(Currency.free(), (v, w) => w.getCost + v);
 
   void addItem(ItemUse item, Armory armoury) {
-    _items.add(ItemStack(item: item));
+    privateItems.add(ItemStack(item: item));
     removeInvalid(armoury);
   }
 
   void removeItem(ItemUse item, Armory armoury) {
-    for (var it in _items) {
+    for (var it in privateItems) {
       if (it.value.getName == item.getName) {
         it.pop();
       }
     }
-    _items.removeWhere((innerList) => innerList.isEmpty);
-    assert(_items.where((s) => s.isEmpty).isEmpty);
-
+    privateItems.removeWhere((innerList) => innerList.isEmpty);
+    assert(privateItems.where((s) => s.isEmpty).isEmpty);
     removeInvalid(armoury);
   }
 
   void removeInvalid(Armory armoury) {
     List<ItemUse> toRemove = [];
-    for (var s in _items) {
+    for (var s in privateItems) {
       final item = s.value;
 
       final def = armoury.findItem(item);
@@ -128,10 +136,9 @@ class WarriorModel {
   }
 
   void replace(ItemUse oldItem, ItemUse newItem, Armory armory) {
-    for (var stack in _items) {
+    for (var stack in privateItems) {
       if (stack.value.getName == oldItem.getName) stack.replace(newItem);
     }
-
     removeInvalid(armory);
   }
 
@@ -296,40 +303,45 @@ class WarriorModel {
       return true;
     }));
   }
+
+  factory WarriorModel.fromJson(Map<String, dynamic> json) =>
+      _$WarriorModelFromJson(json);
+  Map<String, dynamic> toJson() => _$WarriorModelToJson(this);
 }
 
+@JsonSerializable(explicitToJson: true)
 class WarbandModel extends ChangeNotifier {
   WarbandModel();
 
-  final List<WarriorModel> _items = [];
-  int _id = 0;
+  String name = "";
+  List<WarriorModel> items = [];
+  int id = 0;
 
-  UnmodifiableListView<WarriorModel> get items => UnmodifiableListView(_items);
-  int get length => _items.length;
+  int get length => items.length;
   Currency get cost =>
-      _items.fold<Currency>(Currency.free(), (v, w) => v + w.totalCost);
+      items.fold<Currency>(Currency.free(), (v, w) => v + w.totalCost);
+
+  int nextUID() {
+    return ++id;
+  }
 
   void add(WarriorModel item) {
-    _items.add(item);
-    _items.sort((a, b) => a.bucket.compareTo(b.bucket));
+    items.add(item);
+    items.sort((a, b) => a.bucket.compareTo(b.bucket));
     notifyListeners();
   }
 
-  int nextUID() {
-    return ++_id;
-  }
-
   WarriorModel getUID(int uid) {
-    return _items.firstWhere((w) => w.uid == uid);
+    return items.firstWhere((w) => w.uid == uid);
   }
 
   void removeUID(int uid) {
-    _items.removeWhere((w) => w.uid == uid);
+    items.removeWhere((w) => w.uid == uid);
     notifyListeners();
   }
 
   void clear() {
-    _items.clear();
+    items.clear();
     notifyListeners();
   }
 
@@ -353,4 +365,8 @@ class WarbandModel extends ChangeNotifier {
     }
     return wm;
   }
+
+  factory WarbandModel.fromJson(Map<String, dynamic> json) =>
+      _$WarbandModelFromJson(json);
+  Map<String, dynamic> toJson() => _$WarbandModelToJson(this);
 }

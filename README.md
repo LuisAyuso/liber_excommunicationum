@@ -2,11 +2,10 @@
 
 Roster management tool for Trench Crusade
 
-
 ## Todo list
 
 ### App Features
-- [ ] Static storage
+- [x] Static storage
 - [ ] Export/print
 
 ### UI
@@ -15,13 +14,6 @@ Roster management tool for Trench Crusade
 - [ ] Keywords and special rules in weapon line
 - [x] Tabs in lists units/weapons
 - [x] Change names
-
-
-### Refactors
-- [x] Move filter logic to model, keep frontend business-logic-free
-- [x] Merge filterItem and replacements? Somehow? Otherwise, use same patterns
-- [ ] Be idiomatic with null: https://stackoverflow.com/questions/17006664/what-is-the-dart-null-checking-idiom-or-best-practice
-
 
 ### Game Logic
 - [x] Unarmed: if no melee equipped, add the "unarmed" weapon profile
@@ -61,3 +53,8 @@ Roster management tool for Trench Crusade
 - [ ] Unit flavous that must be all equal (legionaries)
 - [ ] Better model silenced gun
 
+
+### Refactors
+- [x] Move filter logic to model, keep frontend business-logic-free
+- [x] Merge filterItem and replacements? Somehow? Otherwise, use same patterns
+- [ ] Be idiomatic with null: https://stackoverflow.com/questions/17006664/what-is-the-dart-null-checking-idiom-or-best-practice
