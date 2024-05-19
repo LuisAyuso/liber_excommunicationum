@@ -36,15 +36,13 @@ class RosterPreview extends StatelessWidget {
               child: TabBarView(
                 children: [
                   ListView.separated(
-                    itemBuilder: (context, idx) =>
-                        UnitDescription(unit: roster.units[idx]),
+                    itemBuilder: (context, idx) => UnitDescription(
+                      unit: roster.units[idx],
+                      armory: armory,
+                    ),
                     separatorBuilder: (context, idx) => const Divider(),
                     itemCount: roster.units.length,
                   ),
-                  //const Text(
-                  //  "Weapons, Armour\n & Equipment",
-                  //  style: gothBlackBig,
-                  //),
                   ListView.separated(
                     itemBuilder: (context, idx) => ItemDescription(
                       item: roster.items[idx],
@@ -132,6 +130,13 @@ class ItemDescription extends StatelessWidget {
   }
 
   Widget armorDescription(ArmourUse item) {
+    final def = armory.findArmour(item);
+    return def.isBodyArmour
+        ? bodyArmorDescription(item)
+        : otherArmourDescription(item);
+  }
+
+  Widget otherArmourDescription(ArmourUse item) {
     return Column(
       children: [
         Row(
@@ -154,6 +159,40 @@ class ItemDescription extends StatelessWidget {
                       border: Border(bottom: BorderSide(color: tcRed)))),
               TableRow(children: [
                 Text("${item.cost}"),
+              ]),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget bodyArmorDescription(ArmourUse item) {
+    final def = armory.findArmour(item);
+    return Column(
+      children: [
+        Row(
+          children: [
+            const SizedBox(width: 40),
+            Text(
+              item.typeName,
+              style: gothRed24,
+            )
+          ],
+        ),
+        Center(
+          child: Table(
+            children: [
+              const TableRow(
+                  children: [
+                    Text("Cost", style: gothBlack20),
+                    Text("Armour", style: gothBlack20),
+                  ],
+                  decoration: BoxDecoration(
+                      border: Border(bottom: BorderSide(color: tcRed)))),
+              TableRow(children: [
+                Text("${item.cost}"),
+                Text("${def.value}"),
               ]),
             ],
           ),
@@ -195,13 +234,21 @@ class ItemDescription extends StatelessWidget {
 }
 
 class UnitDescription extends StatelessWidget {
-  const UnitDescription({super.key, required this.unit});
+  const UnitDescription({super.key, required this.unit, required this.armory});
   final Unit unit;
+  final Armory armory;
 
   @override
   Widget build(BuildContext context) {
     final ranged = bonus(unit.ranged);
     final melee = bonus(unit.melee);
+
+    final effectiveArmour = unit.defaultItems?.fold(unit.armour, (v, item) {
+          if (!armory.isArmour(item.itemName)) return v;
+          final def = armory.findArmour(item.itemName);
+          return v + (def.value ?? 0);
+        }) ??
+        unit.armour;
     return Column(
       children: [
         Row(
@@ -228,11 +275,11 @@ class UnitDescription extends StatelessWidget {
                   decoration: BoxDecoration(
                       border: Border(bottom: BorderSide(color: tcRed)))),
               TableRow(children: [
-                Text("${unit.cost}"),
+                Text("${unit.completeCost}"),
                 Text("${unit.movement}"),
                 Text(ranged),
                 Text(melee),
-                Text("${unit.armour}"),
+                Text("$effectiveArmour"),
                 Text(unit.base),
               ]),
             ],

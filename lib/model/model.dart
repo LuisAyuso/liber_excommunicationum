@@ -335,6 +335,11 @@ class Unit {
   bool get getUnarmedPenalty => unarmedPenalty ?? true;
   bool get isElite => keywords.contains("ELITE");
   Sex get sex => defaultSex ?? Sex.male;
+  Currency get completeCost =>
+      cost +
+      (defaultItems?.fold<Currency>(
+              Currency.free(), (v, item) => v + item.getCost) ??
+          Currency.free());
 
   FilterItem? filter;
   FilterItem get getFilter => filter ?? FilterItem.trueValue();
@@ -594,13 +599,13 @@ class Modifier {
 @JsonSerializable(explicitToJson: true)
 class Weapon extends Item {
   Weapon(
-      {String? typename,
+      {String? typeName,
       int? hands,
       this.range,
       this.melee,
       this.keywords,
       this.modifiers})
-      : typeName = typename ?? "",
+      : typeName = typeName ?? "",
         hands = hands ?? 1;
 
   String typeName = "";
@@ -785,5 +790,11 @@ class Armory {
     if (item is WeaponUse) return findWeapon(item);
     if (item is ArmourUse) return findArmour(item);
     return findEquipment(item as EquipmentUse);
+  }
+
+  void add(Item item) {
+    if (item is Weapon) weapons.add(item);
+    if (item is Armour) armours.add(item);
+    if (item is Equipment) equipments.add(item);
   }
 }

@@ -140,24 +140,24 @@ class WarriorModel {
       if (armory.isWeapon(item.itemName)) {
         addItem(
             WeaponUse(
-            typeName: item.itemName,
-            removable: item.isRemovable,
+                typeName: item.itemName,
+                removable: item.isRemovable,
                 cost: item.getCost),
             armory);
       }
       if (armory.isArmour(item.itemName)) {
         addItem(
             ArmourUse(
-            typeName: item.itemName,
-            removable: item.isRemovable,
+                typeName: item.itemName,
+                removable: item.isRemovable,
                 cost: item.getCost),
             armory);
       }
       if (armory.isEquipment(item.itemName)) {
         addItem(
             EquipmentUse(
-            typeName: item.itemName,
-            removable: item.isRemovable,
+                typeName: item.itemName,
+                removable: item.isRemovable,
                 cost: item.getCost),
             armory);
       }
@@ -194,11 +194,13 @@ class WarriorModel {
       getArmours(armory).where((a) => a.isShield).isEmpty
           ? meleeCount(armory) <= 2
           : meleeCount(armory) <= 1;
-  int freeHands(Armory armory) =>
-      type.getHands -
-      getWeapons(armory)
-          .where((w) => w.isMeleeWeapon)
-          .fold(0, (v, w) => v + w.hands);
+  int freeHands(Armory armory) {
+    final strong = isStrong;
+    return type.getHands -
+        getWeapons(armory)
+            .where((w) => w.isMeleeWeapon)
+            .fold(0, (v, w) => v + (strong ? 1 : w.hands));
+  }
 
 // - One firearm and one pistol OR
 // - two pistols.
