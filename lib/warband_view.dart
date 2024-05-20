@@ -25,62 +25,82 @@ class WarbandView extends StatefulWidget {
   State<WarbandView> createState() => _WarbandViewState();
 }
 
-class _WarbandViewState extends State<WarbandView> {
-  bool _editMode = true;
-  set edit(bool v) {
-    setState(() => _editMode = v);
+class EditingModel extends ChangeNotifier {
+  bool _editing = true;
+  bool get editing => _editing;
+  set editing(bool v) {
+    _editing = v;
+    notifyListeners();
   }
+}
 
+class _WarbandViewState extends State<WarbandView> {
   @override
   Widget build(BuildContext context) {
     return MyContent(
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Row(children: [
-            FutureBuilder(
-                future: saveValue(context.watch<WarbandModel>()),
-                builder: (context, future) {
-                  if (future.hasError) {
-                    return const Icon(Icons.error);
-                  }
-                  if (!future.hasData) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  return CurrencyWidget(cost: future.data!.cost);
-                }),
-            const SizedBox(width: 8),
-            Text(
+      child: ChangeNotifierProvider(
+        create: (_) => EditingModel(),
+        builder: (context, child) => Scaffold(
+          appBar: AppBar(
+            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+            title: Text(
+              textAlign: TextAlign.left,
               widget.title,
-              style: gothBlack24,
+              softWrap: true,
             ),
-            const Spacer(),
-            InkWell(
-              child: const Icon(Icons.note),
-              onTap: () => openRosterPreview(context),
-            ),
-            const VerticalDivider(),
-            const Text(
-              "Edit:",
-              style: gothBlack24,
-            ),
-            Switch(value: _editMode, onChanged: (v) => edit = v)
-          ]),
+            actions: [
+              SizedBox(
+                child: FutureBuilder(
+                    future: saveValue(context.watch<WarbandModel>()),
+                    builder: (context, future) {
+                      if (future.hasError) {
+                        return const Icon(Icons.error);
+                      }
+                      if (!future.hasData) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      return CurrencyWidget(cost: future.data!.cost);
+                    }),
+              ),
+              IconButton(
+                onPressed: () => openRosterPreview(context),
+                icon: const Icon(Icons.note),
+              ),
+              context.watch<EditingModel>().editing
+                  ? IconButton(
+                      onPressed: () =>
+                          context.read<EditingModel>().editing = false,
+                      icon: const Icon(Icons.save),
+                    )
+                  : IconButton(
+                      onPressed: () =>
+                          context.read<EditingModel>().editing = true,
+                      icon: const Icon(Icons.edit),
+                    ),
+            ],
+          ),
+          body: ListView.separated(
+              itemBuilder: (context, idx) {
+                if (idx == context.read<WarbandModel>().length) {
+                  // allow scrolling past last
+                  return const SizedBox(height: 500);
+                }
+                var warrior = context.read<WarbandModel>().items[idx];
+                return WarriorBlock(
+                    roster: widget.roster,
+                    armory: widget.armory,
+                    warrior: warrior);
+              },
+              separatorBuilder: (context, idx) => const Divider(),
+              itemCount: context.watch<WarbandModel>().length + 1),
+          floatingActionButton: context.watch<EditingModel>().editing
+              ? FloatingActionButton(
+                  onPressed: () => openUnitSelection(context),
+                  tooltip: 'Add Unit',
+                  child: const Icon(Icons.add),
+                )
+              : null,
         ),
-        body: ListView.separated(
-            itemBuilder: (context, idx) {
-              var warrior = context.read<WarbandModel>().items[idx];
-              return warriorLine(context, warrior);
-            },
-            separatorBuilder: (context, idx) => const Divider(),
-            itemCount: context.watch<WarbandModel>().length),
-        floatingActionButton: _editMode
-            ? FloatingActionButton(
-                onPressed: () => openUnitSelection(context),
-                tooltip: 'Add Unit',
-                child: const Icon(Icons.add),
-              )
-            : null,
       ),
     );
   }
@@ -108,10 +128,29 @@ class _WarbandViewState extends State<WarbandView> {
     );
   }
 
+  Future<WarbandModel> saveValue(WarbandModel model) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(widget.title, jsonEncode(model.toJson()));
+    await Future.delayed(const Duration(milliseconds: 500));
+    return model;
+  }
+}
+
+class WarriorBlock extends StatelessWidget {
+  WarriorBlock(
+      {super.key,
+      required this.roster,
+      required this.armory,
+      required this.warrior});
+  final Roster roster;
+  final Armory armory;
+  final WarriorModel warrior;
+
   final FilterItem onlyRanged = FilterItem(rangedWeapon: true);
   final FilterItem onlyMelee = FilterItem(meleeWeapon: true);
 
-  Widget warriorLine(BuildContext context, WarriorModel warrior) {
+  @override
+  Widget build(BuildContext context) {
     final unitCount = context
         .read<WarbandModel>()
         .items
@@ -119,109 +158,109 @@ class _WarbandViewState extends State<WarbandView> {
         .length;
 
     return ExpansionTile(
-      tilePadding: EdgeInsets.zero,
+      tilePadding: const EdgeInsets.only(left: 8, right: 8),
+      childrenPadding: const EdgeInsets.only(left: 8, right: 8),
       title: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(children: [
-            CurrencyWidget(
-              cost: warrior.totalCost,
-            ),
-            SizedBox(
-              width: 240,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _editMode
-                      ? NameEditor(
-                          name: warrior.name,
-                          onChange: (newSex, name) {
-                            // this is the sex change function, anytime!
-                            warrior.name = name ??
-                                makeName(widget.roster, newSex,
-                                    warrior.type.isElite);
-                            warrior.sex = newSex;
-                            context.read<WarbandModel>().invalidate();
-                          },
-                        )
-                      : Text(
-                          warrior.name,
-                          style: gothRed24,
-                        ),
-                  Text(
-                    warrior.type.typeName,
-                  )
-                ],
-              ),
-            ),
-            const VerticalDivider(),
-            Row(
+          Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                statBox("Mov:", '${warrior.type.movement}"'),
-                statBox("Armour:", warrior.computeArmorValue(widget.armory)),
-              ],
-            ),
-          ]),
-          Container(
-            padding: const EdgeInsets.only(top: 4, left: 8, right: 8),
-            child: Wrap(
-                spacing: 8,
-                alignment: WrapAlignment.start,
-                runSpacing: 2,
-                children: warrior.weapons
-                    .map<Widget>((w) => ItemChip(item: w))
-                    .toList()),
-          ),
-          Container(
-            padding: const EdgeInsets.only(top: 4, left: 8, right: 8),
-            child: Wrap(
+                NameEditor(
+                  name: warrior.name,
+                  editable: context.watch<EditingModel>().editing,
+                  onChange: (newSex, name) {
+                    // this is the sex change function, anytime!
+                    changeName(warrior, name, newSex, context);
+                  },
+                ),
+                Text(
+                  warrior.type.typeName,
+                  style: Theme.of(context).textTheme.labelSmall,
+                ),
+                TableLEX(headers: const [
+                  "Total Cost",
+                  "Mov.",
+                  "Armour",
+                ], rows: [
+                  [
+                    Text(warrior.totalCost.toString()),
+                    Text(
+                      textAlign: TextAlign.end,
+                      '${warrior.type.movement}"',
+                      style: Theme.of(context).textTheme.labelSmall,
+                    ),
+                    Text(
+                      textAlign: TextAlign.end,
+                      "${warrior.computeArmorValue(armory)}",
+                      style: Theme.of(context).textTheme.labelSmall,
+                    ),
+                  ]
+                ])
+              ]),
+          Wrap(
               spacing: 8,
               alignment: WrapAlignment.start,
-              children: warrior.armour
-                      .map<Widget>((w) => ItemChip(item: w))
-                      .toList() +
-                  warrior.equipment
-                      .map<Widget>((w) => ItemChip(item: w))
-                      .toList(),
-            ),
+              runSpacing: 2,
+              children: warrior.weapons
+                  .map<Widget>((w) => ItemChip(item: w))
+                  .toList()),
+          Wrap(
+            spacing: 8,
+            alignment: WrapAlignment.start,
+            children:
+                warrior.armour.map<Widget>((w) => ItemChip(item: w)).toList() +
+                    warrior.equipment
+                        .map<Widget>((w) => ItemChip(item: w))
+                        .toList(),
           )
         ],
       ),
-      childrenPadding: const EdgeInsets.only(left: 16, right: 16),
       children: [
         Column(
-          children: warrior
-                  .weaponsOrUnarmed(widget.armory)
-                  .map<Widget>((w) => weaponLine(context, w, warrior))
-                  .toList() +
-              warrior.armour
-                  .map<Widget>((a) => armorLine(context, a, warrior))
-                  .toList() +
-              warrior.equipment
-                  .map<Widget>((e) => equipmentLine(context, e, warrior))
-                  .toList() +
-              editControls(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ...editControls(
+                  context,
                   warrior,
-                  warrior.availableWeapons(widget.roster, widget.armory),
-                  warrior.availableArmours(widget.roster, widget.armory),
-                  warrior.availableEquipment(widget.roster, widget.armory),
+                  warrior.availableWeapons(roster, armory),
+                  warrior.availableArmours(roster, armory),
+                  warrior.availableEquipment(roster, armory),
                   unitCount),
-        ),
+              ...warrior
+                  .weaponsOrUnarmed(armory)
+                  .map((item) => weaponLine(context, item, warrior)),
+              ...warrior.armour
+                  .map((item) => armorLine(context, item, warrior)),
+              ...warrior.equipment
+                  .map((item) => equipmentLine(context, item, warrior)),
+            ]),
       ],
     );
   }
 
+  void changeName(
+      WarriorModel warrior, String? name, Sex newSex, BuildContext context) {
+    warrior.name = name ?? makeName(roster, newSex, warrior.type.isElite);
+    warrior.sex = newSex;
+    context.read<WarbandModel>().invalidate();
+  }
+
   UnmodifiableListView<Widget> editControls(
+    BuildContext context,
     WarriorModel warrior,
     UnmodifiableListView<WeaponUse> availableWeapons,
     UnmodifiableListView<ArmourUse> availableArmours,
     UnmodifiableListView<EquipmentUse> availableEquipment,
     int unitCount,
   ) {
-    if (_editMode) {
+    if (context.watch<EditingModel>().editing) {
       return UnmodifiableListView([
         Row(children: [
-          TextButton(
+          FilledButton.tonal(
             onPressed: availableWeapons.isEmpty
                 ? null
                 : () {
@@ -232,15 +271,13 @@ class _WarbandViewState extends State<WarbandView> {
                         builder: (BuildContext context) {
                           return ItemChooser(
                               elements: availableWeapons.toList(),
-                              armory: widget.armory,
+                              armory: armory,
                               filter: ItemChooserFilterDelegate(filters: {
                                 "Ranged": onlyRanged,
                                 "Melee": onlyMelee,
                               }),
                               callback: (use) {
-                                wb
-                                    .getUID(warrior.uid)
-                                    .addItem(use, widget.armory);
+                                wb.getUID(warrior.uid).addItem(use, armory);
                                 wb.invalidate();
                                 Navigator.pop(context);
                               });
@@ -248,7 +285,7 @@ class _WarbandViewState extends State<WarbandView> {
                   },
             child: const Text("+Weapon"),
           ),
-          TextButton(
+          FilledButton.tonal(
             onPressed: availableArmours.isEmpty
                 ? null
                 : () {
@@ -260,11 +297,9 @@ class _WarbandViewState extends State<WarbandView> {
                         builder: (BuildContext context) {
                           return ItemChooser(
                               elements: availableArmours.toList(),
-                              armory: widget.armory,
+                              armory: armory,
                               callback: (use) {
-                                wb
-                                    .getUID(warrior.uid)
-                                    .addItem(use, widget.armory);
+                                wb.getUID(warrior.uid).addItem(use, armory);
                                 wb.invalidate();
                                 Navigator.pop(context);
                               });
@@ -272,7 +307,7 @@ class _WarbandViewState extends State<WarbandView> {
                   },
             child: const Text("+Armour"),
           ),
-          TextButton(
+          FilledButton.tonal(
             onPressed: availableEquipment.isEmpty
                 ? null
                 : () {
@@ -284,11 +319,9 @@ class _WarbandViewState extends State<WarbandView> {
                         builder: (BuildContext context) {
                           return ItemChooser(
                               elements: availableEquipment.toList(),
-                              armory: widget.armory,
+                              armory: armory,
                               callback: (use) {
-                                wb
-                                    .getUID(warrior.uid)
-                                    .addItem(use, widget.armory);
+                                wb.getUID(warrior.uid).addItem(use, armory);
                                 wb.invalidate();
                                 Navigator.pop(context);
                               });
@@ -303,8 +336,8 @@ class _WarbandViewState extends State<WarbandView> {
                   onPressed: () {
                     var wbm = context.read<WarbandModel>();
                     wbm.add(warrior.copyWith(
-                      name: makeName(widget.roster, warrior.type.sex,
-                          warrior.type.isElite),
+                      name: makeName(
+                          roster, warrior.type.sex, warrior.type.isElite),
                       newUid: wbm.nextUID(),
                     ));
                   },
@@ -331,51 +364,33 @@ class _WarbandViewState extends State<WarbandView> {
     WeaponUse weapon,
     WarriorModel warrior,
   ) {
-    final def = widget.armory.findWeapon(weapon);
     final defaultItem = (warrior.type.defaultItems ?? [])
-        .where((eq) => eq.itemName == weapon.typeName)
+        .where((eq) => eq.itemName == weapon.getName)
         .firstOrNull;
-    return Row(
-      children: [
-        SizedBox(
-          width: 40,
-          child: CurrencyWidget(
-            cost: weapon.cost,
-            simultaneous: false,
-          ),
-        ),
-        SizedBox(width: 240, child: Text(weapon.typeName)),
-        const Spacer(),
-        Column(
-          children: [
-            def.canRanged
-                ? Text("Ranged: ${def.getModifiersString(
-                    Modifier(hit: warrior.type.ranged),
-                    ModifierType.ranged,
-                  )}")
-                : const SizedBox(),
-            def.canMelee
-                ? Text("Melee: ${def.getModifiersString(
-                    Modifier(hit: warrior.type.melee),
-                    ModifierType.ranged,
-                  )}")
-                : const SizedBox(),
-          ],
-        ),
-        const Spacer(),
-        defaultItem != null && defaultItem.replacements != null
-            ? replaceWeapon(context, warrior, weapon, defaultItem)
-            : const SizedBox(),
-        _editMode && weapon.isRemovable
-            ? IconButton(
-                onPressed: () {
-                  warrior.removeItem(weapon, widget.armory);
-                  context.read<WarbandModel>().invalidate();
-                },
-                icon: const Icon(Icons.delete))
-            : const SizedBox()
-      ],
-    );
+
+    final replace = context.watch<EditingModel>().editing &&
+            defaultItem != null &&
+            defaultItem.replacements != null
+        ? replaceWeapon(context, warrior, weapon, defaultItem)
+        : null;
+    final delete = context.watch<EditingModel>().editing && weapon.isRemovable
+        ? IconButton(
+            onPressed: () {
+              warrior.removeItem(weapon, armory);
+              context.read<WarbandModel>().invalidate();
+            },
+            icon: const Icon(Icons.delete))
+        : null;
+    final editWidgets = [replace, delete].nonNulls.toList();
+
+    return ItemDescription(
+        item: weapon,
+        armory: armory,
+        edit: editWidgets.isEmpty
+            ? null
+            : Row(
+                children: editWidgets,
+              ));
   }
 
   TextButton replaceWeapon(
@@ -393,30 +408,30 @@ class _WarbandViewState extends State<WarbandView> {
             context: context,
             builder: (BuildContext context) {
               final alterEgo = warrior.copyWith(name: "", newUid: -1);
-              alterEgo.removeItem(oldWeapon, widget.armory);
+              alterEgo.removeItem(oldWeapon, armory);
               final candidates = alterEgo
                   .availableWeapons(
-                widget.roster,
-                widget.armory,
+                roster,
+                armory,
               )
                   .where((item) {
                 if (item.getName == oldWeapon.getName) return false;
-                if (!replacements.isAllowed(widget.armory.findItem(item))) {
+                if (!replacements.isAllowed(armory.findItem(item))) {
                   return false;
                 }
-                final defA = widget.armory.findWeapon(oldWeapon);
-                final defB = widget.armory.findWeapon(item);
+                final defA = armory.findWeapon(oldWeapon);
+                final defB = armory.findWeapon(item);
                 return defA.canRanged == defB.canRanged;
               }).map((item) {
-                final offsetCost = replacements.offsetCost ?? oldWeapon.cost;
+                final offsetCost = replacements.offsetCost ?? oldWeapon.getCost;
                 item.cost = offsetCost.offset(item.cost);
                 return item;
               }).toList();
               return ItemChooser(
                   elements: candidates,
-                  armory: widget.armory,
+                  armory: armory,
                   callback: (newWeapon) {
-                    warrior.replace(oldWeapon, newWeapon, widget.armory);
+                    warrior.replace(oldWeapon, newWeapon, armory);
                     wb.invalidate();
                     Navigator.pop(context);
                   });
@@ -428,38 +443,33 @@ class _WarbandViewState extends State<WarbandView> {
 
   Widget armorLine(
       BuildContext context, ArmourUse armour, WarriorModel warrior) {
-    final def = widget.armory.findArmour(armour);
     final defaultItem = (warrior.type.defaultItems ?? [])
         .where((eq) => eq.itemName == armour.typeName)
         .firstOrNull;
-    return Row(
-      children: [
-        SizedBox(
-          width: 40,
-          child: CurrencyWidget(
-            cost: armour.cost,
-            simultaneous: false,
-          ),
-        ),
-        SizedBox(width: 240, child: Text(armour.typeName)),
-        const Spacer(),
-        Row(
-          children: [Text("Armour: ${def.value ?? 0}")],
-        ),
-        const Spacer(),
-        defaultItem != null && defaultItem.replacements != null
-            ? replaceArmour(context, warrior, armour, defaultItem)
-            : const SizedBox(),
-        _editMode && armour.isRemovable
-            ? IconButton(
-                onPressed: () {
-                  warrior.removeItem(armour, widget.armory);
-                  context.read<WarbandModel>().invalidate();
-                },
-                icon: const Icon(Icons.delete))
-            : const SizedBox()
-      ],
-    );
+
+    final replace = context.watch<EditingModel>().editing &&
+            defaultItem != null &&
+            defaultItem.replacements != null
+        ? replaceArmour(context, warrior, armour, defaultItem)
+        : null;
+    final delete = context.watch<EditingModel>().editing && armour.isRemovable
+        ? IconButton(
+            onPressed: () {
+              warrior.removeItem(armour, armory);
+              context.read<WarbandModel>().invalidate();
+            },
+            icon: const Icon(Icons.delete))
+        : null;
+    final editWidgets = [replace, delete].nonNulls.toList();
+
+    return ItemDescription(
+        item: armour,
+        armory: armory,
+        edit: editWidgets.isEmpty
+            ? null
+            : Row(
+                children: editWidgets,
+              ));
   }
 
   TextButton replaceArmour(
@@ -477,15 +487,15 @@ class _WarbandViewState extends State<WarbandView> {
             context: context,
             builder: (BuildContext context) {
               final alterEgo = warrior.copyWith(name: "", newUid: -1);
-              alterEgo.removeItem(oldArmour, widget.armory);
+              alterEgo.removeItem(oldArmour, armory);
               final newCandidates = alterEgo
                   .availableArmours(
-                widget.roster,
-                widget.armory,
+                roster,
+                armory,
               )
                   .where((item) {
                 if (item.getName == oldArmour.getName) return false;
-                return replacements.isAllowed(widget.armory.findItem(item));
+                return replacements.isAllowed(armory.findItem(item));
               }).map((item) {
                 final offsetCost = replacements.offsetCost ?? oldArmour.cost;
                 return ArmourUse(
@@ -497,9 +507,9 @@ class _WarbandViewState extends State<WarbandView> {
               }).toList();
               return ItemChooser(
                   elements: newCandidates,
-                  armory: widget.armory,
+                  armory: armory,
                   callback: (newArmour) {
-                    warrior.replace(oldArmour, newArmour, widget.armory);
+                    warrior.replace(oldArmour, newArmour, armory);
                     wb.invalidate();
                     Navigator.pop(context);
                   });
@@ -511,41 +521,26 @@ class _WarbandViewState extends State<WarbandView> {
 
   Widget equipmentLine(
       BuildContext context, EquipmentUse e, WarriorModel warrior) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 40,
-          child: CurrencyWidget(
-            cost: e.cost,
-            simultaneous: false,
-          ),
-        ),
-        SizedBox(width: 240, child: Text(e.typeName)),
-        const Spacer(),
-        _editMode && e.isRemovable
+    return ItemDescription(
+        item: e,
+        armory: armory,
+        edit: context.watch<EditingModel>().editing && e.isRemovable
             ? IconButton(
                 onPressed: () {
-                  warrior.removeItem(e, widget.armory);
+                  warrior.removeItem(e, armory);
                   context.read<WarbandModel>().invalidate();
                 },
                 icon: const Icon(Icons.delete))
-            : const SizedBox()
-      ],
-    );
-  }
-
-  Future<WarbandModel> saveValue(WarbandModel model) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(widget.title, jsonEncode(model.toJson()));
-    await Future.delayed(const Duration(milliseconds: 500));
-    return model;
+            : null);
   }
 }
 
 class NameEditor extends StatefulWidget {
-  const NameEditor({super.key, required this.name, required this.onChange});
+  const NameEditor(
+      {super.key, required this.name, required this.onChange, this.editable});
   final String name;
   final Function(Sex, String? name) onChange;
+  final bool? editable;
 
   @override
   State<NameEditor> createState() => _NameEditorState();
@@ -556,8 +551,8 @@ enum NameEditorState { display, choose, write }
 enum SexEditorState { none, male, female, custom, back }
 
 class _NameEditorState extends State<NameEditor> {
-  NameEditorState _editing = NameEditorState.display;
   final textController = TextEditingController();
+  NameEditorState _editing = NameEditorState.display;
 
   @override
   Widget build(BuildContext context) {
@@ -570,15 +565,20 @@ class _NameEditorState extends State<NameEditor> {
 
   Widget display(BuildContext context) {
     return Row(children: [
-      SizedBox(width: 180, child: Text(widget.name, style: gothRed24)),
-      IconButton(
-        onPressed: () {
-          setState(() {
-            _editing = NameEditorState.choose;
-          });
-        },
-        icon: const Icon(Icons.edit),
-      )
+      Text(
+        widget.name,
+        style: Theme.of(context).textTheme.titleMedium!.copyWith(color: tcRed),
+      ),
+      widget.editable ?? true
+          ? IconButton(
+              onPressed: () {
+                setState(() {
+                  _editing = NameEditorState.choose;
+                });
+              },
+              icon: const Icon(Icons.edit),
+            )
+          : const SizedBox(),
     ]);
   }
 
@@ -707,147 +707,70 @@ class _ItemChooserState extends State<ItemChooser> {
     return Container(
       height: MediaQuery.of(context).size.height * 0.5,
       color: Colors.white,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        child: Center(
-          child: Column(
-            children: [
-              widget.filter != null
-                  ? SegmentedButton<FilterItem>(
-                      segments: widget.filter?.buttonSegments ?? [],
-                      selected: _currentFilter,
-                      multiSelectionEnabled: true,
-                      onSelectionChanged: (filter) {
-                        setState(() {
-                          _currentFilter = filter;
-                        });
-                      })
-                  : const SizedBox(),
-              Expanded(
-                child: ListView.separated(
-                  itemBuilder: (ctx, idx) => InkWell(
-                    onTap: () => widget.callback(list[idx]),
-                    child: ItemDescription(
-                      item: list[idx],
-                      armory: widget.armory,
-                    ),
-                  ),
-                  separatorBuilder: (ctx, idx) => const Divider(),
-                  itemCount: list.length,
+      child: Column(
+        children: [
+          widget.filter != null
+              ? SegmentedButton<FilterItem>(
+                  emptySelectionAllowed: false,
+                  segments: widget.filter?.buttonSegments ?? [],
+                  selected: _currentFilter,
+                  multiSelectionEnabled: true,
+                  onSelectionChanged: (filter) {
+                    setState(() {
+                      _currentFilter = filter;
+                    });
+                  })
+              : const SizedBox(),
+          Expanded(
+            child: ListView.separated(
+              itemBuilder: (ctx, idx) => InkWell(
+                onTap: () => widget.callback(list[idx]),
+                child: ItemDescription(
+                  item: list[idx],
+                  armory: widget.armory,
                 ),
               ),
-            ],
+              separatorBuilder: (ctx, idx) => const Divider(),
+              itemCount: list.length,
+            ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class ItemChip extends StatelessWidget {
-  const ItemChip({super.key, required this.item});
-  final dynamic item;
-
-  String get name {
-    if (item is Item) return item.itemName;
-    if (item is ItemUse) return item.getName;
-    return item.toString();
-  }
-
-  static const int _alpha = 200;
-
-  @override
-  Widget build(BuildContext context) {
-    color() {
-      if (item is WeaponUse || item is Weapon) {
-        return Theme.of(context).colorScheme.primary;
-      }
-      if (item is ArmourUse || item is Armour) {
-        return Theme.of(context).colorScheme.secondary;
-      }
-      if (item is Equipment || item is EquipmentUse) {
-        return Theme.of(context).colorScheme.tertiary;
-      }
-      return Colors.black;
-    }
-
-    return Container(
-      padding: const EdgeInsets.only(left: 8, right: 8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(width: 2, color: color()),
-        color: color().withAlpha(_alpha),
-      ),
-      child: Text(
-        name,
-        style: TextStyle(
-            fontWeight: FontWeight.w100,
-            color: color().withAlpha(_alpha).computeLuminance() > 0.5
-                ? Colors.black
-                : Colors.white),
+        ],
       ),
     );
   }
 }
 
 class CurrencyWidget extends StatelessWidget {
-  const CurrencyWidget(
-      {super.key,
-      required Currency cost,
-      double? width,
-      double? height,
-      bool? simultaneous})
+  const CurrencyWidget({super.key, required Currency cost, bool? simultaneous})
       : _cost = cost,
-        _width = width ?? 60,
-        _height = height ?? 60,
         _simultaneous = simultaneous ?? true;
 
-  final double _width;
-  final double _height;
   final Currency _cost;
   final bool _simultaneous;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: _width,
-      height: _height,
-      child: CircleAvatar(
-        backgroundColor: Theme.of(context).colorScheme.primary.withAlpha(50),
-        child: _simultaneous
-            ? Stack(children: [
-                _cost.glory > 0
-                    ? Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: gloryValue(20),
-                      )
-                    : const SizedBox(),
-                _cost.ducats > 0
-                    ? Center(
-                        child: ducatsValue(28),
-                      )
-                    : const SizedBox(),
-              ])
-            : _cost.isDucats
-                ? ducatsValue(20)
-                : gloryValue(20),
-      ),
+    return CircleAvatar(
+      backgroundColor: Theme.of(context).colorScheme.primary.withAlpha(50),
+      child: _simultaneous
+          ? Stack(children: [
+              _cost.glory > 0
+                  ? Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: gloryValue(20),
+                    )
+                  : const SizedBox(),
+              _cost.ducats > 0 ? ducatsValue(28) : const SizedBox(),
+            ])
+          : _cost.isDucats
+              ? ducatsValue(20)
+              : gloryValue(20),
     );
   }
 
   Widget ducatsValue(double size) {
-    return Center(
-      child: Text(
-        "${_cost.ducats}",
-        style: TextStyle(
-          fontFamily: "CloisterBlack",
-          fontWeight: FontWeight.w600,
-          fontSize: size,
-          color: const Color.fromARGB(255, 32, 31, 31),
-        ),
-      ),
-    );
+    return Text("${_cost.ducats}");
   }
 
   Widget gloryValue(double size) =>
@@ -857,25 +780,21 @@ class CurrencyWidget extends StatelessWidget {
           size: 40,
           color: tcRed,
         ),
-        Text(
-          "${_cost.glory}",
-          style: TextStyle(
-            fontFamily: "CloisterBlack",
-            fontWeight: FontWeight.w400,
-            fontSize: size,
-            color: Colors.white,
-          ),
-        ),
+        Text("${_cost.glory}"),
       ]);
 }
 
-Widget statBox<T>(String name, T stat) {
+Widget statBox<T>(BuildContext context, String name, T stat) {
   return Column(
     children: [
-      Text(name),
+      Text(
+        name,
+        style: Theme.of(context).textTheme.labelSmall,
+      ),
       Text(
         textAlign: TextAlign.end,
         "$stat",
+        style: Theme.of(context).textTheme.labelSmall,
       ),
     ],
   );

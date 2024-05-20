@@ -18,7 +18,6 @@ class UnitSelector extends StatelessWidget {
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: const Text(
             "Choose an Unit",
-            style: gothBlack24,
           ),
         ),
         body: Center(

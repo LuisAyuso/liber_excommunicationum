@@ -19,9 +19,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final defTheme = Theme.of(context).textTheme;
+    final textTheme = Theme.of(context).textTheme.copyWith(
+          titleLarge: defTheme.titleLarge!.apply(fontFamily: "CloisterBlack"),
+          titleMedium: defTheme.titleMedium!.apply(fontFamily: "CloisterBlack"),
+          titleSmall: defTheme.titleSmall!.apply(fontFamily: "CloisterBlack"),
+        );
+
     return MaterialApp(
-      title: 'Liber Excommunicationum',
+      title: appName,
       theme: ThemeData(
+        textTheme: textTheme,
         colorScheme: ColorScheme.fromSeed(
             seedColor: const Color.fromARGB(255, 228, 217, 9),
             primary: tcRed,
@@ -31,13 +39,13 @@ class MyApp extends StatelessWidget {
             brightness: Brightness.light),
         useMaterial3: true,
       ),
-      home: const Wellcome(),
+      home: const Welcome(),
     );
   }
 }
 
-class Wellcome extends StatelessWidget {
-  const Wellcome({super.key});
+class Welcome extends StatelessWidget {
+  const Welcome({super.key});
   @override
   Widget build(BuildContext context) {
     return MyContent(
@@ -55,13 +63,18 @@ class Wellcome extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
-                      const Column(
+                      Column(
                         children: [
                           Text(
-                            "Liber Excommunicationum",
-                            style: gothRedBig,
+                            appName,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge!
+                                .copyWith(color: tcRed)
+                                .apply(fontSizeFactor: 1.3),
+                            textAlign: TextAlign.center,
                           ),
-                          Text("Beta xx"),
+                          const Text("Beta xx"),
                         ],
                       ),
                       const Text(
@@ -75,11 +88,10 @@ class Wellcome extends StatelessWidget {
                         '- This is a work in progress, please be kind with errors'
                         '\n'
                         '- This tool uses some basic storage/cookies mechanisms for its normal operation, by using the tool you accept them as well.',
-                        style: TextStyle(fontSize: 24),
                       ),
-                      TextButton(
+                      ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
+                            Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                   builder: (ctx) => const WarbandChooser()),
@@ -87,7 +99,6 @@ class Wellcome extends StatelessWidget {
                           },
                           child: const Text(
                             "Let's go already!",
-                            style: TextStyle(fontSize: 24),
                           )),
                     ],
                   ),
@@ -108,9 +119,9 @@ class WarbandChooser extends StatelessWidget {
     return MyContent(
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           centerTitle: true,
-          automaticallyImplyLeading: false,
-          title: const Text("Liber Excommunicationum", style: gothBlack24),
+          title: const Text(appName),
           actions: [
             IconButton(
                 onPressed: () {
@@ -171,7 +182,6 @@ class WarbandChooser extends StatelessWidget {
   Widget warbandButton(BuildContext context, String name, String asset) {
     return InkWell(
       onTap: () {
-        debugPrint('Button tapped: $name');
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -192,8 +202,11 @@ class WarbandChooser extends StatelessWidget {
             children: [
               Text(
                 name,
-                style: gothBlack24bold,
                 textAlign: TextAlign.center,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium!
+                    .apply(fontSizeFactor: 1.3),
               ),
             ],
           ),

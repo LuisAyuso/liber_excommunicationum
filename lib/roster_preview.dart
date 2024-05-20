@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tc_thing/utils.dart';
-import 'package:tc_thing/warband_view.dart';
 
 import 'model/model.dart';
 
@@ -19,7 +18,6 @@ class RosterPreview extends StatelessWidget {
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
               title: const Text(
                 "Roster Preview",
-                style: gothBlack24,
               ),
               bottom: const TabBar(
                 tabs: [
@@ -28,31 +26,27 @@ class RosterPreview extends StatelessWidget {
                   ),
                   Tab(text: "Weapons, Armours,\n & Equipment"),
                 ],
-                labelStyle: gothBlack20,
               ),
             ),
-            body: Container(
-              padding: const EdgeInsets.all(16),
-              child: TabBarView(
-                children: [
-                  ListView.separated(
-                    itemBuilder: (context, idx) => UnitDescription(
-                      unit: roster.units[idx],
-                      armory: armory,
-                    ),
-                    separatorBuilder: (context, idx) => const Divider(),
-                    itemCount: roster.units.length,
+            body: TabBarView(
+              children: [
+                ListView.separated(
+                  itemBuilder: (context, idx) => UnitDescription(
+                    unit: roster.units[idx],
+                    armory: armory,
                   ),
-                  ListView.separated(
-                    itemBuilder: (context, idx) => ItemDescription(
-                      item: roster.items[idx],
-                      armory: armory,
-                    ),
-                    separatorBuilder: (context, idx) => const Divider(),
-                    itemCount: roster.items.length,
+                  separatorBuilder: (context, idx) => const Divider(),
+                  itemCount: roster.units.length,
+                ),
+                ListView.separated(
+                  itemBuilder: (context, idx) => ItemDescription(
+                    item: roster.items[idx],
+                    armory: armory,
                   ),
-                ],
-              ),
+                  separatorBuilder: (context, idx) => const SizedBox(),
+                  itemCount: roster.items.length,
+                ),
+              ],
             )),
       ),
     );
@@ -64,170 +58,185 @@ class ItemDescription extends StatelessWidget {
     super.key,
     required this.item,
     required this.armory,
+    this.edit,
   });
   final ItemUse item;
   final Armory armory;
+  final Widget? edit;
 
   @override
   Widget build(BuildContext context) {
-    if (item is WeaponUse) return weaponDescription(item as WeaponUse);
-    if (item is ArmourUse) return armorDescription(item as ArmourUse);
-    if (item is EquipmentUse) return equipmentDescription(item as EquipmentUse);
+    if (item is WeaponUse) return weaponDescription(context, item as WeaponUse);
+    if (item is ArmourUse) return armorDescription(context, item as ArmourUse);
+    if (item is EquipmentUse) {
+      return equipmentDescription(context, item as EquipmentUse);
+    }
     assert(false, "unreachable");
     return const SizedBox();
   }
 
-  Widget weaponDescription(WeaponUse weapon) {
+  Widget weaponDescription(BuildContext context, WeaponUse weapon) {
     final def = armory.findWeapon(weapon.typeName);
+    var list = List<
+        ({
+          String cost,
+          String type,
+          String range,
+          String modifiers
+        })>.empty(growable: true);
+    if (def.canRanged) {
+      list.add((
+        cost: weapon.cost.toString(),
+        type: def.isGrenade ? "Grenades" : "${def.hands}-handed",
+        range: '${def.range}"',
+        modifiers: def.getModifiersString(Modifier(), ModifierType.ranged)
+      ));
+    }
+    if (def.canMelee) {
+      list.add((
+        cost: def.canRanged ? "" : weapon.cost.toString(),
+        type: "",
+        range: 'Melee',
+        modifiers: def.getModifiersString(Modifier(), ModifierType.melee)
+      ));
+    }
+    assert(list.isNotEmpty);
+    var headers = const ["Cost", "Type", "Range", "Modifiers"];
+    var rows = list
+        .map<List<Widget>>((entry) => [
+              Text(entry.cost),
+              Text(entry.type),
+              Text(entry.range),
+              Text(entry.modifiers),
+            ])
+        .toList();
+
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            const SizedBox(width: 40),
             Text(
               weapon.typeName,
-              style: gothRed24,
-            )
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium!
+                  .copyWith(color: tcRed),
+            ),
+            const Spacer(),
+            edit ?? const SizedBox(),
           ],
         ),
-        Center(
-          child: Table(
-            children: [
-              const TableRow(
-                  children: [
-                    Text("Cost", style: gothBlack20),
-                    Text("Type", style: gothBlack20),
-                    Text("Range", style: gothBlack20),
-                    Text("Modifiers", style: gothBlack20),
-                    Text("Keywords", style: gothBlack20),
-                  ],
-                  decoration: BoxDecoration(
-                      border: Border(bottom: BorderSide(color: tcRed)))),
-              TableRow(children: [
-                Text("${weapon.cost}"),
-                def.isGrenade
-                    ? const Text("Grenades")
-                    : Text("${def.hands}-handed"),
-                Column(
-                  children: [
-                    def.canRanged ? Text('${def.range}"') : const SizedBox(),
-                    def.canMelee ? const Text("Melee") : const SizedBox(),
-                  ],
-                ),
-                Text(def.getModifiersString(Modifier(), ModifierType.any)),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: (def.keywords ?? [])
-                      .map((kw) => ItemChip(item: kw))
-                      .toList(),
-                )
-              ]),
-            ],
-          ),
-        ),
+        TableLEX(headers: headers, rows: rows),
+        Wrap(children: def.getKeywords.map((s) => ItemChip(item: s)).toList())
       ],
     );
   }
 
-  Widget armorDescription(ArmourUse item) {
+  Widget armorDescription(BuildContext context, ArmourUse item) {
     final def = armory.findArmour(item);
     return def.isBodyArmour
-        ? bodyArmorDescription(item)
-        : otherArmourDescription(item);
+        ? bodyArmorDescription(context, item)
+        : otherArmourDescription(context, item);
   }
 
-  Widget otherArmourDescription(ArmourUse item) {
+  Widget otherArmourDescription(BuildContext context, ArmourUse item) {
+    var headers = const [
+      "Cost",
+    ];
+    var rows = [
+      <Widget>[Text("${item.cost}")].toList(growable: true)
+    ];
+
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            const SizedBox(width: 40),
             Text(
               item.typeName,
-              style: gothRed24,
-            )
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium!
+                  .copyWith(color: tcRed),
+            ),
+            const Spacer(),
+            edit ?? const SizedBox(),
           ],
         ),
-        Center(
-          child: Table(
-            children: [
-              const TableRow(
-                  children: [
-                    Text("Cost", style: gothBlack20),
-                  ],
-                  decoration: BoxDecoration(
-                      border: Border(bottom: BorderSide(color: tcRed)))),
-              TableRow(children: [
-                Text("${item.cost}"),
-              ]),
-            ],
-          ),
+        TableLEX(
+          headers: headers,
+          rows: rows,
         ),
       ],
     );
   }
 
-  Widget bodyArmorDescription(ArmourUse item) {
+  Widget bodyArmorDescription(BuildContext context, ArmourUse item) {
     final def = armory.findArmour(item);
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            const SizedBox(width: 40),
             Text(
               item.typeName,
-              style: gothRed24,
-            )
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium!
+                  .copyWith(color: tcRed),
+            ),
+            const Spacer(),
+            edit ?? const SizedBox(),
           ],
         ),
-        Center(
-          child: Table(
-            children: [
-              const TableRow(
-                  children: [
-                    Text("Cost", style: gothBlack20),
-                    Text("Armour", style: gothBlack20),
-                  ],
-                  decoration: BoxDecoration(
-                      border: Border(bottom: BorderSide(color: tcRed)))),
-              TableRow(children: [
-                Text("${item.cost}"),
-                Text("${def.value}"),
-              ]),
-            ],
-          ),
+        TableLEX(
+          headers: const ["Cost", "Armour"],
+          rows: [
+            [
+              Text("${item.cost}"),
+              Text("${def.value}"),
+            ]
+          ],
         ),
+        Wrap(children: def.getKeywords.map((s) => ItemChip(item: s)).toList())
       ],
     );
   }
 
-  Widget equipmentDescription(EquipmentUse item) {
+  Widget equipmentDescription(BuildContext context, EquipmentUse item) {
+    final def = armory.findEquipment(item);
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            const SizedBox(width: 40),
             Text(
               item.typeName,
-              style: gothRed24,
-            )
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium!
+                  .copyWith(color: tcRed),
+            ),
+            const Spacer(),
+            edit ?? const SizedBox(),
           ],
         ),
-        Center(
-          child: Table(
-            children: [
-              const TableRow(
-                  children: [
-                    Text("Cost", style: gothBlack20),
-                  ],
-                  decoration: BoxDecoration(
-                      border: Border(bottom: BorderSide(color: tcRed)))),
-              TableRow(children: [
-                Text("${item.cost}"),
-              ]),
-            ],
-          ),
+        TableLEX(
+          headers: const [
+            "Cost",
+          ],
+          rows: [
+            [
+              Text("${item.cost}"),
+            ]
+          ],
         ),
+        Wrap(children: def.getKeywords.map((s) => ItemChip(item: s)).toList())
       ],
     );
   }
@@ -250,49 +259,42 @@ class UnitDescription extends StatelessWidget {
         }) ??
         unit.armour;
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            SizedBox(width: 40, child: Center(child: unitCount(unit))),
-            Text(
-              unit.typeName,
-              style: gothRed24,
-            )
-          ],
-        ),
-        Center(
-          child: Table(
-            children: [
-              const TableRow(
-                  children: [
-                    Text("Cost", style: gothBlack20),
-                    Text("Movement", style: gothBlack20),
-                    Text("Ranged", style: gothBlack20),
-                    Text("Melee", style: gothBlack20),
-                    Text("Armour", style: gothBlack20),
-                    Text("Base", style: gothBlack20),
-                  ],
-                  decoration: BoxDecoration(
-                      border: Border(bottom: BorderSide(color: tcRed)))),
-              TableRow(children: [
-                Text("${unit.completeCost}"),
-                Text("${unit.movement}"),
-                Text(ranged),
-                Text(melee),
-                Text("$effectiveArmour"),
-                Text(unit.base),
-              ]),
-            ],
+        Container(
+          padding: const EdgeInsets.only(left: 16),
+          child: Text(
+            unit.typeName,
+            style:
+                Theme.of(context).textTheme.titleMedium!.copyWith(color: tcRed),
           ),
         ),
-        Row(
-          children: (unit.defaultItems ?? [])
-              .map((elem) => ItemChip(item: elem.itemName))
-              .toList(),
+        TableLEX(
+          headers: const [
+            "Cost",
+            "Movement",
+            "Ranged",
+            "Melee",
+            "Armour",
+            "Base"
+          ],
+          rows: [
+            [
+              Text("${unit.cost}"),
+              Text("${unit.movement}"),
+              Text(ranged),
+              Text(melee),
+              Text("$effectiveArmour"),
+              Text(unit.base),
+            ]
+          ],
         ),
-        Row(
-          children: unit.keywords.map((elem) => ItemChip(item: elem)).toList(),
-        )
+        Wrap(
+            children: (unit.defaultItems ?? [])
+                .map((elem) => ItemChip(item: elem.itemName))
+                .toList()),
+        Wrap(children: unit.keywords.map((s) => ItemChip(item: s)).toList())
       ],
     );
   }
@@ -303,7 +305,7 @@ class UnitDescription extends StatelessWidget {
     final min = unit.min ?? 0;
     final max = unit.max!;
 
-    if (min == max) return Text("$max", style: gothRed24);
-    return Text("$min-$max", style: gothRed24);
+    if (min == max) return Text("$max");
+    return Text("$min-$max");
   }
 }

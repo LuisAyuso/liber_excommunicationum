@@ -11,10 +11,13 @@ Roster management tool for Trench Crusade
 ### UI
 - [x] Scroll in welcom view
 - [x] Back from unit selector
-- [ ] Problem with width, lines too long. Too much info.
-- [ ] Keywords and special rules in weapon line
 - [x] Tabs in lists units/weapons
 - [x] Change names
+- [ ] Separate elites/troopers
+- [x] Problem with width, lines too long. Too much info.
+  - Roster preview ok?
+  - Weapons edit lines? 
+- [x] Keywords and special rules in weapon line
 
 ### Game Logic
 - [x] Unarmed: if no melee equipped, add the "unarmed" weapon profile
@@ -25,6 +28,7 @@ Roster management tool for Trench Crusade
 - [x] Default armory: non removable
 - [ ] Unit alternatives
   - [ ] Exclusive units, A or B?
+  - [ ] Only x out of y can be upgraded
 - [x] Two currencies system
 - [x] Weapon limits
   - [x] by troop type
@@ -51,6 +55,7 @@ Roster management tool for Trench Crusade
 - [x] Unit Requirements (must have armour?)
   - Model unit with default armour
 - [x] Consumables
+- [ ] Move type, infantry/fly
 - [ ] Unit flavous that must be all equal (legionaries)
 - [ ] Better model silenced gun
 
