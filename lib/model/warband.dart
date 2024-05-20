@@ -7,7 +7,6 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'warband.g.dart';
 
-@JsonSerializable(explicitToJson: true)
 class ItemStack {
   ItemStack({ItemUse? item}) : privateStack = item != null ? [item] : [];
   List<ItemUse> privateStack;
@@ -34,9 +33,12 @@ class ItemStack {
     return s;
   }
 
-  factory ItemStack.fromJson(Map<String, dynamic> json) =>
-      _$ItemStackFromJson(json);
-  Map<String, dynamic> toJson() => _$ItemStackToJson(this);
+  factory ItemStack.fromJson(Map<String, dynamic> json) {
+    return ItemStack();
+  }
+  Map<String, dynamic> toJson() {
+    return {};
+  }
 }
 
 @JsonSerializable(explicitToJson: true)

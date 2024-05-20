@@ -64,3 +64,7 @@ Roster management tool for Trench Crusade
 - [x] Move filter logic to model, keep frontend business-logic-free
 - [x] Merge filterItem and replacements? Somehow? Otherwise, use same patterns
 - [ ] Be idiomatic with null: https://stackoverflow.com/questions/17006664/what-is-the-dart-null-checking-idiom-or-best-practice
+
+
+### Known bugs:
+- [ ] Items are not serialized. This is a big baustelle.
