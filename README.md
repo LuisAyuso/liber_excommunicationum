@@ -9,6 +9,7 @@ Roster management tool for Trench Crusade
 - [ ] Export/print
 
 ### UI
+- [x] Scroll in welcom view
 - [x] Back from unit selector
 - [ ] Problem with width, lines too long. Too much info.
 - [ ] Keywords and special rules in weapon line
