@@ -112,6 +112,63 @@ class Welcome extends StatelessWidget {
   }
 }
 
+class SavedListsManager extends StatefulWidget {
+  const SavedListsManager({super.key});
+
+  @override
+  State<SavedListsManager> createState() => _SavedListsManagerState();
+}
+
+class _SavedListsManagerState extends State<SavedListsManager> {
+  late List<String> x;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: loadSaved(),
+        builder: (context, future) {
+          if (future.hasError) {
+            return const Text("Failed to load roster");
+          }
+          if (!future.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          x = future.data!.toList();
+
+          return Container(
+            padding: const EdgeInsets.all(8),
+            child: ListView(children: [
+              Text(
+                "Stored Warbands",
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              ...x.map<Widget>((save) => Row(
+                    children: [
+                      Text(save),
+                      IconButton(
+                          onPressed: () => deleteSaved(save),
+                          icon: const Icon(Icons.remove))
+                    ],
+                  )),
+            ]),
+          );
+        });
+  }
+
+  Future<void> deleteSaved(String key) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove(key);
+    setState(() {
+      x.remove(key);
+    });
+  }
+
+  Future<Set<String>> loadSaved() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getKeys();
+  }
+}
+
 class WarbandChooser extends StatelessWidget {
   const WarbandChooser({super.key});
   @override
@@ -130,31 +187,7 @@ class WarbandChooser extends StatelessWidget {
                           Theme.of(context).scaffoldBackgroundColor,
                       context: context,
                       builder: (BuildContext context) {
-                        return FutureBuilder(
-                            future: loadSaved(),
-                            builder: (context, future) {
-                              if (future.hasError) {
-                                return const Text("Failed to load roster");
-                              }
-                              if (!future.hasData) {
-                                return const Center(
-                                    child: CircularProgressIndicator());
-                              }
-
-                              return Column(
-                                  children: future.data!
-                                      .map<Widget>((save) => Row(
-                                            children: [
-                                              Text(save),
-                                              IconButton(
-                                                  onPressed: () =>
-                                                      deleteSaved(save),
-                                                  icon:
-                                                      const Icon(Icons.remove))
-                                            ],
-                                          ))
-                                      .toList());
-                            });
+                        return const SavedListsManager();
                       });
                 },
                 icon: const Icon(Icons.save))
@@ -213,16 +246,6 @@ class WarbandChooser extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future<void> deleteSaved(String key) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.remove(key);
-  }
-
-  Future<Set<String>> loadSaved() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getKeys();
   }
 }
 

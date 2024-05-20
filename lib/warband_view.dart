@@ -567,7 +567,11 @@ class _NameEditorState extends State<NameEditor> {
     return Row(children: [
       Text(
         widget.name,
-        style: Theme.of(context).textTheme.titleMedium!.copyWith(color: tcRed),
+        style: Theme.of(context)
+            .textTheme
+            .titleMedium!
+            .copyWith(color: tcRed)
+            .apply(fontSizeFactor: 1.2),
       ),
       widget.editable ?? true
           ? IconButton(
