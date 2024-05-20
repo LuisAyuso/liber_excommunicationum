@@ -39,7 +39,8 @@
             "modifiers": [
                 {
                     "hit": 1,
-                    "extra": "shots from Cover"
+                    "extra": "from Cover",
+                    "type": "ranged"
                 }
             ]
         },

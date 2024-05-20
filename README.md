@@ -57,7 +57,7 @@ Roster management tool for Trench Crusade
 - [x] Consumables
 - [ ] Move type, infantry/fly
 - [ ] Unit flavous that must be all equal (legionaries)
-- [ ] Better model silenced gun
+- [x] Better model silenced gun
 
 
 ### Refactors
