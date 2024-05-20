@@ -189,7 +189,7 @@ class WarriorBlock extends StatelessWidget {
                     Text(warrior.totalCost.toString()),
                     Text(
                       textAlign: TextAlign.end,
-                      '${warrior.type.movement}"',
+                      warrior.type.movement,
                       style: Theme.of(context).textTheme.labelSmall,
                     ),
                     Text(

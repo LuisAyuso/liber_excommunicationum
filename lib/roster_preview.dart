@@ -282,7 +282,7 @@ class UnitDescription extends StatelessWidget {
           rows: [
             [
               Text("${unit.cost}"),
-              Text("${unit.movement}"),
+              Text(unit.movement),
               Text(ranged),
               Text(melee),
               Text("$effectiveArmour"),

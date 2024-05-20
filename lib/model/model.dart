@@ -314,7 +314,7 @@ class Unit {
   String typeName = "";
   int? max;
   int? min;
-  int movement = 6;
+  String movement = "";
   int ranged = 0;
   int melee = 0;
   int armour = 0;

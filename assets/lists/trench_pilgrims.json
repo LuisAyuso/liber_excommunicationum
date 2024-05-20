@@ -85,7 +85,7 @@
             "typeName": "War Prophet",
             "min": 1,
             "max": 1,
-            "movement": 6,
+            "movement": "6\"/infantry",
             "ranged": 2,
             "melee": 2,
             "armour": 0,
@@ -114,7 +114,7 @@
         {
             "typeName": "Castigator",
             "max": 1,
-            "movement": 6,
+            "movement": "6\"/infantry",
             "ranged": 1,
             "melee": 1,
             "armour": 0,
@@ -134,7 +134,7 @@
         {
             "typeName": "Communicant",
             "max": 1,
-            "movement": 6,
+            "movement": "6\"/infantry",
             "ranged": -3,
             "melee": 2,
             "armour": 0,
@@ -163,7 +163,7 @@
         },
         {
             "typeName": "Trench Pilgrim",
-            "movement": 6,
+            "movement": "6\"/infantry",
             "ranged": 0,
             "melee": 0,
             "armour": 0,
@@ -180,7 +180,7 @@
         },
         {
             "typeName": "Martyr Penitent",
-            "movement": 6,
+            "movement": "6\"/infantry",
             "ranged": 0,
             "melee": 1,
             "armour": 0,
@@ -194,7 +194,7 @@
         },
         {
             "typeName": "Ecclesiastic Prisoners",
-            "movement": 6,
+            "movement": "6\"/infantry",
             "ranged": 0,
             "melee": -1,
             "armour": 0,
@@ -231,7 +231,7 @@
         {
             "typeName": "Stigmatic Nuns",
             "max": 4,
-            "movement": 8,
+            "movement": "8\"/infantry",
             "ranged": 1,
             "melee": 1,
             "armour": 0,
@@ -267,7 +267,7 @@
         {
             "typeName": "Anchorite Shrine",
             "max": 1,
-            "movement": 6,
+            "movement": "6\"/infantry",
             "ranged": 0,
             "melee": 1,
             "armour": -1,

@@ -18,6 +18,8 @@ Roster management tool for Trench Crusade
   - Roster preview ok?
   - Weapons edit lines? 
 - [x] Keywords and special rules in weapon line
+- [ ] Improve position of unit delete controls
+- [ ] Reduce Weapons clutter
 
 ### Game Logic
 - [x] Unarmed: if no melee equipped, add the "unarmed" weapon profile
@@ -55,16 +57,14 @@ Roster management tool for Trench Crusade
 - [x] Unit Requirements (must have armour?)
   - Model unit with default armour
 - [x] Consumables
-- [ ] Move type, infantry/fly
+- [x] Move type, infantry/fly
 - [ ] Unit flavous that must be all equal (legionaries)
 - [x] Better model silenced gun
-
 
 ### Refactors
 - [x] Move filter logic to model, keep frontend business-logic-free
 - [x] Merge filterItem and replacements? Somehow? Otherwise, use same patterns
 - [ ] Be idiomatic with null: https://stackoverflow.com/questions/17006664/what-is-the-dart-null-checking-idiom-or-best-practice
-
 
 ### Known bugs:
 - [ ] Items are not serialized. This is a big baustelle.

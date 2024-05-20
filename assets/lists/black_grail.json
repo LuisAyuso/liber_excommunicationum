@@ -54,7 +54,7 @@
             "typeName": "Lord of Tumours",
             "min": 1,
             "max": 1,
-            "movement": 6,
+            "movement": "6\"/infantry",
             "ranged": 1,
             "melee": 4,
             "armour": 0,
@@ -80,7 +80,7 @@
         {
             "typeName": "Plague Knight",
             "max": 1,
-            "movement": 6,
+            "movement": "6\"/infantry",
             "ranged": 0,
             "melee": 2,
             "armour": 0,
@@ -116,7 +116,7 @@
         {
             "typeName": "Corpse Guard",
             "max": 2,
-            "movement": 6,
+            "movement": "6\"/infantry",
             "ranged": 0,
             "melee": 1,
             "armour": 0,
@@ -139,7 +139,7 @@
         {
             "typeName": "Hounds of the Black Grail",
             "max": 3,
-            "movement": 8,
+            "movement": "8\"/infantry",
             "ranged": 0,
             "melee": 1,
             "armour": 0,
@@ -163,7 +163,7 @@
         },
         {
             "typeName": "Grail Thrall",
-            "movement": 4,
+            "movement": "4\"/infantry",
             "ranged": 0,
             "melee": -1,
             "armour": 0,
@@ -187,7 +187,7 @@
         },
         {
             "typeName": "Heralds of Beelzebub",
-            "movement": 10,
+            "movement": "10\"/fly",
             "ranged": 0,
             "melee": 0,
             "armour": 0,
@@ -227,7 +227,7 @@
         },
         {
             "typeName": "Amalgam",
-            "movement": 6,
+            "movement": "6\"/infantry",
             "ranged": 0,
             "melee": 0,
             "armour": 0,

@@ -254,7 +254,7 @@ void main() {
     var r = Roster();
     var boss = Unit();
     boss.typeName = "boss";
-    boss.movement = 6;
+    boss.movement = '6"';
     boss.max = 1;
     boss.ranged = 1;
     boss.melee = 1;
