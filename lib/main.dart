@@ -74,7 +74,7 @@ class Welcome extends StatelessWidget {
                                 .apply(fontSizeFactor: 1.3),
                             textAlign: TextAlign.center,
                           ),
-                          const Text("Beta 0.3"),
+                          const Text("Beta 0.4"),
                         ],
                       ),
                       const Text(

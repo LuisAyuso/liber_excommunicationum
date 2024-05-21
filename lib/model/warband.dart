@@ -7,13 +7,37 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'warband.g.dart';
 
+class ItemSerializeWrapper {
+  ItemSerializeWrapper({required this.item}) : _kind = item.kind;
+  ItemKind _kind;
+  ItemUse item;
+
+  factory ItemSerializeWrapper.fromJson(Map<String, dynamic> json) {
+    ItemUse item = switch (json['_kind'] as String) {
+      "ItemKind.weapon" => WeaponUse.fromJson(json["item"]),
+      "ItemKind.armour" => ArmourUse.fromJson(json["item"]),
+      "ItemKind.equipment" => EquipmentUse.fromJson(json["item"]),
+      _ => throw Exception("Not a serialization wrapper")
+    };
+    return ItemSerializeWrapper(item: item);
+  }
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      '_kind': _kind.toString(),
+      'item': item.toJson(),
+    };
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
 class ItemStack {
-  ItemStack({ItemUse? item}) : privateStack = item != null ? [item] : [];
-  List<ItemUse> privateStack;
+  ItemStack({ItemUse? item})
+      : privateStack = item != null ? [ItemSerializeWrapper(item: item)] : [];
+  List<ItemSerializeWrapper> privateStack = [];
 
   ItemUse get value {
     assert(privateStack.isNotEmpty, "this can not be empty, ever");
-    return privateStack.last;
+    return privateStack.last.item;
   }
 
   bool get isEmpty => privateStack.isEmpty;
@@ -24,7 +48,7 @@ class ItemStack {
   }
 
   void replace(ItemUse item) {
-    privateStack.add(item);
+    privateStack.add(ItemSerializeWrapper(item: item));
   }
 
   ItemStack copy() {
@@ -33,12 +57,9 @@ class ItemStack {
     return s;
   }
 
-  factory ItemStack.fromJson(Map<String, dynamic> json) {
-    return ItemStack();
-  }
-  Map<String, dynamic> toJson() {
-    return {};
-  }
+  factory ItemStack.fromJson(Map<String, dynamic> json) =>
+      _$ItemStackFromJson(json);
+  Map<String, dynamic> toJson() => _$ItemStackToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)

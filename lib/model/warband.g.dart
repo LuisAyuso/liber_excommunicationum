@@ -6,6 +6,15 @@ part of 'warband.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+ItemStack _$ItemStackFromJson(Map<String, dynamic> json) => ItemStack()
+  ..privateStack = (json['privateStack'] as List<dynamic>)
+      .map((e) => ItemSerializeWrapper.fromJson(e as Map<String, dynamic>))
+      .toList();
+
+Map<String, dynamic> _$ItemStackToJson(ItemStack instance) => <String, dynamic>{
+      'privateStack': instance.privateStack.map((e) => e.toJson()).toList(),
+    };
+
 WarriorModel _$WarriorModelFromJson(Map<String, dynamic> json) => WarriorModel(
       name: json['name'] as String?,
       uid: json['uid'] as int,

@@ -359,17 +359,20 @@ abstract class ItemUse {
   bool get isRemovable;
   Currency get getCost;
   int get getLimit;
+  ItemKind get kind;
+
+  Map<String, dynamic> toJson();
 }
 
 @JsonSerializable(explicitToJson: true)
 class WeaponUse extends ItemUse {
-  WeaponUse(
-      {String? typeName,
-      Currency? cost,
-      this.removable,
-      this.filter,
-      this.limit})
-      : typeName = typeName ?? "",
+  WeaponUse({
+    String? typeName,
+    Currency? cost,
+    this.removable,
+    this.filter,
+    this.limit,
+  })  : typeName = typeName ?? "",
         cost = cost ?? Currency.free();
 
   String typeName = "";
@@ -378,6 +381,8 @@ class WeaponUse extends ItemUse {
   FilterItem? filter;
   int? limit;
 
+  @override
+  ItemKind get kind => ItemKind.weapon;
   @override
   String get getName => typeName;
   @override
@@ -391,6 +396,7 @@ class WeaponUse extends ItemUse {
 
   factory WeaponUse.fromJson(Map<String, dynamic> json) =>
       _$WeaponUseFromJson(json);
+  @override
   Map<String, dynamic> toJson() => _$WeaponUseToJson(this);
 
   factory WeaponUse.unarmed() =>
@@ -399,13 +405,13 @@ class WeaponUse extends ItemUse {
 
 @JsonSerializable(explicitToJson: true)
 class ArmourUse extends ItemUse {
-  ArmourUse(
-      {String? typeName,
-      Currency? cost,
-      this.removable,
-      this.limit,
-      this.filter})
-      : typeName = typeName ?? "",
+  ArmourUse({
+    String? typeName,
+    Currency? cost,
+    this.removable,
+    this.limit,
+    this.filter,
+  })  : typeName = typeName ?? "",
         cost = cost ?? Currency.free();
 
   String typeName = "";
@@ -414,6 +420,8 @@ class ArmourUse extends ItemUse {
   int? limit;
   FilterItem? filter;
 
+  @override
+  ItemKind get kind => ItemKind.armour;
   @override
   String get getName => typeName;
   @override
@@ -427,13 +435,17 @@ class ArmourUse extends ItemUse {
 
   factory ArmourUse.fromJson(Map<String, dynamic> json) =>
       _$ArmourUseFromJson(json);
+  @override
   Map<String, dynamic> toJson() => _$ArmourUseToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
 class EquipmentUse extends ItemUse {
-  EquipmentUse({String? typeName, bool? removable, Currency? cost})
-      : typeName = typeName ?? "",
+  EquipmentUse({
+    String? typeName,
+    bool? removable,
+    Currency? cost,
+  })  : typeName = typeName ?? "",
         removable = removable ?? true,
         cost = cost ?? Currency.free();
 
@@ -443,6 +455,8 @@ class EquipmentUse extends ItemUse {
   int? limit;
   FilterItem? filter;
 
+  @override
+  ItemKind get kind => ItemKind.equipment;
   @override
   String get getName => typeName;
   @override
@@ -456,6 +470,7 @@ class EquipmentUse extends ItemUse {
 
   factory EquipmentUse.fromJson(Map<String, dynamic> json) =>
       _$EquipmentUseFromJson(json);
+  @override
   Map<String, dynamic> toJson() => _$EquipmentUseToJson(this);
 }
 
