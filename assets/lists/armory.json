@@ -81,7 +81,7 @@
         {
             "typeName": "Shotgun",
             "hands": 2,
-            "range": 24,
+            "range": 12,
             "modifiers": [
                 {
                     "hit": 1
@@ -95,7 +95,7 @@
         {
             "typeName": "Automatic Shotgun",
             "hands": 2,
-            "range": 24,
+            "range": 12,
             "keywords": [
                 "ASSAULT"
             ],
