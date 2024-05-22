@@ -31,7 +31,9 @@ FilterItem _$FilterItemFromJson(Map<String, dynamic> json) => FilterItem(
       isGrenade: json['isGrenade'] as bool?,
       isBodyArmour: json['isBodyArmour'] as bool?,
       isShield: json['isShield'] as bool?,
-    )..itemKeyword = json['itemKeyword'] as String?;
+    )
+      ..maxRepetitions = json['maxRepetitions'] as int?
+      ..itemKeyword = json['itemKeyword'] as String?;
 
 Map<String, dynamic> _$FilterItemToJson(FilterItem instance) =>
     <String, dynamic>{
@@ -44,6 +46,7 @@ Map<String, dynamic> _$FilterItemToJson(FilterItem instance) =>
       'unitKeyword': instance.unitKeyword,
       'unitName': instance.unitName,
       'containsItem': instance.containsItem,
+      'maxRepetitions': instance.maxRepetitions,
       'itemKind': _$ItemKindEnumMap[instance.itemKind],
       'itemName': instance.itemName,
       'itemKeyword': instance.itemKeyword,

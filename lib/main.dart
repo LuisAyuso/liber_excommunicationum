@@ -74,11 +74,13 @@ class Welcome extends StatelessWidget {
                                 .apply(fontSizeFactor: 1.3),
                             textAlign: TextAlign.center,
                           ),
-                          const Text("Beta 0.4"),
+                          const Text("Beta 0.5"),
                         ],
                       ),
                       const Text(
-                        'Hello There, here will come a chat GPT text that I will copy/paste shamelessly.'
+                        'Hello There, welcome to my tool to build Trench Crusade lists.'
+                        'I have some ideas about how I did not like other roster apps, and this is my chance to do something different,'
+                        'I would come out with some better introduction here, and with it I would try to explain why this tools needs to be.'
                         '\n'
                         '\n'
                         'In the meanwhile there are a couple of things to say:'
@@ -88,6 +90,21 @@ class Welcome extends StatelessWidget {
                         '- This is a work in progress, please be kind with errors'
                         '\n'
                         '- This tool uses some basic storage/cookies mechanisms for its normal operation, by using the tool you accept them as well.',
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Last Changes:',
+                              style: Theme.of(context).textTheme.titleMedium),
+                          const Text(
+                              '- Lists are persistent, they are saved automatically.'),
+                          const Text(
+                              '- You can repeat weapons now, as long as the limitations work out.'),
+                          const Text('- No more 24" shotguns.'),
+                          const Text("- One Satchel Charge per model."),
+                          const Text("- Add grenades filter")
+                        ],
                       ),
                       ElevatedButton(
                           onPressed: () {

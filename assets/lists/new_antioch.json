@@ -423,7 +423,10 @@
             "cost": {
                 "ducats": 15
             },
-            "limit": 3
+            "limit": 3,
+            "filter": {
+                "maxRepetitions": 1
+            }
         },
         {
             "typeName": "Knife/Dagger",

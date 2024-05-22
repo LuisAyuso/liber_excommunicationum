@@ -136,6 +136,24 @@ class _WarbandViewState extends State<WarbandView> {
   }
 }
 
+UnmodifiableListView<String> compressLabels(Iterable<ItemUse> items) {
+  var map = <String, int>{};
+
+  for (var item in items) {
+    final name = item.getName;
+    if (map.containsKey(name)) {
+      map[name] = map[name]! + 1;
+    } else {
+      map[name] = 1;
+    }
+  }
+
+  return UnmodifiableListView(map.entries.map((entries) {
+    if (entries.value > 1) return "${entries.key} x${entries.value}";
+    return entries.key;
+  }));
+}
+
 class WarriorBlock extends StatelessWidget {
   WarriorBlock(
       {super.key,
@@ -148,6 +166,7 @@ class WarriorBlock extends StatelessWidget {
 
   final FilterItem onlyRanged = FilterItem(rangedWeapon: true);
   final FilterItem onlyMelee = FilterItem(meleeWeapon: true);
+  final FilterItem onlyGrenades = FilterItem(isGrenade: true);
 
   @override
   Widget build(BuildContext context) {
@@ -201,21 +220,26 @@ class WarriorBlock extends StatelessWidget {
                 ])
               ]),
           Wrap(
+            spacing: 8,
+            alignment: WrapAlignment.start,
+            runSpacing: 2,
+            children: compressLabels(warrior.weapons)
+                .map<Widget>((w) => ItemChip(item: w))
+                .toList(),
+          ),
+          Wrap(
               spacing: 8,
               alignment: WrapAlignment.start,
-              runSpacing: 2,
-              children: warrior.weapons
+              children: compressLabels(warrior.armour)
                   .map<Widget>((w) => ItemChip(item: w))
                   .toList()),
           Wrap(
             spacing: 8,
             alignment: WrapAlignment.start,
-            children:
-                warrior.armour.map<Widget>((w) => ItemChip(item: w)).toList() +
-                    warrior.equipment
-                        .map<Widget>((w) => ItemChip(item: w))
-                        .toList(),
-          )
+            children: compressLabels(warrior.equipment)
+                .map<Widget>((w) => ItemChip(item: w))
+                .toList(),
+          ),
         ],
       ),
       children: [
@@ -274,6 +298,7 @@ class WarriorBlock extends StatelessWidget {
                               armory: armory,
                               filter: ItemChooserFilterDelegate(filters: {
                                 "Ranged": onlyRanged,
+                                "Grenades": onlyGrenades,
                                 "Melee": onlyMelee,
                               }),
                               callback: (use) {
@@ -720,6 +745,7 @@ class _ItemChooserState extends State<ItemChooser> {
                   selected: _currentFilter,
                   multiSelectionEnabled: true,
                   onSelectionChanged: (filter) {
+                    if (filter == _currentFilter) return;
                     setState(() {
                       _currentFilter = filter;
                     });

@@ -53,6 +53,7 @@ class FilterItem {
   String? unitKeyword;
   String? unitName;
   String? containsItem;
+  int? maxRepetitions;
 
   ItemKind? itemKind;
   String? itemName;
@@ -78,6 +79,7 @@ class FilterItem {
             _count(unitKeyword) +
             _count(unitName) +
             _count(containsItem) +
+            _count(maxRepetitions) +
             _count(itemKind) +
             _count(itemName) +
             _count(itemKeyword) +
@@ -175,6 +177,12 @@ class FilterItem {
     if (containsItem != null &&
         warrior != null &&
         warrior.items.where((it) => it.getName == containsItem).isEmpty) {
+      return false;
+    }
+    if (maxRepetitions != null &&
+        warrior != null &&
+        warrior.items.where((it) => it.getName == item.itemName).length >
+            maxRepetitions!) {
       return false;
     }
 

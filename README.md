@@ -68,3 +68,4 @@ Roster management tool for Trench Crusade
 
 ### Known bugs:
 - [x] Items are not serialized. This is a big baustelle.
+- [x] no double weapons.

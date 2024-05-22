@@ -126,7 +126,8 @@ class WarriorModel {
 
   void addItem(ItemUse item, Armory armoury) {
     privateItems.add(ItemStack(item: item));
-    removeInvalid(armoury);
+    // TODO: come out with one example when adding one element can invalidate the rest
+    //removeInvalid(armoury);
   }
 
   void removeItem(ItemUse item, Armory armoury) {
@@ -243,9 +244,8 @@ class WarriorModel {
     return UnmodifiableListView(roster.weapons.where((use) {
       final def = armory.findWeapon(use);
 
-      // no repetitions except pistols
-      if (!def.isPistol &&
-          !def.isConsumable &&
+      // no repetitions of greandes
+      if (def.isGrenade &&
           weapons.where((w) => w.getName == use.getName).isNotEmpty) {
         return false;
       }
@@ -313,16 +313,13 @@ class WarriorModel {
       Roster roster, Armory armory) {
     return UnmodifiableListView(roster.equipment.where((equip) {
       final def = armory.findEquipment(equip);
-
-      final filter =
-          FilterItem.allOf([equip.getFilter, def.getFilter, type.getFilter]);
-      if (!filter.isItemAllowed(def, this)) return false;
-
       if (!def.isConsumable &&
           equipment.where((e) => e.typeName == def.typeName).isNotEmpty) {
         return false;
       }
-
+      final filter =
+          FilterItem.allOf([equip.getFilter, def.getFilter, type.getFilter]);
+      if (!filter.isItemAllowed(def, this)) return false;
       return true;
     }));
   }
