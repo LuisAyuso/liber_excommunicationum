@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:tc_thing/model/filters.dart';
 import 'package:tc_thing/model/model.dart';
 import 'package:tc_thing/utils.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -76,7 +77,16 @@ class WarriorModel {
     if (armory != null) populateBuiltIn(armory);
   }
 
-  WarriorModel copyWith({required String name, required int newUid}) {
+  WarriorModel clone() {
+    var w = WarriorModel(name: name, uid: uid, type: type, bucket: bucket);
+    w.privateItems = [];
+    for (var it in privateItems) {
+      w.privateItems.add(it.copy());
+    }
+    return w;
+  }
+
+  WarriorModel cloneWith({required String name, required int newUid}) {
     var w = WarriorModel(name: name, uid: newUid, type: type, bucket: bucket);
     w.privateItems = [];
     for (var it in privateItems) {
@@ -148,7 +158,7 @@ class WarriorModel {
 
       final def = armoury.findItem(item);
       final filter =
-          FilterItem.allOf([item.getFilter, def.getFilter, type.getFilter]);
+          ItemFilter.allOf([item.getFilter, def.getFilter, type.getItemFilter]);
       if (!filter.isItemAllowed(def, this)) {
         toRemove.add(item);
       }
@@ -251,7 +261,7 @@ class WarriorModel {
       }
 
       final filter =
-          FilterItem.allOf([use.getFilter, def.getFilter, type.getFilter]);
+          ItemFilter.allOf([use.getFilter, def.getFilter, type.getItemFilter]);
       if (!filter.isItemAllowed(def, this)) return false;
 
       // Bypass of normal algorithm for the Amalgam, as many weapons as hands
@@ -292,8 +302,8 @@ class WarriorModel {
           return false;
         }
 
-        final filter =
-            FilterItem.allOf([use.getFilter, def.getFilter, type.getFilter]);
+        final filter = ItemFilter.allOf(
+            [use.getFilter, def.getFilter, type.getItemFilter]);
         if (!filter.isItemAllowed(def, this)) return false;
 
         // Bypass of normal algorithm for the Amalgam, as many weapons as hands
@@ -317,8 +327,8 @@ class WarriorModel {
           equipment.where((e) => e.typeName == def.typeName).isNotEmpty) {
         return false;
       }
-      final filter =
-          FilterItem.allOf([equip.getFilter, def.getFilter, type.getFilter]);
+      final filter = ItemFilter.allOf(
+          [equip.getFilter, def.getFilter, type.getItemFilter]);
       if (!filter.isItemAllowed(def, this)) return false;
       return true;
     }));
@@ -334,34 +344,34 @@ class WarbandModel extends ChangeNotifier {
   WarbandModel();
 
   String name = "";
-  List<WarriorModel> items = [];
+  List<WarriorModel> warriors = [];
   int id = 0;
 
-  int get length => items.length;
+  int get length => warriors.length;
   Currency get cost =>
-      items.fold<Currency>(Currency.free(), (v, w) => v + w.totalCost);
+      warriors.fold<Currency>(Currency.free(), (v, w) => v + w.totalCost);
 
   int nextUID() {
     return ++id;
   }
 
   void add(WarriorModel item) {
-    items.add(item);
-    items.sort((a, b) => a.bucket.compareTo(b.bucket));
+    warriors.add(item);
+    warriors.sort((a, b) => a.bucket.compareTo(b.bucket));
     notifyListeners();
   }
 
   WarriorModel getUID(int uid) {
-    return items.firstWhere((w) => w.uid == uid);
+    return warriors.firstWhere((w) => w.uid == uid);
   }
 
   void removeUID(int uid) {
-    items.removeWhere((w) => w.uid == uid);
+    warriors.removeWhere((w) => w.uid == uid);
     notifyListeners();
   }
 
   void clear() {
-    items.clear();
+    warriors.clear();
     notifyListeners();
   }
 

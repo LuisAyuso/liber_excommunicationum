@@ -43,7 +43,7 @@ const _$SexEnumMap = {
 
 WarbandModel _$WarbandModelFromJson(Map<String, dynamic> json) => WarbandModel()
   ..name = json['name'] as String
-  ..items = (json['items'] as List<dynamic>)
+  ..warriors = (json['warriors'] as List<dynamic>)
       .map((e) => WarriorModel.fromJson(e as Map<String, dynamic>))
       .toList()
   ..id = json['id'] as int;
@@ -51,6 +51,6 @@ WarbandModel _$WarbandModelFromJson(Map<String, dynamic> json) => WarbandModel()
 Map<String, dynamic> _$WarbandModelToJson(WarbandModel instance) =>
     <String, dynamic>{
       'name': instance.name,
-      'items': instance.items.map((e) => e.toJson()).toList(),
+      'warriors': instance.warriors.map((e) => e.toJson()).toList(),
       'id': instance.id,
     };

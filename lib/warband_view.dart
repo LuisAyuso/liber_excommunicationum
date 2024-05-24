@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tc_thing/model/filters.dart';
 import 'package:tc_thing/model/model.dart';
 import 'package:tc_thing/model/warband.dart';
 import 'package:tc_thing/roster_preview.dart';
@@ -85,7 +86,7 @@ class _WarbandViewState extends State<WarbandView> {
                   // allow scrolling past last
                   return const SizedBox(height: 500);
                 }
-                var warrior = context.read<WarbandModel>().items[idx];
+                var warrior = context.read<WarbandModel>().warriors[idx];
                 return WarriorBlock(
                     roster: widget.roster,
                     armory: widget.armory,
@@ -164,15 +165,15 @@ class WarriorBlock extends StatelessWidget {
   final Armory armory;
   final WarriorModel warrior;
 
-  final FilterItem onlyRanged = FilterItem(rangedWeapon: true);
-  final FilterItem onlyMelee = FilterItem(meleeWeapon: true);
-  final FilterItem onlyGrenades = FilterItem(isGrenade: true);
+  final ItemFilter onlyRanged = ItemFilter(rangedWeapon: true);
+  final ItemFilter onlyMelee = ItemFilter(meleeWeapon: true);
+  final ItemFilter onlyGrenades = ItemFilter(isGrenade: true);
 
   @override
   Widget build(BuildContext context) {
     final unitCount = context
         .read<WarbandModel>()
-        .items
+        .warriors
         .where((other) => other.type.typeName == warrior.type.typeName)
         .length;
 
@@ -360,7 +361,7 @@ class WarriorBlock extends StatelessWidget {
               ? IconButton(
                   onPressed: () {
                     var wbm = context.read<WarbandModel>();
-                    wbm.add(warrior.copyWith(
+                    wbm.add(warrior.cloneWith(
                       name: makeName(
                           roster, warrior.type.sex, warrior.type.isElite),
                       newUid: wbm.nextUID(),
@@ -373,7 +374,7 @@ class WarriorBlock extends StatelessWidget {
               ? const SizedBox()
               : IconButton(
                   onPressed: () {
-                    context.read<WarbandModel>().removeUID(warrior.uid);
+                    attemptRemove(context, warrior);
                   },
                   icon: const Icon(Icons.delete),
                 )
@@ -381,6 +382,87 @@ class WarriorBlock extends StatelessWidget {
       ]);
     } else {
       return UnmodifiableListView([]);
+    }
+  }
+
+  void attemptRemove(BuildContext context, WarriorModel warrior) {
+    // remove the guy, and see it the list holds. if not, popup a
+    // thing explaining why
+
+    var without =
+        context.read<WarbandModel>().warriors.map((u) => u.clone()).toList();
+    without.removeWhere((w) => w.uid == warrior.uid);
+
+    var reasons = <RichText>[];
+    for (var other in without) {
+      var withoutOther = without.map((u) => u.clone()).toList();
+      withoutOther.removeWhere((w) => w.uid == other.uid);
+      final wtype = other.type;
+      if (!makeUnitFilter(wtype).isUnitAllowed(wtype, withoutOther)) {
+        reasons.add(
+          RichText(
+            text: TextSpan(children: [
+              const TextSpan(text: "Warrior "),
+              TextSpan(
+                text: other.name,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleSmall!
+                    .copyWith(color: tcRed),
+              ),
+              const TextSpan(text: " of type "),
+              TextSpan(
+                text: other.type.typeName,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleSmall!
+                    .copyWith(color: Colors.white),
+              ),
+              const TextSpan(text: " would break the rules"),
+            ]),
+          ),
+        );
+      }
+    }
+
+    if (reasons.isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            RichText(
+                text: TextSpan(children: [
+              const TextSpan(text: "Cannot remove "),
+              TextSpan(
+                text: warrior.name,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleSmall!
+                    .copyWith(color: tcRed),
+              ),
+            ])),
+            const Divider(),
+            ...reasons,
+          ],
+        )
+
+            //ListView(
+            //children: reasons.map((s) => Text(s)).toList(),
+            //)
+            //   duration: const Duration(milliseconds: 1500),
+            //   width: 280.0, // Width of the SnackBar.
+            //   padding: const EdgeInsets.symmetric(
+            //     horizontal: 8.0, // Inner padding for SnackBar content.
+            //   ),
+            //   behavior: SnackBarBehavior.floating,
+            //   shape: RoundedRectangleBorder(
+            //     borderRadius: BorderRadius.circular(10.0),
+            //   ),
+            ),
+      );
+    } else {
+      context.read<WarbandModel>().removeUID(warrior.uid);
     }
   }
 
@@ -432,7 +514,7 @@ class WarriorBlock extends StatelessWidget {
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             context: context,
             builder: (BuildContext context) {
-              final alterEgo = warrior.copyWith(name: "", newUid: -1);
+              final alterEgo = warrior.cloneWith(name: "", newUid: -1);
               alterEgo.removeItem(oldWeapon, armory);
               final candidates = alterEgo
                   .availableWeapons(
@@ -511,7 +593,7 @@ class WarriorBlock extends StatelessWidget {
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             context: context,
             builder: (BuildContext context) {
-              final alterEgo = warrior.copyWith(name: "", newUid: -1);
+              final alterEgo = warrior.cloneWith(name: "", newUid: -1);
               alterEgo.removeItem(oldArmour, armory);
               final newCandidates = alterEgo
                   .availableArmours(
@@ -679,16 +761,16 @@ class _NameEditorState extends State<NameEditor> {
 }
 
 class ItemChooserFilterDelegate {
-  const ItemChooserFilterDelegate({required Map<String, FilterItem> filters})
+  const ItemChooserFilterDelegate({required Map<String, ItemFilter> filters})
       : _filters = filters;
 
-  final Map<String, FilterItem> _filters;
+  final Map<String, ItemFilter> _filters;
 
-  UnmodifiableListView<FilterItem> get getFilters => UnmodifiableListView(
+  UnmodifiableListView<ItemFilter> get getFilters => UnmodifiableListView(
       _filters.entries.map((entry) => entry.value).toList());
-  UnmodifiableListView<ButtonSegment<FilterItem>> get buttonSegments =>
+  UnmodifiableListView<ButtonSegment<ItemFilter>> get buttonSegments =>
       UnmodifiableListView(_filters.entries
-          .map((entry) => ButtonSegment<FilterItem>(
+          .map((entry) => ButtonSegment<ItemFilter>(
               value: entry.value, label: Text(entry.key)))
           .toList());
 }
@@ -713,9 +795,9 @@ class ItemChooser extends StatefulWidget {
 }
 
 class _ItemChooserState extends State<ItemChooser> {
-  late Set<FilterItem> _currentFilter;
+  late Set<ItemFilter> _currentFilter;
 
-  FilterItem get asFilter => FilterItem.anyOf(_currentFilter.toList());
+  ItemFilter get asFilter => ItemFilter.anyOf(_currentFilter.toList());
   UnmodifiableListView<ItemUse> get items {
     final filter = asFilter;
     return UnmodifiableListView(widget.elements
@@ -726,7 +808,7 @@ class _ItemChooserState extends State<ItemChooser> {
   @override
   void initState() {
     _currentFilter =
-        widget.filter?.getFilters.toSet() ?? {FilterItem.trueValue()};
+        widget.filter?.getFilters.toSet() ?? {ItemFilter.trueValue()};
     super.initState();
   }
 
@@ -739,16 +821,14 @@ class _ItemChooserState extends State<ItemChooser> {
       child: Column(
         children: [
           widget.filter != null
-              ? SegmentedButton<FilterItem>(
+              ? SegmentedButton<ItemFilter>(
                   emptySelectionAllowed: false,
                   segments: widget.filter?.buttonSegments ?? [],
                   selected: _currentFilter,
                   multiSelectionEnabled: true,
                   onSelectionChanged: (filter) {
                     if (filter == _currentFilter) return;
-                    setState(() {
-                      _currentFilter = filter;
-                    });
+                    setState(() => _currentFilter = filter);
                   })
               : const SizedBox(),
           Expanded(

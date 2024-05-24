@@ -208,7 +208,7 @@
                 "ducats": 20
             },
             "base": "25mm",
-            "filter": {
+            "itemFilter": {
                 "none": true
             },
             "defaultItems": [
@@ -247,7 +247,7 @@
             },
             "base": "25mm",
             "defaultSex": "female",
-            "filter": {
+            "itemFilter": {
                 "anyOf": [
                     {
                         "meleeWeapon": true
@@ -303,7 +303,7 @@
                     "removable": false
                 }
             ],
-            "filter": {
+            "itemFilter": {
                 "none": true
             }
         }

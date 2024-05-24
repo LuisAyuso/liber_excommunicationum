@@ -4,227 +4,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:tc_thing/model/warband.dart';
+import 'package:tc_thing/model/filters.dart';
 
 part 'model.g.dart';
-
-enum ItemKind { weapon, armour, equipment }
-
-@JsonSerializable()
-class FilterItem {
-  FilterItem({
-    this.bypassValue,
-    this.none,
-    this.allOf,
-    this.noneOf,
-    this.anyOf,
-    this.not,
-    this.unitKeyword,
-    this.unitName,
-    this.containsItem,
-    this.itemKind,
-    this.itemName,
-    this.rangedWeapon,
-    this.meleeWeapon,
-    this.isGrenade,
-    this.isBodyArmour,
-    this.isShield,
-  });
-
-  factory FilterItem.trueValue() => FilterItem(bypassValue: true);
-  factory FilterItem.falseValue() => FilterItem(bypassValue: false);
-  factory FilterItem.allOf(Iterable<FilterItem> all) =>
-      FilterItem(allOf: all.toList());
-  factory FilterItem.noneOf(Iterable<FilterItem> none) =>
-      FilterItem(noneOf: none.toList());
-  factory FilterItem.anyOf(Iterable<FilterItem> any) =>
-      FilterItem(anyOf: any.toList());
-  factory FilterItem.none() => FilterItem(none: true);
-  factory FilterItem.not(FilterItem filter) => FilterItem(not: filter);
-  factory FilterItem.grenade() => FilterItem(isGrenade: true);
-
-  bool? bypassValue;
-  bool? none;
-  List<FilterItem>? noneOf;
-  List<FilterItem>? anyOf;
-  List<FilterItem>? allOf;
-  FilterItem? not;
-
-  String? unitKeyword;
-  String? unitName;
-  String? containsItem;
-  int? maxRepetitions;
-
-  ItemKind? itemKind;
-  String? itemName;
-  String? itemKeyword;
-
-  bool? rangedWeapon;
-  bool? meleeWeapon;
-  bool? isGrenade;
-  bool? isBodyArmour;
-  bool? isShield;
-
-  int _count<T>(T? x) {
-    return x == null ? 0 : 1;
-  }
-
-  bool isItemAllowed(Item item, [WarriorModel? warrior]) {
-    assert(_count(bypassValue) +
-            _count(none) +
-            _count(noneOf) +
-            _count(anyOf) +
-            _count(allOf) +
-            _count(not) +
-            _count(unitKeyword) +
-            _count(unitName) +
-            _count(containsItem) +
-            _count(maxRepetitions) +
-            _count(itemKind) +
-            _count(itemName) +
-            _count(itemKeyword) +
-            _count(rangedWeapon) +
-            _count(meleeWeapon) +
-            _count(isGrenade) +
-            _count(isBodyArmour) +
-            _count(isShield) ==
-        1);
-
-    // primitive ops
-    if (bypassValue != null) return bypassValue!;
-
-    if (none ?? false) {
-      return false;
-    }
-
-    // boolean ops
-    if (noneOf
-            ?.map((f) => f.isItemAllowed(item, warrior))
-            .where((b) => b)
-            .isNotEmpty ??
-        false) {
-      return false;
-    }
-    if (anyOf
-            ?.map((f) => f.isItemAllowed(item, warrior))
-            .where((b) => b)
-            .isEmpty ??
-        false) {
-      return false;
-    }
-
-    final allTest = allOf ?? [];
-    if (allTest
-            .map((f) => f.isItemAllowed(item, warrior))
-            .where((b) => b)
-            .length !=
-        allTest.length) {
-      return false;
-    }
-    if (not?.isItemAllowed(item, warrior) ?? false) {
-      return false;
-    }
-
-    // item based ops
-    if (itemKind != null) {
-      return item.kind == itemKind;
-    }
-    if (itemName != null) {
-      return itemName == item.itemName;
-    }
-    if (itemKeyword != null) {
-      return item.getKeywords.where((kw) => kw == itemKeyword).isNotEmpty;
-    }
-
-    if (rangedWeapon != null) {
-      if (item is! Weapon) return false;
-      return rangedWeapon == item.canRanged;
-    }
-    if (meleeWeapon != null) {
-      if (item is! Weapon) return false;
-      // exclusive melee
-      return item.canRanged != meleeWeapon! && meleeWeapon == item.canMelee;
-    }
-    if (isGrenade != null) {
-      if (item is! Weapon) return false;
-      return item.isGrenade;
-    }
-
-    if (isBodyArmour != null) {
-      if (item is! Armour) return false;
-      return isBodyArmour!
-          ? item.type == ArmourType.bodyArmour
-          : item.type != ArmourType.bodyArmour;
-    }
-    if (isShield != null) {
-      if (item is! Armour) return false;
-      return isShield!
-          ? item.type == ArmourType.shield
-          : item.type != ArmourType.shield;
-    }
-
-    // warrior based ops
-    if (unitKeyword != null &&
-        warrior != null &&
-        warrior.type.keywords.where((kw) => kw == unitKeyword).isEmpty) {
-      return false;
-    }
-    if (unitName != null &&
-        warrior != null &&
-        warrior.type.typeName != unitName) {
-      return false;
-    }
-    if (containsItem != null &&
-        warrior != null &&
-        warrior.items.where((it) => it.getName == containsItem).isEmpty) {
-      return false;
-    }
-    if (maxRepetitions != null &&
-        warrior != null &&
-        warrior.items.where((it) => it.getName == item.itemName).length >
-            maxRepetitions!) {
-      return false;
-    }
-
-    return true;
-  }
-
-  @override
-  String toString() {
-    if (none ?? false) return "none";
-    if (bypassValue != null) return "$bypassValue";
-
-    if (itemKind != null) return "itemKind: $itemKind";
-    if (itemName != null) return "itemName: $itemName";
-
-    if (rangedWeapon != null) return "rangedWeapon ${rangedWeapon!}";
-    if (meleeWeapon != null) return "meleeWeapon ${meleeWeapon!}";
-    if (isGrenade != null) return "grenade ${isGrenade!}";
-
-    if (unitKeyword != null) return "unitKeyword: $unitKeyword";
-    if (unitName != null) return "unitName: $unitName";
-    if (containsItem != null) return "containsItem: $containsItem";
-
-    if (noneOf != null) {
-      return "noneOf[${noneOf!.map((e) => e.toString()).join(",")}]";
-    }
-    if (anyOf != null) {
-      return "anyOf[${anyOf!.map((e) => e.toString()).join(",")}]";
-    }
-    if (allOf != null) {
-      return "allOf[${allOf!.map((e) => e.toString()).join(",")}]";
-    }
-    if (not != null) {
-      return "![$not]";
-    }
-
-    return "INVALID FILTER!!";
-  }
-
-  factory FilterItem.fromJson(Map<String, dynamic> json) =>
-      _$FilterItemFromJson(json);
-  Map<String, dynamic> toJson() => _$FilterItemToJson(this);
-}
 
 @JsonSerializable()
 class Currency {
@@ -275,9 +57,9 @@ class Currency {
 
 @JsonSerializable()
 class ItemReplacement {
-  ItemReplacement({FilterItem? filter}) : filter = filter ?? FilterItem();
+  ItemReplacement({ItemFilter? filter}) : filter = filter ?? ItemFilter();
 
-  FilterItem filter;
+  ItemFilter filter;
 
   // FIXME: this is a hack to get the right value for mech-armour, fix properly
   Currency? offsetCost;
@@ -317,9 +99,9 @@ enum Sex { male, female, custom }
 
 @JsonSerializable()
 class Unit {
-  Unit();
+  Unit({this.typeName = ""});
 
-  String typeName = "";
+  String typeName;
   int? max;
   int? min;
   String movement = "";
@@ -349,8 +131,10 @@ class Unit {
               Currency.free(), (v, item) => v + item.getCost) ??
           Currency.free());
 
-  FilterItem? filter;
-  FilterItem get getFilter => filter ?? FilterItem.trueValue();
+  UnitFilter? unitFilter;
+  UnitFilter get getUnitFilter => unitFilter ?? UnitFilter.trueValue();
+  ItemFilter? itemFilter;
+  ItemFilter get getItemFilter => itemFilter ?? ItemFilter.trueValue();
 
   factory Unit.fromJson(Map<String, dynamic> json) {
     for (var e in json.entries) {
@@ -363,7 +147,7 @@ class Unit {
 
 abstract class ItemUse {
   String get getName;
-  FilterItem get getFilter;
+  ItemFilter get getFilter;
   bool get isRemovable;
   Currency get getCost;
   int get getLimit;
@@ -386,7 +170,7 @@ class WeaponUse extends ItemUse {
   String typeName = "";
   Currency cost = const Currency(ducats: 0);
   bool? removable;
-  FilterItem? filter;
+  ItemFilter? filter;
   int? limit;
 
   @override
@@ -396,7 +180,7 @@ class WeaponUse extends ItemUse {
   @override
   Currency get getCost => cost;
   @override
-  FilterItem get getFilter => filter ?? FilterItem.trueValue();
+  ItemFilter get getFilter => filter ?? ItemFilter.trueValue();
   @override
   bool get isRemovable => removable ?? true;
   @override
@@ -426,14 +210,14 @@ class ArmourUse extends ItemUse {
   Currency cost = Currency.free();
   bool? removable;
   int? limit;
-  FilterItem? filter;
+  ItemFilter? filter;
 
   @override
   ItemKind get kind => ItemKind.armour;
   @override
   String get getName => typeName;
   @override
-  FilterItem get getFilter => filter ?? FilterItem.trueValue();
+  ItemFilter get getFilter => filter ?? ItemFilter.trueValue();
   @override
   bool get isRemovable => removable ?? true;
   @override
@@ -461,14 +245,14 @@ class EquipmentUse extends ItemUse {
   Currency cost = Currency.free();
   bool? removable;
   int? limit;
-  FilterItem? filter;
+  ItemFilter? filter;
 
   @override
   ItemKind get kind => ItemKind.equipment;
   @override
   String get getName => typeName;
   @override
-  FilterItem get getFilter => filter ?? FilterItem.trueValue();
+  ItemFilter get getFilter => filter ?? ItemFilter.trueValue();
   @override
   bool get isRemovable => removable ?? true;
   @override
@@ -512,7 +296,7 @@ class Roster {
 abstract class Item {
   UnmodifiableListView<String> get getKeywords;
   ItemKind get kind;
-  FilterItem get getFilter;
+  ItemFilter get getFilter;
   String get itemName;
   bool get isConsumable;
 }
@@ -638,7 +422,7 @@ class Weapon extends Item {
   bool? melee;
   List<String>? keywords;
   List<Modifier>? modifiers = [];
-  FilterItem? filter;
+  ItemFilter? filter;
 
   bool get canMelee => range == null || (melee ?? false);
   bool get canRanged => range != null;
@@ -651,7 +435,7 @@ class Weapon extends Item {
   @override
   ItemKind get kind => ItemKind.weapon;
   @override
-  FilterItem get getFilter => filter ?? FilterItem.trueValue();
+  ItemFilter get getFilter => filter ?? ItemFilter.trueValue();
   @override
   String get itemName => typeName;
   @override
@@ -722,7 +506,7 @@ class Armour extends Item {
   ArmourType type;
   List<String>? special = [];
   List<String>? keywords = [];
-  FilterItem? filter;
+  ItemFilter? filter;
 
   @override
   UnmodifiableListView<String> get getKeywords =>
@@ -730,7 +514,7 @@ class Armour extends Item {
   @override
   ItemKind get kind => ItemKind.armour;
   @override
-  FilterItem get getFilter => filter ?? FilterItem.trueValue();
+  ItemFilter get getFilter => filter ?? ItemFilter.trueValue();
   @override
   String get itemName => typeName;
   @override
@@ -749,7 +533,7 @@ class Equipment extends Item {
   String typeName = "";
   bool? consumable;
   List<String>? keywords = [];
-  FilterItem? filter;
+  ItemFilter? filter;
 
   @override
   ItemKind get kind => ItemKind.equipment;
@@ -757,7 +541,7 @@ class Equipment extends Item {
   UnmodifiableListView<String> get getKeywords =>
       UnmodifiableListView(keywords ?? []);
   @override
-  FilterItem get getFilter => filter ?? FilterItem.trueValue();
+  ItemFilter get getFilter => filter ?? ItemFilter.trueValue();
   @override
   String get itemName => typeName;
   @override

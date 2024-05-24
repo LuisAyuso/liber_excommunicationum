@@ -249,7 +249,7 @@
                 "ducats": 100
             },
             "base": "60mm",
-            "filter": {
+            "itemFilter": {
                 "itemKeyword": "HEAVY"
             }
         }

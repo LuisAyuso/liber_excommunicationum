@@ -98,6 +98,8 @@ class Welcome extends StatelessWidget {
                           Text('Last Changes:',
                               style: Theme.of(context).textTheme.titleMedium),
                           const Text(
+                              '- Fixed limits of legionaries, prevent ilegal lists on remove.'),
+                          const Text(
                               '- Lists are persistent, they are saved automatically.'),
                           const Text(
                               '- You can repeat weapons now, as long as the limitations work out.'),
@@ -159,12 +161,14 @@ class _SavedListsManagerState extends State<SavedListsManager> {
                 "Stored Warbands",
                 style: Theme.of(context).textTheme.titleMedium,
               ),
+              const Divider(),
               ...x.map<Widget>((save) => Row(
                     children: [
                       Text(save),
+                      const Spacer(),
                       IconButton(
                           onPressed: () => deleteSaved(save),
-                          icon: const Icon(Icons.remove))
+                          icon: const Icon(Icons.delete))
                     ],
                   )),
             ]),

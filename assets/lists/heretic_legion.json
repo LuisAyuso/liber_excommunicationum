@@ -129,7 +129,7 @@
                 "ducats": 90
             },
             "base": "32mm",
-            "filter": {
+            "itemFilter": {
                 "anyOf": [
                     {
                         "itemName": "Silenced Pistol"
@@ -193,7 +193,19 @@
             "cost": {
                 "ducats": 40
             },
-            "base": "25mm"
+            "base": "25mm",
+            "unitFilter": {
+                "allOf": [
+                    {
+                        "not": {
+                            "containsUnit": "Legionnaire Ranged"
+                        }
+                    },
+                    {
+                        "sameCountAs": "Heretic Trooper"
+                    }
+                ]
+            }
         },
         {
             "typeName": "Legionnaire Ranged",
@@ -207,7 +219,19 @@
             "cost": {
                 "ducats": 40
             },
-            "base": "25mm"
+            "base": "25mm",
+            "unitFilter": {
+                "allOf": [
+                    {
+                        "not": {
+                            "containsUnit": "Legionnaire Melee"
+                        }
+                    },
+                    {
+                        "sameCountAs": "Heretic Trooper"
+                    }
+                ]
+            }
         },
         {
             "typeName": "Anointed Heavy Infantry",
@@ -261,7 +285,7 @@
                 "ducats": 140
             },
             "base": "50mm",
-            "filter": {
+            "itemFilter": {
                 "none": true
             },
             "defaultItems": [
@@ -299,7 +323,7 @@
                 "ducats": 90
             },
             "base": "25mm",
-            "filter": {
+            "itemFilter": {
                 "anyOf": [
                     {
                         "meleeWeapon": true
@@ -344,7 +368,7 @@
             "cost": {
                 "ducats": 20
             },
-            "filter": {
+            "itemFilter": {
                 "unitKeyword": "ELITE"
             }
         },
@@ -466,7 +490,7 @@
                 "ducats": 23
             },
             "limit": 2,
-            "filter": {
+            "itemFilter": {
                 "unitKeyword": "ELITE"
             }
         },
@@ -482,7 +506,7 @@
             "cost": {
                 "ducats": 25
             },
-            "filter": {
+            "itemFilter": {
                 "unitName": "Heretic Death Commando"
             }
         },
@@ -491,19 +515,19 @@
             "cost": {
                 "glory": 2
             },
-            "filter": {
+            "itemFilter": {
                 "unitKeyword": "ELITE"
             }
         },
         {
             "typeName": "Chainmaw",
-            "filter": {
+            "itemFilter": {
                 "unitName": "War Wolf Assault Beast"
             }
         },
         {
             "typeName": "Shredding Claws",
-            "filter": {
+            "itemFilter": {
                 "unitName": "War Wolf Assault Beast"
             }
         }
@@ -520,7 +544,7 @@
             "cost": {
                 "ducats": 40
             },
-            "filter": {
+            "itemFilter": {
                 "unitKeyword": "ELITE"
             }
         },
@@ -592,7 +616,7 @@
                 "ducats": 5
             },
             "limit": 3,
-            "filter": {
+            "itemFilter": {
                 "anyOf": [
                     {
                         "unitName": "Heretic Trooper"

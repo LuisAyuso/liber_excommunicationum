@@ -21,9 +21,7 @@ class RosterPreview extends StatelessWidget {
               ),
               bottom: const TabBar(
                 tabs: [
-                  Tab(
-                    text: "Units",
-                  ),
+                  Tab(text: "Units"),
                   Tab(text: "Weapons, Armours,\n & Equipment"),
                 ],
               ),
