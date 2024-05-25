@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:tc_thing/model/model.dart';
 import 'package:tc_thing/model/warband.dart';
-import 'package:tc_thing/utils.dart';
+import 'package:tc_thing/utils/utils.dart';
 
 import 'warband_view.dart';
 
@@ -74,7 +74,7 @@ class Welcome extends StatelessWidget {
                                 .apply(fontSizeFactor: 1.3),
                             textAlign: TextAlign.center,
                           ),
-                          const Text("Beta 0.5"),
+                          const Text("Beta 0.6"),
                         ],
                       ),
                       const Text(
@@ -97,6 +97,7 @@ class Welcome extends StatelessWidget {
                         children: [
                           Text('Last Changes:',
                               style: Theme.of(context).textTheme.titleMedium),
+                          const Text('- Rework of name generator algorithm.'),
                           const Text(
                               '- Fixed limits of legionaries, prevent ilegal lists on remove.'),
                           const Text(
@@ -162,15 +163,18 @@ class _SavedListsManagerState extends State<SavedListsManager> {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const Divider(),
-              ...x.map<Widget>((save) => Row(
-                    children: [
-                      Text(save),
-                      const Spacer(),
-                      IconButton(
-                          onPressed: () => deleteSaved(save),
-                          icon: const Icon(Icons.delete))
-                    ],
-                  )),
+              ...x.map<Widget>(
+                (save) => Row(
+                  children: [
+                    Text(save),
+                    const Spacer(),
+                    IconButton(
+                      onPressed: () => deleteSaved(save),
+                      icon: const Icon(Icons.delete),
+                    )
+                  ],
+                ),
+              ),
             ]),
           );
         });

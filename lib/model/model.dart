@@ -271,10 +271,6 @@ class Roster {
   Roster();
 
   String version = "Unversioned";
-  List<String> elitePrefixes = [];
-  List<String> namesM = [];
-  List<String> namesF = [];
-  List<String> surnames = [];
   List<Unit> units = [];
   List<WeaponUse> weapons = [];
   List<ArmourUse> armour = [];

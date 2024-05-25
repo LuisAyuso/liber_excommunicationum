@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tc_thing/utils.dart';
+import 'package:tc_thing/utils/utils.dart';
 
 import 'model/model.dart';
 

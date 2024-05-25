@@ -6,7 +6,8 @@ import 'package:tc_thing/model/filters.dart';
 import 'package:tc_thing/model/model.dart';
 import 'package:tc_thing/model/warband.dart';
 import 'package:tc_thing/roster_preview.dart';
-import 'package:tc_thing/utils.dart';
+import 'package:tc_thing/utils/name_generator.dart';
+import 'package:tc_thing/utils/utils.dart';
 
 class UnitSelector extends StatefulWidget {
   const UnitSelector({super.key, required this.roster, required this.armory});
@@ -90,7 +91,7 @@ class _UnitSelectorState extends State<UnitSelector> {
         onTap: () {
           var wb = context.read<WarbandModel>();
           wb.add(WarriorModel(
-              name: makeName(roster, unit.sex, unit.isElite),
+              name: generateName(unit.sex, unit.keywords),
               uid: wb.nextUID(),
               type: unit,
               bucket: idx,

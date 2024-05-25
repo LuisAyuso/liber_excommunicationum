@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:tc_thing/model/filters.dart';
 import 'package:tc_thing/model/model.dart';
-import 'package:tc_thing/utils.dart';
+import 'package:tc_thing/utils/name_generator.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'warband.g.dart';
@@ -385,7 +385,7 @@ class WarbandModel extends ChangeNotifier {
     for (var unit in roster.units) {
       for (var i = 0; i < (unit.min ?? 0); i++) {
         wm.add(WarriorModel(
-            name: makeName(roster, unit.sex, unit.isElite),
+            name: generateName(unit.sex, unit.keywords),
             uid: wm.nextUID(),
             type: unit,
             bucket: bucket,

@@ -171,12 +171,6 @@ Map<String, dynamic> _$EquipmentUseToJson(EquipmentUse instance) =>
 
 Roster _$RosterFromJson(Map<String, dynamic> json) => Roster()
   ..version = json['version'] as String
-  ..elitePrefixes =
-      (json['elitePrefixes'] as List<dynamic>).map((e) => e as String).toList()
-  ..namesM = (json['namesM'] as List<dynamic>).map((e) => e as String).toList()
-  ..namesF = (json['namesF'] as List<dynamic>).map((e) => e as String).toList()
-  ..surnames =
-      (json['surnames'] as List<dynamic>).map((e) => e as String).toList()
   ..units = (json['units'] as List<dynamic>)
       .map((e) => Unit.fromJson(e as Map<String, dynamic>))
       .toList()
@@ -201,10 +195,6 @@ Roster _$RosterFromJson(Map<String, dynamic> json) => Roster()
 
 Map<String, dynamic> _$RosterToJson(Roster instance) => <String, dynamic>{
       'version': instance.version,
-      'elitePrefixes': instance.elitePrefixes,
-      'namesM': instance.namesM,
-      'namesF': instance.namesF,
-      'surnames': instance.surnames,
       'units': instance.units.map((e) => e.toJson()).toList(),
       'weapons': instance.weapons.map((e) => e.toJson()).toList(),
       'armour': instance.armour.map((e) => e.toJson()).toList(),

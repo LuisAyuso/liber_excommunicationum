@@ -20,6 +20,7 @@ Roster management tool for Trench Crusade
 - [x] Keywords and special rules in weapon line
 - [ ] Improve position of unit delete controls
 - [ ] Reduce Weapons clutter
+- [ ] Complete units list overhaul
 
 ### Game Logic
 - [x] Unarmed: if no melee equipped, add the "unarmed" weapon profile
@@ -28,9 +29,7 @@ Roster management tool for Trench Crusade
 - [x] Unit-dependent armory: blacklist, whitelist
   - Upgraded to a boolean filter system
 - [x] Default armory: non removable
-- [ ] Unit alternatives
-  - [ ] Exclusive units, A or B?
-  - [ ] Only x out of y can be upgraded
+- [x] Unit alternatives
 - [x] Two currencies system
 - [x] Weapon limits
   - [x] by troop type
@@ -58,8 +57,9 @@ Roster management tool for Trench Crusade
   - Model unit with default armour
 - [x] Consumables
 - [x] Move type, infantry/fly
-- [ ] Unit flavous that must be all equal (legionaries)
+- [x] Unit flavous that must be all equal (legionaries)
 - [x] Better model silenced gun
+- [ ] Unit upgrade instead of adding a new one
 
 ### Refactors
 - [x] Move filter logic to model, keep frontend business-logic-free

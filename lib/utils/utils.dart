@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:tc_thing/model/model.dart';
 
@@ -26,26 +24,6 @@ const Color secondary = Color.fromARGB(255, 159, 119, 42);
 const Color terciary = Color.fromARGB(255, 159, 42, 82);
 
 const String appName = 'Liber Excommunicationum';
-
-String makeName(Roster roster, Sex sex, bool elite) {
-  final prefixes = roster.elitePrefixes;
-  final names = sex == Sex.male ? roster.namesM : roster.namesF;
-  final surnames = roster.surnames;
-
-  final random = Random();
-  String prefix = "";
-  if (elite && prefixes.isNotEmpty) {
-    prefix = prefixes[random.nextInt(prefixes.length)];
-    if (prefix[prefix.length - 1] != '-') prefix = "$prefix ";
-  }
-
-  final name = names[random.nextInt(names.length)];
-  String surname = "";
-  if (surnames.isNotEmpty) {
-    surname = " ${surnames[random.nextInt(surnames.length)]}";
-  }
-  return "$prefix$name$surname";
-}
 
 class TableLEX extends StatelessWidget {
   const TableLEX({

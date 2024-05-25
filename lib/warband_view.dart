@@ -8,7 +8,8 @@ import 'package:tc_thing/model/filters.dart';
 import 'package:tc_thing/model/model.dart';
 import 'package:tc_thing/model/warband.dart';
 import 'package:tc_thing/roster_preview.dart';
-import 'package:tc_thing/utils.dart';
+import 'package:tc_thing/utils/name_generator.dart';
+import 'package:tc_thing/utils/utils.dart';
 
 import 'unit_selector.dart';
 
@@ -269,7 +270,7 @@ class WarriorBlock extends StatelessWidget {
 
   void changeName(
       WarriorModel warrior, String? name, Sex newSex, BuildContext context) {
-    warrior.name = name ?? makeName(roster, newSex, warrior.type.isElite);
+    warrior.name = name ?? generateName(newSex, warrior.type.keywords);
     warrior.sex = newSex;
     context.read<WarbandModel>().invalidate();
   }
@@ -362,8 +363,8 @@ class WarriorBlock extends StatelessWidget {
                   onPressed: () {
                     var wbm = context.read<WarbandModel>();
                     wbm.add(warrior.cloneWith(
-                      name: makeName(
-                          roster, warrior.type.sex, warrior.type.isElite),
+                      name:
+                          generateName(warrior.type.sex, warrior.type.keywords),
                       newUid: wbm.nextUID(),
                     ));
                   },
