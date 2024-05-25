@@ -7,11 +7,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tc_thing/model/filters.dart';
 import 'package:tc_thing/model/model.dart';
 import 'package:tc_thing/model/warband.dart';
-import 'package:tc_thing/roster_preview.dart';
+import 'package:tc_thing/roster_view.dart';
 import 'package:tc_thing/utils/name_generator.dart';
 import 'package:tc_thing/utils/utils.dart';
 
-import 'unit_selector.dart';
+import 'controls/item_description.dart';
+import 'unit_selection_view.dart';
+import 'controls/table_lex.dart';
+import 'controls/item_chip.dart';
+import 'controls/content_lex.dart';
 
 class WarbandView extends StatefulWidget {
   const WarbandView(
@@ -39,7 +43,7 @@ class EditingModel extends ChangeNotifier {
 class _WarbandViewState extends State<WarbandView> {
   @override
   Widget build(BuildContext context) {
-    return MyContent(
+    return ContentLex(
       child: ChangeNotifierProvider(
         create: (_) => EditingModel(),
         builder: (context, child) => Scaffold(
@@ -429,38 +433,25 @@ class WarriorBlock extends StatelessWidget {
     if (reasons.isNotEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            RichText(
-                text: TextSpan(children: [
-              const TextSpan(text: "Cannot remove "),
-              TextSpan(
-                text: warrior.name,
-                style: Theme.of(context)
-                    .textTheme
-                    .titleSmall!
-                    .copyWith(color: tcRed),
-              ),
-            ])),
-            const Divider(),
-            ...reasons,
-          ],
-        )
-
-            //ListView(
-            //children: reasons.map((s) => Text(s)).toList(),
-            //)
-            //   duration: const Duration(milliseconds: 1500),
-            //   width: 280.0, // Width of the SnackBar.
-            //   padding: const EdgeInsets.symmetric(
-            //     horizontal: 8.0, // Inner padding for SnackBar content.
-            //   ),
-            //   behavior: SnackBarBehavior.floating,
-            //   shape: RoundedRectangleBorder(
-            //     borderRadius: BorderRadius.circular(10.0),
-            //   ),
-            ),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              RichText(
+                  text: TextSpan(children: [
+                const TextSpan(text: "Cannot remove "),
+                TextSpan(
+                  text: warrior.name,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleSmall!
+                      .copyWith(color: tcRed),
+                ),
+              ])),
+              const Divider(),
+              ...reasons,
+            ],
+          ),
+        ),
       );
     } else {
       context.read<WarbandModel>().removeUID(warrior.uid);

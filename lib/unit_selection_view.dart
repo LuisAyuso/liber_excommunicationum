@@ -5,9 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:tc_thing/model/filters.dart';
 import 'package:tc_thing/model/model.dart';
 import 'package:tc_thing/model/warband.dart';
-import 'package:tc_thing/roster_preview.dart';
 import 'package:tc_thing/utils/name_generator.dart';
-import 'package:tc_thing/utils/utils.dart';
+
+import 'controls/content_lex.dart';
+import 'controls/unit_description.dart';
 
 class UnitSelector extends StatefulWidget {
   const UnitSelector({super.key, required this.roster, required this.armory});
@@ -49,7 +50,7 @@ class _UnitSelectorState extends State<UnitSelector> {
         makeUnitFilter(unit, onlyTroops)
             .isUnitAllowed(unit, warband.warriors)));
 
-    return MyContent(
+    return ContentLex(
       child: DefaultTabController(
         length: 2,
         child: Scaffold(
