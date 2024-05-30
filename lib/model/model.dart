@@ -451,9 +451,8 @@ class Weapon extends Item {
     return (modifiers ?? []).where((m) => m.separate(type)).fold<String>(res,
         (acc, modifier) {
       final mod = modifier.offset(baseValue).toString();
-      if (acc == "") {
-        return mod;
-      }
+      if (acc.isEmpty) return mod;
+      if (mod.isEmpty) return acc;
       return "$acc; $mod";
     });
   }
@@ -480,7 +479,7 @@ class Weapon extends Item {
     w.typeName = "Unarmed";
     w.hands = 2;
     w.melee = true;
-    w.modifiers = [Modifier(hit: -1, injury: -1)];
+    w.modifiers = [Modifier(hit: -1), Modifier(injury: -1)];
     return w;
   }
 }

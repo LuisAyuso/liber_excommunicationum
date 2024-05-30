@@ -120,7 +120,20 @@ void main() {
       expect(w.getModifiersString(Modifier(hit: 1), ModifierType.melee),
           "+1D to Hit; -1D to Injury");
     }
+
+    {
+      Weapon w = Weapon.unarmed();
+      expect(w.getModifiersString(Modifier(), ModifierType.melee),
+          "-1D to Hit; -1D to Injury");
+      expect(w.getModifiersString(Modifier(hit: 0), ModifierType.melee),
+          "-1D to Hit; -1D to Injury");
+      expect(w.getModifiersString(Modifier(hit: 1), ModifierType.melee),
+          "-1D to Injury");
+      expect(w.getModifiersString(Modifier(injury: 1), ModifierType.melee),
+          "-1D to Hit");
+    }
   });
+
   test('weapons', () {
     final gun = Weapon(typeName: "pistol", range: 12, melee: true);
     expect(gun.canRanged, true);

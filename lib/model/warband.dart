@@ -136,14 +136,13 @@ class WarriorModel {
 
   void addItem(ItemUse item, Armory armoury) {
     privateItems.add(ItemStack(item: item));
-    // TODO: come out with one example when adding one element can invalidate the rest
-    //removeInvalid(armoury);
   }
 
   void removeItem(ItemUse item, Armory armoury) {
     for (var it in privateItems) {
       if (it.value.getName == item.getName) {
         it.pop();
+        break;
       }
     }
     privateItems.removeWhere((innerList) => innerList.isEmpty);
@@ -337,6 +336,15 @@ class WarriorModel {
   factory WarriorModel.fromJson(Map<String, dynamic> json) =>
       _$WarriorModelFromJson(json);
   Map<String, dynamic> toJson() => _$WarriorModelToJson(this);
+  Modifier getModifiers(ModifierType modType) {
+    return Modifier(
+        type: modType,
+        hit: switch (modType) {
+          ModifierType.melee => type.melee,
+          ModifierType.ranged => type.ranged,
+          ModifierType.any => 0,
+        });
+  }
 }
 
 @JsonSerializable(explicitToJson: true)

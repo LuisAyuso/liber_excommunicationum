@@ -185,46 +185,49 @@ class WarriorBlock extends StatelessWidget {
     return ExpansionTile(
       tilePadding: const EdgeInsets.only(left: 8, right: 8),
       childrenPadding: const EdgeInsets.only(left: 8, right: 8),
+      leading: CurrencyWidget(cost: warrior.totalCost),
       title: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                NameEditor(
-                  name: warrior.name,
-                  editable: context.watch<EditingModel>().editing,
-                  onChange: (newSex, name) {
-                    // this is the sex change function, anytime!
-                    changeName(warrior, name, newSex, context);
-                  },
-                ),
-                Text(
-                  warrior.type.typeName,
-                  style: Theme.of(context).textTheme.labelSmall,
-                ),
-                TableLEX(headers: const [
-                  "Total Cost",
-                  "Mov.",
-                  "Armour",
-                ], rows: [
-                  [
-                    Text(warrior.totalCost.toString()),
-                    Text(
-                      textAlign: TextAlign.end,
-                      warrior.type.movement,
-                      style: Theme.of(context).textTheme.labelSmall,
+          Row(
+            children: [
+              Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    NameEditor(
+                      name: warrior.name,
+                      editable: context.watch<EditingModel>().editing,
+                      onChange: (newSex, name) {
+                        // this is the sex change function, anytime!
+                        changeName(warrior, name, newSex, context);
+                      },
                     ),
                     Text(
-                      textAlign: TextAlign.end,
-                      "${warrior.computeArmorValue(armory)}",
+                      warrior.type.typeName,
                       style: Theme.of(context).textTheme.labelSmall,
                     ),
-                  ]
-                ])
-              ]),
+                  ]),
+              TableLEX(headers: const [
+                "Mov.",
+                "Armour",
+              ], rows: [
+                [
+                  Text(
+                    textAlign: TextAlign.end,
+                    warrior.type.movement,
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
+                  Text(
+                    textAlign: TextAlign.end,
+                    "${warrior.computeArmorValue(armory)}",
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
+                ]
+              ])
+            ],
+          ),
           Wrap(
             spacing: 8,
             alignment: WrapAlignment.start,
@@ -260,13 +263,10 @@ class WarriorBlock extends StatelessWidget {
                   warrior.availableArmours(roster, armory),
                   warrior.availableEquipment(roster, armory),
                   unitCount),
-              ...warrior
-                  .weaponsOrUnarmed(armory)
-                  .map((item) => weaponLine(context, item, warrior)),
-              ...warrior.armour
-                  .map((item) => armorLine(context, item, warrior)),
-              ...warrior.equipment
-                  .map((item) => equipmentLine(context, item, warrior)),
+              rangedWeapons(context, armory),
+              meleeWeapons(context, armory),
+              armourItems(context, armory),
+              equipmentItems(context, armory),
             ]),
       ],
     );
@@ -360,29 +360,30 @@ class WarriorBlock extends StatelessWidget {
                   },
             child: const Text("+Equipment"),
           ),
-        ]),
-        Row(children: [
-          (warrior.type.max ?? double.infinity) > unitCount
-              ? IconButton(
-                  onPressed: () {
-                    var wbm = context.read<WarbandModel>();
-                    wbm.add(warrior.cloneWith(
-                      name:
-                          generateName(warrior.type.sex, warrior.type.keywords),
-                      newUid: wbm.nextUID(),
-                    ));
-                  },
-                  icon: const Icon(Icons.copy),
-                )
-              : const SizedBox(),
-          (warrior.type.min ?? 0) >= unitCount
-              ? const SizedBox()
-              : IconButton(
-                  onPressed: () {
-                    attemptRemove(context, warrior);
-                  },
-                  icon: const Icon(Icons.delete),
-                )
+          const Spacer(),
+          Row(children: [
+            (warrior.type.max ?? double.infinity) > unitCount
+                ? IconButton(
+                    onPressed: () {
+                      var wbm = context.read<WarbandModel>();
+                      wbm.add(warrior.cloneWith(
+                        name: generateName(
+                            warrior.type.sex, warrior.type.keywords),
+                        newUid: wbm.nextUID(),
+                      ));
+                    },
+                    icon: const Icon(Icons.copy),
+                  )
+                : const SizedBox(),
+            (warrior.type.min ?? 0) >= unitCount
+                ? const SizedBox()
+                : IconButton(
+                    onPressed: () {
+                      attemptRemove(context, warrior);
+                    },
+                    icon: const Icon(Icons.delete),
+                  )
+          ]),
         ]),
       ]);
     } else {
@@ -463,33 +464,105 @@ class WarriorBlock extends StatelessWidget {
     WeaponUse weapon,
     WarriorModel warrior,
   ) {
-    final defaultItem = (warrior.type.defaultItems ?? [])
-        .where((eq) => eq.itemName == weapon.getName)
-        .firstOrNull;
+    return Row(
+      children: [
+        Text(weapon.typeName, style: Theme.of(context).textTheme.titleMedium),
+        const Spacer(),
+      ],
+    );
+  }
 
-    final replace = context.watch<EditingModel>().editing &&
-            defaultItem != null &&
-            defaultItem.replacements != null
-        ? replaceWeapon(context, warrior, weapon, defaultItem)
-        : null;
-    final delete = context.watch<EditingModel>().editing && weapon.isRemovable
-        ? IconButton(
-            onPressed: () {
-              warrior.removeItem(weapon, armory);
-              context.read<WarbandModel>().invalidate();
-            },
-            icon: const Icon(Icons.delete))
-        : null;
-    final editWidgets = [replace, delete].nonNulls.toList();
+  Widget rangedWeapons(BuildContext context, Armory armory) {
+    if (warrior.getWeapons(armory).where((w) => w.canRanged).isEmpty) {
+      return const SizedBox();
+    }
 
-    return ItemDescription(
-        item: weapon,
-        armory: armory,
-        edit: editWidgets.isEmpty
-            ? null
-            : Row(
-                children: editWidgets,
-              ));
+    return TableLEX(
+        headers: const [
+          "Ranged Weapons",
+          "Range",
+          "Modifier",
+          "Keywords",
+          "Edit"
+        ],
+        rows: warrior.weapons
+            .where((use) => armory.findWeapon(use).canRanged)
+            .map((weapon) {
+          final defaultItem = (warrior.type.defaultItems ?? [])
+              .where((eq) => eq.itemName == weapon.typeName)
+              .firstOrNull;
+
+          final replace = context.watch<EditingModel>().editing &&
+                  defaultItem != null &&
+                  defaultItem.replacements != null
+              ? replaceWeapon(context, warrior, weapon, defaultItem)
+              : null;
+          final delete =
+              context.watch<EditingModel>().editing && weapon.isRemovable
+                  ? IconButton(
+                      onPressed: () {
+                        warrior.removeItem(weapon, armory);
+                        context.read<WarbandModel>().invalidate();
+                      },
+                      icon: const Icon(Icons.delete))
+                  : null;
+          final editWidgets = [replace, delete].nonNulls.toList();
+
+          final def = armory.findWeapon(weapon);
+          final baseMod = warrior.getModifiers(ModifierType.ranged);
+          return <Widget>[
+            Text(weapon.getName),
+            Text('${def.range!}"'),
+            Text(def.getModifiersString(baseMod, ModifierType.ranged)),
+            Text(def.keywords?.join(", ") ?? ""),
+            Row(children: editWidgets)
+          ];
+        }).toList());
+  }
+
+  Widget meleeWeapons(BuildContext context, Armory armory) {
+    return TableLEX(
+        headers: const [
+          "Melee Weapons",
+          "hands",
+          "Modifier",
+          "Keywords",
+          "Edit"
+        ],
+        rows: warrior
+            .weaponsOrUnarmed(armory)
+            .where((use) => armory.findWeapon(use).canMelee)
+            .map((weapon) {
+          final defaultItem = (warrior.type.defaultItems ?? [])
+              .where((eq) => eq.itemName == weapon.typeName)
+              .firstOrNull;
+
+          final replace = context.watch<EditingModel>().editing &&
+                  defaultItem != null &&
+                  defaultItem.replacements != null
+              ? replaceWeapon(context, warrior, weapon, defaultItem)
+              : null;
+          final delete =
+              context.watch<EditingModel>().editing && weapon.isRemovable
+                  ? IconButton(
+                      onPressed: () {
+                        warrior.removeItem(weapon, armory);
+                        context.read<WarbandModel>().invalidate();
+                      },
+                      icon: const Icon(Icons.delete))
+                  : null;
+          final editWidgets = [replace, delete].nonNulls.toList();
+
+          final def = armory.findWeapon(weapon);
+          final baseMod = warrior.getModifiers(ModifierType.melee);
+          return <Widget>[
+            Text(weapon.getName),
+            Text("${def.hands} handed"),
+            Text(def.getModifiersString(baseMod, ModifierType.melee)),
+            Text(def.keywords?.join(", ") ?? ""),
+            Row(children: editWidgets)
+          ];
+        }).toList());
   }
 
   TextButton replaceWeapon(
@@ -540,35 +613,42 @@ class WarriorBlock extends StatelessWidget {
     );
   }
 
-  Widget armorLine(
-      BuildContext context, ArmourUse armour, WarriorModel warrior) {
-    final defaultItem = (warrior.type.defaultItems ?? [])
-        .where((eq) => eq.itemName == armour.typeName)
-        .firstOrNull;
+  Widget armourItems(BuildContext context, Armory armory) {
+    if (warrior.armour.isEmpty) {
+      return const SizedBox();
+    }
+    return TableLEX(
+        headers: const ["Armour", "type", "Modifier", "Keywords", "Edit"],
+        rows: warrior.armour.map((armour) {
+          final defaultItem = (warrior.type.defaultItems ?? [])
+              .where((eq) => eq.itemName == armour.typeName)
+              .firstOrNull;
 
-    final replace = context.watch<EditingModel>().editing &&
-            defaultItem != null &&
-            defaultItem.replacements != null
-        ? replaceArmour(context, warrior, armour, defaultItem)
-        : null;
-    final delete = context.watch<EditingModel>().editing && armour.isRemovable
-        ? IconButton(
-            onPressed: () {
-              warrior.removeItem(armour, armory);
-              context.read<WarbandModel>().invalidate();
-            },
-            icon: const Icon(Icons.delete))
-        : null;
-    final editWidgets = [replace, delete].nonNulls.toList();
+          final replace = context.watch<EditingModel>().editing &&
+                  defaultItem != null &&
+                  defaultItem.replacements != null
+              ? replaceArmour(context, warrior, armour, defaultItem)
+              : null;
+          final delete =
+              context.watch<EditingModel>().editing && armour.isRemovable
+                  ? IconButton(
+                      onPressed: () {
+                        warrior.removeItem(armour, armory);
+                        context.read<WarbandModel>().invalidate();
+                      },
+                      icon: const Icon(Icons.delete))
+                  : null;
+          final editWidgets = [replace, delete].nonNulls.toList();
 
-    return ItemDescription(
-        item: armour,
-        armory: armory,
-        edit: editWidgets.isEmpty
-            ? null
-            : Row(
-                children: editWidgets,
-              ));
+          final def = armory.findArmour(armour);
+          return <Widget>[
+            Text(armour.getName),
+            Text(def.isBodyArmour ? "Body armour" : "Shield"),
+            Text(def.value?.toString() ?? "-"),
+            Text(def.keywords?.join(", ") ?? ""),
+            Row(children: editWidgets)
+          ];
+        }).toList());
   }
 
   TextButton replaceArmour(
@@ -618,19 +698,31 @@ class WarriorBlock extends StatelessWidget {
     );
   }
 
-  Widget equipmentLine(
-      BuildContext context, EquipmentUse e, WarriorModel warrior) {
-    return ItemDescription(
-        item: e,
-        armory: armory,
-        edit: context.watch<EditingModel>().editing && e.isRemovable
-            ? IconButton(
-                onPressed: () {
-                  warrior.removeItem(e, armory);
-                  context.read<WarbandModel>().invalidate();
-                },
-                icon: const Icon(Icons.delete))
-            : null);
+  Widget equipmentItems(BuildContext context, Armory armory) {
+    if (warrior.equipment.isEmpty) {
+      return const SizedBox();
+    }
+    return TableLEX(
+        headers: const ["Equipment", "Keywords", "Edit"],
+        rows: warrior.equipment.map((equip) {
+          final delete =
+              context.watch<EditingModel>().editing && equip.isRemovable
+                  ? IconButton(
+                      onPressed: () {
+                        warrior.removeItem(equip, armory);
+                        context.read<WarbandModel>().invalidate();
+                      },
+                      icon: const Icon(Icons.delete))
+                  : null;
+          final editWidgets = [delete].nonNulls.toList();
+
+          final def = armory.findEquipment(equip);
+          return <Widget>[
+            Text(equip.getName),
+            Text(def.keywords?.join(", ") ?? ""),
+            Row(children: editWidgets)
+          ];
+        }).toList());
   }
 }
 
