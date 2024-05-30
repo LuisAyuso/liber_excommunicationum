@@ -69,3 +69,10 @@ Roster management tool for Trench Crusade
 ### Known bugs:
 - [x] Items are not serialized. This is a big baustelle.
 - [x] no double weapons.
+
+
+### Questions about playtest 1.3.2
+
+- Who uses Armour piercing bullets?.
+- Same for Dum-Dum
+- Ecclesiastic Prisoners Melee, -1D hit, but no -1D injury as unarmed?

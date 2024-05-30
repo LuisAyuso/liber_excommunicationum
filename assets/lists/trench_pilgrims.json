@@ -467,13 +467,15 @@
             "typeName": "Incendiary Bullets",
             "cost": {
                 "ducats": 15
-            }
+            },
+            "consumable": true
         },
         {
             "typeName": "Martyrdom Pills",
             "cost": {
-                "ducats": 15
-            }
+                "ducats": 30
+            },
+            "consumable": true
         },
         {
             "typeName": "The Communicant Cross",

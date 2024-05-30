@@ -384,6 +384,16 @@
             "typeName": "Alchemical Ammunition",
             "cost": {
                 "ducats": 3
+            },
+            "filter": {
+                "anyOf": [
+                    {
+                        "containsItem": "Siege Jezzail"
+                    },
+                    {
+                        "containsItem": "Jezzail"
+                    }
+                ]
             }
         },
         {

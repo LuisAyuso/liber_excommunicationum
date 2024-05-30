@@ -504,19 +504,33 @@
         },
         {
             "typeName": "Armour-Piercing Bullets",
-            "consumable": true
+            "consumable": true,
+            "keywords": [
+                "CONSUMABLE"
+            ]
         },
         {
             "typeName": "Dum-Dum Bullets",
-            "consumable": true
+            "consumable": true,
+            "keywords": [
+                "CONSUMABLE",
+                "CRITICAL"
+            ]
         },
         {
             "typeName": "Incendiary Bullets",
-            "consumable": true
+            "consumable": true,
+            "keywords": [
+                "CONSUMABLE",
+                "FIRE"
+            ]
         },
         {
             "typeName": "Tracer Bullets",
-            "consumable": true
+            "consumable": true,
+            "keywords": [
+                "CONSUMABLE"
+            ]
         },
         {
             "typeName": "Sniper Scope"

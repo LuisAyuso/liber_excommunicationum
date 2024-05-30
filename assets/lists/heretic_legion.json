@@ -497,16 +497,15 @@
             "typeName": "Unholy Relic",
             "cost": {
                 "ducats": 30
-            }
+            },
+            "consumable": true
         },
         {
             "typeName": "Incendiary Bullets",
             "cost": {
                 "ducats": 15
             },
-            "keywords": [
-                "CONSUMABLE"
-            ]
+            "consumable": true
         },
         {
             "typeName": "Shovel",
@@ -524,7 +523,8 @@
             "typeName": "Troop Flag",
             "cost": {
                 "glory": 1
-            }
+            },
+            "limit": 1
         },
         {
             "typeName": "Hellbound Soul Contract",

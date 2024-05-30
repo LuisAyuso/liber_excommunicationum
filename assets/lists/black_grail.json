@@ -401,9 +401,7 @@
             "cost": {
                 "ducats": 15
             },
-            "keywords": [
-                "CONSUMABLE"
-            ]
+            "consumable": true
         },
         {
             "typeName": "Unholy Relic",
@@ -412,12 +410,6 @@
             },
             "itemFilter": {
                 "unitKeyword": "ELITE"
-            }
-        },
-        {
-            "typeName": "Troop Flag",
-            "cost": {
-                "glory": 1
             }
         },
         {
