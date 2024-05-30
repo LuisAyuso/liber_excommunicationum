@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:tc_thing/main.dart';
 import 'package:tc_thing/utils/utils.dart';
 
 import 'controls/content_lex.dart';
 
-class Welcome extends StatelessWidget {
+class Welcome extends StatefulWidget {
   const Welcome({super.key});
+
+  @override
+  State<Welcome> createState() => _WelcomeState();
+}
+
+class _WelcomeState extends State<Welcome> {
   @override
   Widget build(BuildContext context) {
     return ContentLex(
@@ -34,40 +42,47 @@ class Welcome extends StatelessWidget {
                                 .apply(fontSizeFactor: 1.3),
                             textAlign: TextAlign.center,
                           ),
-                          const Text("Beta 0.6"),
+                          const Text("Beta 0.7"),
                         ],
                       ),
-                      const Text(
-                        'Hello There, welcome to my tool to build Trench Crusade lists.'
-                        'I have some ideas about how I did not like other roster apps, and this is my chance to do something different,'
-                        'I would come out with some better introduction here, and with it I would try to explain why this tools needs to be.'
-                        '\n'
-                        '\n'
-                        'In the meanwhile there are a couple of things to say:'
-                        '\n'
-                        '- Roster Lists are intelectual property of Trench Crusade. I clame no ownership and I hope they do not excommunicate me for doing this!'
-                        '\n'
-                        '- This is a work in progress, please be kind with errors'
-                        '\n'
-                        '- This tool uses some basic storage/cookies mechanisms for its normal operation, by using the tool you accept them as well.',
+                      FutureBuilder(
+                        future: getWelcomeText(),
+                        builder: (context, future) {
+                          if (future.hasError) {
+                            return const Text("");
+                          }
+                          if (!future.hasData) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          }
+                          return Markdown(shrinkWrap: true, data: future.data!);
+                        },
                       ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Last Changes:',
-                              style: Theme.of(context).textTheme.titleMedium),
-                          const Text('- Rework of name generator algorithm.'),
-                          const Text(
-                              '- Fixed limits of legionaries, prevent ilegal lists on remove.'),
-                          const Text(
-                              '- Lists are persistent, they are saved automatically.'),
-                          const Text(
-                              '- You can repeat weapons now, as long as the limitations work out.'),
-                          const Text('- No more 24" shotguns.'),
-                          const Text("- One Satchel Charge per model."),
-                          const Text("- Add grenades filter")
-                        ],
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (ctx) => const WarbandChooser()),
+                          );
+                        },
+                        child: const Text(
+                          "Let's go already!",
+                        ),
+                      ),
+                      const Divider(),
+                      FutureBuilder(
+                        future: getChangelog(),
+                        builder: (context, future) {
+                          if (future.hasError) {
+                            return const Text("");
+                          }
+                          if (!future.hasData) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          }
+                          return Markdown(shrinkWrap: true, data: future.data!);
+                        },
                       ),
                       ElevatedButton(
                           onPressed: () {
@@ -78,7 +93,7 @@ class Welcome extends StatelessWidget {
                             );
                           },
                           child: const Text(
-                            "Let's go already!",
+                            "Cool, let's go now",
                           )),
                     ],
                   ),
@@ -89,5 +104,13 @@ class Welcome extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<String> getWelcomeText() async {
+    return await rootBundle.loadString('assets/welcome.md');
+  }
+
+  Future<String> getChangelog() async {
+    return await rootBundle.loadString('assets/changelog.md');
   }
 }
