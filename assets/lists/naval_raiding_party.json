@@ -1,0 +1,45 @@
+{
+    "version": "v1.3.2",
+    "unitVariants": [
+        {
+            "typeName": "Anointed Heavy Infantry",
+            "max": 1
+        },
+        {
+            "typeName": "War Wolf Assault Beast",
+            "max": 0
+        },
+        {
+            "typeName": "Artillery Witches",
+            "max": 1
+        }
+    ],
+    "allUnitsVariants": [
+        {
+            "upgrades": [
+                {
+                    "keyword": {
+                        "keyword": "INFILTRATOR",
+                        "cost": {
+                            "ducats": 10
+                        },
+                        "max": 2,
+                        "filter": {
+                            "not": {
+                                "type": "elite"
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "itemVariants": [
+        {
+            "typeName": "Submachine Gun",
+            "cost": {
+                "ducats": 25
+            }
+        }
+    ]
+}

@@ -77,24 +77,6 @@ class WarriorModel {
     if (armory != null) populateBuiltIn(armory);
   }
 
-  WarriorModel clone() {
-    var w = WarriorModel(name: name, uid: uid, type: type, bucket: bucket);
-    w.privateItems = [];
-    for (var it in privateItems) {
-      w.privateItems.add(it.copy());
-    }
-    return w;
-  }
-
-  WarriorModel cloneWith({required String name, required int newUid}) {
-    var w = WarriorModel(name: name, uid: newUid, type: type, bucket: bucket);
-    w.privateItems = [];
-    for (var it in privateItems) {
-      w.privateItems.add(it.copy());
-    }
-    return w;
-  }
-
   String name = "Generated name?";
   int uid;
   Unit type;
@@ -134,6 +116,29 @@ class WarriorModel {
       .map((i) => i.value)
       .fold<Currency>(Currency.free(), (v, w) => w.getCost + v);
 
+  UnmodifiableListView<String> get effectiveKeywords => UnmodifiableListView([
+        ...type.keywords,
+        ...items.map((i) => i.addedKeywords).expand((i) => i)
+      ]);
+
+  WarriorModel clone() {
+    var w = WarriorModel(name: name, uid: uid, type: type, bucket: bucket);
+    w.privateItems = [];
+    for (var it in privateItems) {
+      w.privateItems.add(it.copy());
+    }
+    return w;
+  }
+
+  WarriorModel cloneWith({required String name, required int newUid}) {
+    var w = WarriorModel(name: name, uid: newUid, type: type, bucket: bucket);
+    w.privateItems = [];
+    for (var it in privateItems) {
+      w.privateItems.add(it.copy());
+    }
+    return w;
+  }
+
   void addItem(ItemUse item, Armory armoury) {
     privateItems.add(ItemStack(item: item));
   }
@@ -156,8 +161,8 @@ class WarriorModel {
       final item = s.value;
 
       final def = armoury.findItem(item);
-      final filter =
-          ItemFilter.allOf([item.getFilter, def.getFilter, type.getItemFilter]);
+      final filter = ItemFilter.allOf(
+          [item.getFilter, def.getFilter, type.effectiveItemFilter]);
       if (!filter.isItemAllowed(def, this)) {
         toRemove.add(item);
       }
@@ -259,8 +264,8 @@ class WarriorModel {
         return false;
       }
 
-      final filter =
-          ItemFilter.allOf([use.getFilter, def.getFilter, type.getItemFilter]);
+      final filter = ItemFilter.allOf(
+          [use.getFilter, def.getFilter, type.effectiveItemFilter]);
       if (!filter.isItemAllowed(def, this)) return false;
 
       // Bypass of normal algorithm for the Amalgam, as many weapons as hands
@@ -302,7 +307,7 @@ class WarriorModel {
         }
 
         final filter = ItemFilter.allOf(
-            [use.getFilter, def.getFilter, type.getItemFilter]);
+            [use.getFilter, def.getFilter, type.effectiveItemFilter]);
         if (!filter.isItemAllowed(def, this)) return false;
 
         // Bypass of normal algorithm for the Amalgam, as many weapons as hands
@@ -327,7 +332,7 @@ class WarriorModel {
         return false;
       }
       final filter = ItemFilter.allOf(
-          [equip.getFilter, def.getFilter, type.getItemFilter]);
+          [equip.getFilter, def.getFilter, type.effectiveItemFilter]);
       if (!filter.isItemAllowed(def, this)) return false;
       return true;
     }));

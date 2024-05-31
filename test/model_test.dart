@@ -8,7 +8,7 @@ import 'package:tc_thing/model/model.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
 
-void testList(String listJson) async {
+Future<Roster> testList(String listJson) async {
   String data = await rootBundle.loadString('assets/lists/armory.json');
   var armory = Armory.fromJson(jsonDecode(data));
   expect(armory.weapons, isNotEmpty);
@@ -46,6 +46,13 @@ void testList(String listJson) async {
         .firstWhere((b) => b!.typeName == a.typeName, orElse: () => null);
     expect(found, isNotNull, reason: a.typeName);
   }
+  return roster;
+}
+
+void testVariant(Roster roster, String s) async {
+  String data = await rootBundle.loadString(s);
+  var rosterVariant = RosterVariant.fromJson(jsonDecode(data));
+  rosterVariant.apply(roster);
 }
 
 void main() {
@@ -193,7 +200,8 @@ void main() {
   });
 
   test('load heretic legion list', () async {
-    testList('assets/lists/heretic_legion.json');
+    final roster = await testList('assets/lists/heretic_legion.json');
+    testVariant(roster.clone(), 'assets/lists/naval_raiding_party.json');
   });
   test('load trench pilgrims list', () async {
     testList('assets/lists/trench_pilgrims.json');

@@ -140,12 +140,18 @@ class UnitFilter extends BaseFilter<UnitFilter> {
 
   factory UnitFilter.trueValue() => UnitFilter(bypassValue: true);
   factory UnitFilter.falseValue() => UnitFilter(bypassValue: false);
-  factory UnitFilter.allOf(Iterable<UnitFilter> all) =>
-      UnitFilter(allOf: all.toList());
-  factory UnitFilter.noneOf(Iterable<UnitFilter> none) =>
-      UnitFilter(noneOf: none.toList());
-  factory UnitFilter.anyOf(Iterable<UnitFilter> any) =>
-      UnitFilter(anyOf: any.toList());
+  factory UnitFilter.allOf(Iterable<UnitFilter> all) {
+    if (all.isEmpty) return UnitFilter.trueValue();
+    return UnitFilter(allOf: all.toList());
+  }
+  factory UnitFilter.noneOf(Iterable<UnitFilter> none) {
+    if (none.isEmpty) return UnitFilter.trueValue();
+    return UnitFilter(noneOf: none.toList());
+  }
+  factory UnitFilter.anyOf(Iterable<UnitFilter> any) {
+    if (any.isEmpty) return UnitFilter.trueValue();
+    return UnitFilter(anyOf: any.toList());
+  }
   factory UnitFilter.none() => UnitFilter(none: true);
   factory UnitFilter.not(UnitFilter filter) => UnitFilter(not: filter);
 

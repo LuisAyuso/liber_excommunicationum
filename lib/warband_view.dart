@@ -256,13 +256,15 @@ class WarriorBlock extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ...editControls(
-                  context,
-                  warrior,
-                  warrior.availableWeapons(roster, armory),
-                  warrior.availableArmours(roster, armory),
-                  warrior.availableEquipment(roster, armory),
-                  unitCount),
+              Wrap(
+                children: editControls(
+                    context,
+                    warrior,
+                    warrior.availableWeapons(roster, armory),
+                    warrior.availableArmours(roster, armory),
+                    warrior.availableEquipment(roster, armory),
+                    unitCount),
+              ),
               rangedWeapons(context, armory),
               meleeWeapons(context, armory),
               armourItems(context, armory),
@@ -287,104 +289,113 @@ class WarriorBlock extends StatelessWidget {
     UnmodifiableListView<EquipmentUse> availableEquipment,
     int unitCount,
   ) {
+    var wb = context.read<WarbandModel>();
+
+    // if this warrior would not be in the list, would te upgraded warrior
+    // legal?
+    final availableUpgrades = warrior.type.upgrades
+            ?.where((up) => up.isAllowed(warrior, wb.warriors, roster)) ??
+        [];
+
+    final canBeDuplicated = warrior.type.effectiveUnitFilter
+        .isUnitAllowed(warrior.type, wb.warriors);
+
     if (context.watch<EditingModel>().editing) {
       return UnmodifiableListView([
-        Row(children: [
-          FilledButton.tonal(
-            onPressed: availableWeapons.isEmpty
-                ? null
-                : () {
-                    var wb = context.read<WarbandModel>();
-                    showModalBottomSheet(
-                        backgroundColor: Colors.black,
-                        context: context,
-                        builder: (BuildContext context) {
-                          return ItemChooser(
-                              elements: availableWeapons.toList(),
-                              armory: armory,
-                              filter: ItemChooserFilterDelegate(filters: {
-                                "Ranged": onlyRanged,
-                                "Grenades": onlyGrenades,
-                                "Melee": onlyMelee,
-                              }),
-                              callback: (use) {
-                                wb.getUID(warrior.uid).addItem(use, armory);
-                                wb.invalidate();
-                                Navigator.pop(context);
-                              });
-                        });
-                  },
-            child: const Text("+Weapon"),
-          ),
-          FilledButton.tonal(
-            onPressed: availableArmours.isEmpty
-                ? null
-                : () {
-                    var wb = context.read<WarbandModel>();
-                    showModalBottomSheet(
-                        backgroundColor:
-                            Theme.of(context).scaffoldBackgroundColor,
-                        context: context,
-                        builder: (BuildContext context) {
-                          return ItemChooser(
-                              elements: availableArmours.toList(),
-                              armory: armory,
-                              callback: (use) {
-                                wb.getUID(warrior.uid).addItem(use, armory);
-                                wb.invalidate();
-                                Navigator.pop(context);
-                              });
-                        });
-                  },
-            child: const Text("+Armour"),
-          ),
-          FilledButton.tonal(
-            onPressed: availableEquipment.isEmpty
-                ? null
-                : () {
-                    var wb = context.read<WarbandModel>();
-                    showModalBottomSheet(
-                        backgroundColor:
-                            Theme.of(context).scaffoldBackgroundColor,
-                        context: context,
-                        builder: (BuildContext context) {
-                          return ItemChooser(
-                              elements: availableEquipment.toList(),
-                              armory: armory,
-                              callback: (use) {
-                                wb.getUID(warrior.uid).addItem(use, armory);
-                                wb.invalidate();
-                                Navigator.pop(context);
-                              });
-                        });
-                  },
-            child: const Text("+Equipment"),
-          ),
-          const Spacer(),
-          Row(children: [
-            (warrior.type.max ?? double.infinity) > unitCount
-                ? IconButton(
-                    onPressed: () {
-                      var wbm = context.read<WarbandModel>();
-                      wbm.add(warrior.cloneWith(
-                        name: generateName(
-                            warrior.type.sex, warrior.type.keywords),
-                        newUid: wbm.nextUID(),
-                      ));
-                    },
-                    icon: const Icon(Icons.copy),
-                  )
-                : const SizedBox(),
-            (warrior.type.min ?? 0) >= unitCount
-                ? const SizedBox()
-                : IconButton(
-                    onPressed: () {
-                      attemptRemove(context, warrior);
-                    },
-                    icon: const Icon(Icons.delete),
-                  )
-          ]),
-        ]),
+        FilledButton.tonal(
+          onPressed: availableWeapons.isEmpty
+              ? null
+              : () {
+                  showModalBottomSheet(
+                      backgroundColor: Colors.black,
+                      context: context,
+                      builder: (BuildContext context) {
+                        return ItemChooser(
+                            elements: availableWeapons.toList(),
+                            armory: armory,
+                            filter: ItemChooserFilterDelegate(filters: {
+                              "Ranged": onlyRanged,
+                              "Grenades": onlyGrenades,
+                              "Melee": onlyMelee,
+                            }),
+                            callback: (use) {
+                              wb.getUID(warrior.uid).addItem(use, armory);
+                              wb.invalidate();
+                              Navigator.pop(context);
+                            });
+                      });
+                },
+          child: const Text("+Weapon"),
+        ),
+        FilledButton.tonal(
+          onPressed: availableArmours.isEmpty
+              ? null
+              : () {
+                  var wb = context.read<WarbandModel>();
+                  showModalBottomSheet(
+                      backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor,
+                      context: context,
+                      builder: (BuildContext context) {
+                        return ItemChooser(
+                            elements: availableArmours.toList(),
+                            armory: armory,
+                            callback: (use) {
+                              wb.getUID(warrior.uid).addItem(use, armory);
+                              wb.invalidate();
+                              Navigator.pop(context);
+                            });
+                      });
+                },
+          child: const Text("+Armour"),
+        ),
+        FilledButton.tonal(
+          onPressed: availableEquipment.isEmpty
+              ? null
+              : () {
+                  var wb = context.read<WarbandModel>();
+                  showModalBottomSheet(
+                      backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor,
+                      context: context,
+                      builder: (BuildContext context) {
+                        return ItemChooser(
+                            elements: availableEquipment.toList(),
+                            armory: armory,
+                            callback: (use) {
+                              wb.getUID(warrior.uid).addItem(use, armory);
+                              wb.invalidate();
+                              Navigator.pop(context);
+                            });
+                      });
+                },
+          child: const Text("+Equipment"),
+        ),
+        (availableUpgrades.isNotEmpty)
+            ? FilledButton.tonal(
+                onPressed: () =>
+                    upgradeWarrior(context, warrior, availableUpgrades),
+                child: const Text("Upgrade"),
+              )
+            : const SizedBox(),
+        canBeDuplicated
+            ? IconButton(
+                onPressed: () {
+                  var wbm = context.read<WarbandModel>();
+                  wbm.add(warrior.cloneWith(
+                    name: generateName(warrior.type.sex, warrior.type.keywords),
+                    newUid: wbm.nextUID(),
+                  ));
+                },
+                icon: const Icon(Icons.copy),
+              )
+            : const SizedBox(),
+        (warrior.type.min ?? 0) >= unitCount
+            ? const SizedBox()
+            : IconButton(
+                onPressed: () => attemptRemove(context, warrior),
+                icon: const Icon(Icons.delete),
+              )
       ]);
     } else {
       return UnmodifiableListView([]);
@@ -723,6 +734,36 @@ class WarriorBlock extends StatelessWidget {
             Row(children: editWidgets)
           ];
         }).toList());
+  }
+
+  void upgradeWarrior(BuildContext context, WarriorModel warrior,
+      Iterable<UnitUpgrade> upgrades) {
+    var wb = context.read<WarbandModel>();
+    showModalBottomSheet(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        context: context,
+        builder: (BuildContext context) {
+          final upgradeWidgets = upgrades.map((u) => TextButton(
+              onPressed: () {
+                warrior.type = u.apply(warrior.type, roster);
+                wb.invalidate();
+                Navigator.pop(context);
+              },
+              child: Text(u.toString())));
+
+          return Container(
+            padding: const EdgeInsets.all(8),
+            child: ListView(children: [
+              Text(
+                "Upgrade Warrior",
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const Divider(),
+              ...upgradeWidgets
+            ]),
+          );
+        });
   }
 }
 

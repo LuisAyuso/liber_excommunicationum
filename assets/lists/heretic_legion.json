@@ -94,7 +94,15 @@
             "cost": {
                 "ducats": 30
             },
-            "base": "25mm"
+            "base": "25mm",
+            "upgrades": [
+                {
+                    "unit": "Legionnaire Melee"
+                },
+                {
+                    "unit": "Legionnaire Ranged"
+                }
+            ]
         },
         {
             "typeName": "Legionnaire Melee",

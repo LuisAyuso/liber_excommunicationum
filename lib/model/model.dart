@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:tc_thing/model/filters.dart';
+import 'package:tc_thing/model/warband.dart';
 
 part 'model.g.dart';
 
@@ -60,8 +61,6 @@ class ItemReplacement {
   ItemReplacement({ItemFilter? filter}) : filter = filter ?? ItemFilter();
 
   ItemFilter filter;
-
-  // FIXME: this is a hack to get the right value for mech-armour, fix properly
   Currency? offsetCost;
 
   bool isAllowed(Item item) {
@@ -95,11 +94,108 @@ class DefaultItem {
   Map<String, dynamic> toJson() => _$DefaultItemToJson(this);
 }
 
+@JsonSerializable(explicitToJson: true)
+class KeywordUpgrade {
+  KeywordUpgrade({this.keyword = "", this.cost, this.max});
+
+  Currency? cost;
+  String keyword;
+  int? max;
+  UnitFilter? filter;
+
+  @override
+  String toString() {
+    final res = "Add $keyword";
+    if (cost != null) return "$res for $cost";
+    return res;
+  }
+
+  factory KeywordUpgrade.fromJson(Map<String, dynamic> json) =>
+      _$KeywordUpgradeFromJson(json);
+  Map<String, dynamic> toJson() => _$KeywordUpgradeToJson(this);
+
+  Unit appy(Unit u) {
+    u.keywords.add(keyword);
+    u.cost = cost ?? u.cost;
+    return u;
+  }
+
+  bool isAllowed(Unit unit, List<WarriorModel> warriors) {
+    if (!(filter?.isUnitAllowed(unit, warriors) ?? true)) return false;
+    return warriors.where((w) => w.effectiveKeywords.contains(keyword)).length <
+        (max ?? double.infinity);
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
+class UnitUpgrade {
+  UnitUpgrade({this.keyword, this.unit});
+
+  KeywordUpgrade? keyword;
+  String? unit;
+
+  @override
+  String toString() {
+    return "uknown";
+  }
+
+  Unit apply(Unit other, Roster r) {
+    if (keyword != null) {
+      final u = keyword!.appy(other.clone());
+      u.upgrades?.remove(this);
+      return u;
+    }
+
+    if (unit != null) {
+      return r.units.firstWhere((u) => u.typeName == unit);
+    }
+    return other;
+  }
+
+  bool isAllowed(WarriorModel me, List<WarriorModel> warriors, Roster roster) {
+    if (keyword != null) return keyword!.isAllowed(me.type, warriors);
+    assert(unit != null);
+    final def = roster.units.firstWhere((u) => u.typeName == unit!);
+    final withoutMe = List<WarriorModel>.from(warriors);
+    withoutMe.remove(me);
+    return def.effectiveUnitFilter.isUnitAllowed(def, withoutMe);
+  }
+
+  factory UnitUpgrade.fromJson(Map<String, dynamic> json) =>
+      _$UnitUpgradeFromJson(json);
+  Map<String, dynamic> toJson() => _$UnitUpgradeToJson(this);
+}
+
 enum Sex { male, female, custom }
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
+class UnitVariant {
+  UnitVariant({this.typeName = ""});
+
+  String typeName;
+  int? max;
+  int? min;
+  List<UnitUpgrade>? upgrades;
+
+  Unit apply(Unit u) {
+    if (u.typeName != typeName) return u;
+    u.max = max ?? u.max;
+    u.min = min ?? u.min;
+    u.upgrades = [
+      ...u.upgrades ?? [],
+      ...upgrades ?? [],
+    ];
+    return u;
+  }
+
+  factory UnitVariant.fromJson(Map<String, dynamic> json) =>
+      _$UnitVariantFromJson(json);
+  Map<String, dynamic> toJson() => _$UnitVariantToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
 class Unit {
-  Unit({this.typeName = ""});
+  Unit({this.typeName = "", this.cost = const Currency(ducats: 0)});
 
   String typeName;
   int? max;
@@ -111,14 +207,36 @@ class Unit {
   List<String>? abilities = [];
   List<String> keywords = [];
   List<DefaultItem>? defaultItems;
-  Currency cost = const Currency(ducats: 0);
+  Currency cost;
   String base = "25";
   int? hands;
   bool? unarmedPenalty;
   Sex? defaultSex;
+  List<UnitUpgrade>? upgrades;
 
   /// if the unit has not backpack, it needs to allocate all equipment to the hands
   bool? backpack;
+
+  Unit clone() {
+    var u = Unit();
+    u.typeName = typeName;
+    u.max = max;
+    u.min = min;
+    u.movement = movement;
+    u.ranged = ranged;
+    u.melee = melee;
+    u.armour = armour;
+    if (abilities != null) u.abilities = List.from(abilities!);
+    u.keywords = List.from(keywords);
+    if (defaultItems != null) u.defaultItems = List.from(defaultItems!);
+    u.cost = cost;
+    u.base = base;
+    u.hands = hands;
+    u.unarmedPenalty = unarmedPenalty;
+    u.defaultSex = defaultSex;
+    if (upgrades != null) u.upgrades = List.from(upgrades!);
+    return u;
+  }
 
   int get getHands => hands ?? 2;
   bool get hasBackpack => backpack ?? true;
@@ -132,9 +250,19 @@ class Unit {
           Currency.free());
 
   UnitFilter? unitFilter;
-  UnitFilter get getUnitFilter => unitFilter ?? UnitFilter.trueValue();
+  UnitFilter get effectiveUnitFilter {
+    return UnitFilter.allOf(
+      [max != null ? UnitFilter.max(max!) : null, unitFilter].nonNulls,
+    );
+  }
+
   ItemFilter? itemFilter;
-  ItemFilter get getItemFilter => itemFilter ?? ItemFilter.trueValue();
+  ItemFilter get effectiveItemFilter => itemFilter ?? ItemFilter.trueValue();
+
+  @override
+  String toString() {
+    return typeName;
+  }
 
   factory Unit.fromJson(Map<String, dynamic> json) {
     for (var e in json.entries) {
@@ -153,7 +281,44 @@ abstract class ItemUse {
   int get getLimit;
   ItemKind get kind;
 
+  UnmodifiableListView<String> get addedKeywords;
+
   Map<String, dynamic> toJson();
+}
+
+@JsonSerializable()
+class ItemVariant {
+  ItemVariant({this.typeName = ""});
+
+  String typeName;
+  Currency? cost;
+  ItemFilter? filter;
+  int? limit;
+
+  ItemUse apply(ItemUse i) {
+    if (i.getName != typeName) return i;
+
+    if (i is WeaponUse) {
+      i.cost = cost ?? i.cost;
+      i.filter = filter ?? i.filter;
+      i.limit = limit ?? i.limit;
+    }
+    if (i is ArmourUse) {
+      i.cost = cost ?? i.cost;
+      i.filter = filter ?? i.filter;
+      i.limit = limit ?? i.limit;
+    }
+    if (i is EquipmentUse) {
+      i.cost = cost ?? i.cost;
+      i.filter = filter ?? i.filter;
+      i.limit = limit ?? i.limit;
+    }
+    return i;
+  }
+
+  factory ItemVariant.fromJson(Map<String, dynamic> json) =>
+      _$ItemVariantFromJson(json);
+  Map<String, dynamic> toJson() => _$ItemVariantToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -185,6 +350,8 @@ class WeaponUse extends ItemUse {
   bool get isRemovable => removable ?? true;
   @override
   int get getLimit => limit ?? double.maxFinite.toInt();
+  @override
+  UnmodifiableListView<String> get addedKeywords => UnmodifiableListView([]);
 
   factory WeaponUse.fromJson(Map<String, dynamic> json) =>
       _$WeaponUseFromJson(json);
@@ -224,6 +391,8 @@ class ArmourUse extends ItemUse {
   int get getLimit => limit ?? double.maxFinite.toInt();
   @override
   Currency get getCost => cost;
+  @override
+  UnmodifiableListView<String> get addedKeywords => UnmodifiableListView([]);
 
   factory ArmourUse.fromJson(Map<String, dynamic> json) =>
       _$ArmourUseFromJson(json);
@@ -259,11 +428,41 @@ class EquipmentUse extends ItemUse {
   Currency get getCost => cost;
   @override
   int get getLimit => limit ?? double.maxFinite.toInt();
+  @override
+  UnmodifiableListView<String> get addedKeywords => UnmodifiableListView([]);
 
   factory EquipmentUse.fromJson(Map<String, dynamic> json) =>
       _$EquipmentUseFromJson(json);
   @override
   Map<String, dynamic> toJson() => _$EquipmentUseToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class RosterVariant {
+  RosterVariant();
+
+  List<UnitVariant>? unitVariants;
+  List<ItemVariant>? itemVariants;
+
+  factory RosterVariant.fromJson(Map<String, dynamic> json) =>
+      _$RosterVariantFromJson(json);
+  Map<String, dynamic> toJson() => _$RosterVariantToJson(this);
+
+  Roster apply(Roster roster) {
+    var r = roster.clone();
+
+    for (int i = 0; i < roster.units.length; i++) {
+      for (var variant in unitVariants ?? []) {
+        roster.units[i] = variant.apply(roster.units[i]);
+      }
+    }
+    for (int i = 0; i < roster.items.length; i++) {
+      for (var variant in itemVariants ?? []) {
+        roster.items[i] = variant.apply(roster.items[i]);
+      }
+    }
+    return r;
+  }
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -287,6 +486,25 @@ class Roster {
 
   factory Roster.fromJson(Map<String, dynamic> json) => _$RosterFromJson(json);
   Map<String, dynamic> toJson() => _$RosterToJson(this);
+
+  Roster clone() {
+    var v = Roster();
+    v.version = version;
+    v.units = List.from(units);
+    v.weapons = List.from(weapons);
+    v.armour = List.from(armour);
+    v.equipment = List.from(equipment);
+    if (uniqueWeapons != null) {
+      v.uniqueWeapons = List.from(uniqueWeapons!);
+    }
+    if (uniqueArmour != null) {
+      v.uniqueArmour = List.from(uniqueArmour!);
+    }
+    if (uniqueEquipment != null) {
+      v.uniqueEquipment = List.from(uniqueEquipment!);
+    }
+    return v;
+  }
 }
 
 abstract class Item {

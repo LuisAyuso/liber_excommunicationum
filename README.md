@@ -13,16 +13,17 @@ Roster management tool for Trench Crusade
 - [x] Back from unit selector
 - [x] Tabs in lists units/weapons
 - [x] Change names
-- [ ] Separate elites/troopers
+- [x] Separate elites/troopers
 - [x] Problem with width, lines too long. Too much info.
   - Roster preview ok?
   - Weapons edit lines? 
 - [x] Keywords and special rules in weapon line
 - [ ] Improve position of unit delete controls
-- [ ] Reduce Weapons clutter
+- [x] Reduce Weapons clutter
 - [ ] Complete units list overhaul
 
 ### Game Logic
+- [ ] List Variants
 - [x] Unarmed: if no melee equipped, add the "unarmed" weapon profile
 - [x] Edit mode vs play mode
 - [x] List-dependent armory
@@ -68,7 +69,8 @@ Roster management tool for Trench Crusade
 
 ### Known bugs:
 - [x] Items are not serialized. This is a big baustelle.
-- [x] no double weapons.
+- [x] No double weapons.
+- [ ] Heretic comando silenced pistol, +2 from cover... but +1 out of cover
 
 
 ### Questions about playtest 1.3.2
