@@ -338,6 +338,11 @@ class WarriorModel {
     }));
   }
 
+  @override
+  String toString() {
+    return "$name [${type.typeName}]";
+  }
+
   factory WarriorModel.fromJson(Map<String, dynamic> json) =>
       _$WarriorModelFromJson(json);
   Map<String, dynamic> toJson() => _$WarriorModelToJson(this);
