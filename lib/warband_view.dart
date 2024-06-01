@@ -378,7 +378,7 @@ class WarriorBlock extends StatelessWidget {
                 },
           child: const Text("+Equipment"),
         ),
-        (availableUpgrades.isNotEmpty)
+        availableUpgrades.isNotEmpty
             ? FilledButton.tonal(
                 onPressed: () =>
                     upgradeWarrior(context, warrior, availableUpgrades),
