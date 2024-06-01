@@ -101,7 +101,6 @@ class KeywordUpgrade {
   Currency? cost;
   String keyword;
   int? max;
-  UnitFilter? filter;
 
   @override
   String toString() {
@@ -114,16 +113,16 @@ class KeywordUpgrade {
       _$KeywordUpgradeFromJson(json);
   Map<String, dynamic> toJson() => _$KeywordUpgradeToJson(this);
 
-  Unit appy(Unit u) {
-    u.keywords.add(keyword);
-    u.cost = cost ?? u.cost;
-    return u;
-  }
-
-  bool isAllowed(Unit unit, List<WarriorModel> warriors) {
-    if (!(filter?.isUnitAllowed(unit, warriors) ?? true)) return false;
-    return warriors.where((w) => w.effectiveKeywords.contains(keyword)).length <
-        (max ?? double.infinity);
+  bool isAllowed(WarriorModel me, List<WarriorModel> warriors) {
+    if (me.effectiveKeywords.contains(keyword)) return false;
+    final uses = warriors
+        .map((w) => w.appliedUpgrades
+            .map((up) => up.keyword)
+            .nonNulls
+            .map((kup) => kup.keyword))
+        .where((ups) => ups.contains(keyword))
+        .length;
+    return uses < (max ?? double.infinity);
   }
 }
 
@@ -136,24 +135,26 @@ class UnitUpgrade {
 
   @override
   String toString() {
-    return "uknown";
+    if (keyword != null) return keyword.toString();
+    if (unit != null) return unit.toString();
+    return "ill-formed upgrade";
   }
 
-  Unit apply(Unit other, Roster r) {
-    if (keyword != null) {
-      final u = keyword!.appy(other.clone());
-      u.upgrades?.remove(this);
-      return u;
-    }
+  //Unit apply(Unit other, Roster r) {
+  //if (keyword != null) {
+  //final u = keyword!.appy(other.clone());
+  //u.upgrades?.remove(this);
+  //return u;
+  //}
 
-    if (unit != null) {
-      return r.units.firstWhere((u) => u.typeName == unit);
-    }
-    return other;
-  }
+  //if (unit != null) {
+  //return r.units.firstWhere((u) => u.typeName == unit);
+  //}
+  //return other;
+  //}
 
   bool isAllowed(WarriorModel me, List<WarriorModel> warriors, Roster roster) {
-    if (keyword != null) return keyword!.isAllowed(me.type, warriors);
+    if (keyword != null) return keyword!.isAllowed(me, warriors);
     assert(unit != null);
     final def = roster.units.firstWhere((u) => u.typeName == unit!);
     final withoutMe = List<WarriorModel>.from(warriors);
@@ -170,15 +171,15 @@ enum Sex { male, female, custom }
 
 @JsonSerializable(explicitToJson: true)
 class UnitVariant {
-  UnitVariant({this.typeName = ""});
+  UnitVariant();
 
-  String typeName;
+  UnitFilter filter = UnitFilter.trueValue();
   int? max;
   int? min;
   List<UnitUpgrade>? upgrades;
 
   Unit apply(Unit u) {
-    if (u.typeName != typeName) return u;
+    if (!filter.isUnitAllowed(u, [])) return u;
     u.max = max ?? u.max;
     u.min = min ?? u.min;
     u.upgrades = [
@@ -213,6 +214,8 @@ class Unit {
   bool? unarmedPenalty;
   Sex? defaultSex;
   List<UnitUpgrade>? upgrades;
+  UnitFilter? unitFilter;
+  ItemFilter? itemFilter;
 
   /// if the unit has not backpack, it needs to allocate all equipment to the hands
   bool? backpack;
@@ -235,6 +238,9 @@ class Unit {
     u.unarmedPenalty = unarmedPenalty;
     u.defaultSex = defaultSex;
     if (upgrades != null) u.upgrades = List.from(upgrades!);
+    u.unitFilter = unitFilter;
+    u.itemFilter = itemFilter;
+    u.backpack = backpack;
     return u;
   }
 
@@ -249,14 +255,12 @@ class Unit {
               Currency.free(), (v, item) => v + item.getCost) ??
           Currency.free());
 
-  UnitFilter? unitFilter;
   UnitFilter get effectiveUnitFilter {
     return UnitFilter.allOf(
       [max != null ? UnitFilter.max(max!) : null, unitFilter].nonNulls,
     );
   }
 
-  ItemFilter? itemFilter;
   ItemFilter get effectiveItemFilter => itemFilter ?? ItemFilter.trueValue();
 
   @override
@@ -439,8 +443,9 @@ class EquipmentUse extends ItemUse {
 
 @JsonSerializable(explicitToJson: true)
 class RosterVariant {
-  RosterVariant();
+  RosterVariant({this.name = ""});
 
+  String name;
   List<UnitVariant>? unitVariants;
   List<ItemVariant>? itemVariants;
 
@@ -448,20 +453,23 @@ class RosterVariant {
       _$RosterVariantFromJson(json);
   Map<String, dynamic> toJson() => _$RosterVariantToJson(this);
 
-  Roster apply(Roster roster) {
-    var r = roster.clone();
+  Roster apply(Roster oldRoster) {
+    var newRoster = oldRoster.clone();
+    newRoster.name = name;
 
-    for (int i = 0; i < roster.units.length; i++) {
-      for (var variant in unitVariants ?? []) {
-        roster.units[i] = variant.apply(roster.units[i]);
+    for (int i = 0; i < newRoster.units.length; i++) {
+      for (UnitVariant variant in unitVariants ?? []) {
+        newRoster.units[i] = variant.apply(newRoster.units[i]);
       }
     }
-    for (int i = 0; i < roster.items.length; i++) {
-      for (var variant in itemVariants ?? []) {
-        roster.items[i] = variant.apply(roster.items[i]);
+    newRoster.units.removeWhere((u) => (u.max ?? 1) <= 0);
+
+    for (int i = 0; i < newRoster.items.length; i++) {
+      for (ItemVariant variant in itemVariants ?? []) {
+        newRoster.items[i] = variant.apply(newRoster.items[i]);
       }
     }
-    return r;
+    return newRoster;
   }
 }
 
@@ -470,6 +478,10 @@ class Roster {
   Roster();
 
   String version = "Unversioned";
+  String name = "";
+  String elites = "";
+  String troop = "";
+
   List<Unit> units = [];
   List<WeaponUse> weapons = [];
   List<ArmourUse> armour = [];
@@ -489,8 +501,10 @@ class Roster {
 
   Roster clone() {
     var v = Roster();
-    v.version = version;
-    v.units = List.from(units);
+    v.name = name;
+    v.elites = elites;
+    v.troop = troop;
+    v.units = List.from(units.map((u) => u.clone()));
     v.weapons = List.from(weapons);
     v.armour = List.from(armour);
     v.equipment = List.from(equipment);

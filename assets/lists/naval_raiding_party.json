@@ -1,21 +1,31 @@
 {
     "version": "v1.3.2",
+    "name": "Heretic Naval Raiding Party",
     "unitVariants": [
         {
-            "typeName": "Anointed Heavy Infantry",
+            "filter": {
+                "typeName": "Anointed Heavy Infantry"
+            },
             "max": 1
         },
         {
-            "typeName": "War Wolf Assault Beast",
+            "filter": {
+                "typeName": "War Wolf Assault Beast"
+            },
             "max": 0
         },
         {
-            "typeName": "Artillery Witches",
+            "filter": {
+                "typeName": "Artillery Witches"
+            },
             "max": 1
-        }
-    ],
-    "allUnitsVariants": [
+        },
         {
+            "filter": {
+                "not": {
+                    "type": "elite"
+                }
+            },
             "upgrades": [
                 {
                     "keyword": {
@@ -23,12 +33,7 @@
                         "cost": {
                             "ducats": 10
                         },
-                        "max": 2,
-                        "filter": {
-                            "not": {
-                                "type": "elite"
-                            }
-                        }
+                        "max": 2
                     }
                 }
             ]

@@ -25,7 +25,7 @@ UnitFilter _$UnitFilterFromJson(Map<String, dynamic> json) => UnitFilter(
       containsUnit: json['containsUnit'] as String?,
       type: $enumDecodeNullable(_$UnitTypeEnumMap, json['type']),
       sameCountAs: json['sameCountAs'] as String?,
-    );
+    )..typeName = json['typeName'] as String?;
 
 Map<String, dynamic> _$UnitFilterToJson(UnitFilter instance) =>
     <String, dynamic>{
@@ -37,6 +37,7 @@ Map<String, dynamic> _$UnitFilterToJson(UnitFilter instance) =>
       'not': instance.not,
       'max': instance.max,
       'containsUnit': instance.containsUnit,
+      'typeName': instance.typeName,
       'type': _$UnitTypeEnumMap[instance.type],
       'sameCountAs': instance.sameCountAs,
     };

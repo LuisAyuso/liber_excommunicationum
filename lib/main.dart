@@ -132,70 +132,158 @@ class WarbandChooser extends StatelessWidget {
                 icon: const Icon(Icons.save))
           ],
         ),
-        body: GridView.count(
-          crossAxisCount: 2, // Number of columns in the grid
-          children: [
-            warbandButton(
-                context, "Heretic Legion", "assets/lists/heretic_legion.json"),
-            warbandButton(context, "Trench Pilgrims",
-                "assets/lists/trench_pilgrims.json"),
-            warbandButton(context, "The Principality of New Antioch",
-                "assets/lists/new_antioch.json"),
-            warbandButton(
-                context, "The Iron Sultanate", "assets/lists/sultanate.json"),
-            warbandButton(context, "The Cult of the Black Grail",
-                "assets/lists/black_grail.json"),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget warbandButton(BuildContext context, String name, String asset) {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (ctx) => WarbandPage(title: name, asset: asset)),
-        );
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadiusDirectional.all(Radius.circular(16)),
-          border: Border.all(
-              color: Colors.black, style: BorderStyle.solid, width: 4),
-        ),
-        margin: const EdgeInsets.all(8),
-        padding: const EdgeInsets.all(16),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text(
-                name,
-                textAlign: TextAlign.center,
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium!
-                    .apply(fontSizeFactor: 1.3),
-              ),
-            ],
-          ),
+        body: FutureBuilder(
+          future: loadArmory(DefaultAssetBundle.of(context)),
+          builder: (context, future) {
+            if (future.hasError) return const Text("Failed to load armory");
+            if (!future.hasData) return const CircularProgressIndicator();
+            return GridView.count(
+              crossAxisCount: 2, // Number of columns in the grid
+              children: <Widget>[
+                WarbandButton(
+                  armoy: future.data!,
+                  rosterAsset: "assets/lists/heretic_legion.json",
+                  variantsAssets: const [
+                    "assets/lists/naval_raiding_party.json",
+                  ],
+                ),
+                WarbandButton(
+                  armoy: future.data!,
+                  rosterAsset: "assets/lists/trench_pilgrims.json",
+                  variantsAssets: const [],
+                ),
+                WarbandButton(
+                  armoy: future.data!,
+                  rosterAsset: "assets/lists/sultanate.json",
+                  variantsAssets: const [],
+                ),
+                WarbandButton(
+                  armoy: future.data!,
+                  rosterAsset: "assets/lists/new_antioch.json",
+                  variantsAssets: const [],
+                ),
+                WarbandButton(
+                  armoy: future.data!,
+                  rosterAsset: "assets/lists/black_grail.json",
+                  variantsAssets: const [],
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
   }
 }
 
-class WarbandPage extends StatelessWidget {
-  const WarbandPage({super.key, required this.title, required this.asset});
-  final String asset;
-  final String title;
+class WarbandButton extends StatelessWidget {
+  const WarbandButton({
+    super.key,
+    required this.armoy,
+    required this.rosterAsset,
+    required this.variantsAssets,
+  });
+  final String rosterAsset;
+  final Armory armoy;
+  final List<String> variantsAssets;
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: loadJson(context),
+        future: loadRoster(
+            DefaultAssetBundle.of(context), armoy, rosterAsset, variantsAssets),
+        builder: (context, future) {
+          if (future.hasError) return const Text("Failed to load armory");
+          if (!future.hasData) return const CircularProgressIndicator();
+
+          final (armoy, roster, variants) = future.data!;
+
+          return InkWell(
+            onTap: () => onTap(context, armoy, roster, variants),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius:
+                    const BorderRadiusDirectional.all(Radius.circular(16)),
+                border: Border.all(
+                    color: Colors.black, style: BorderStyle.solid, width: 4),
+              ),
+              margin: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(16),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      roster.name,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium!
+                          .apply(fontSizeFactor: 1.3),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+  void onTap(
+    BuildContext context,
+    Armory armoy,
+    Roster roster,
+    List<RosterVariant> variants,
+  ) {
+    final lists = [roster, ...variants.map((v) => v.apply(roster))];
+
+    if (lists.length == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (ctx) => WarbandPage(armory: armoy, roster: lists.first),
+        ),
+      );
+      return;
+    }
+
+    showModalBottomSheet(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      context: context,
+      builder: (BuildContext context) {
+        return Column(
+          children: [
+            ...lists.map<Widget>(
+              (newRoster) => TextButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (ctx) =>
+                          WarbandPage(armory: armoy, roster: newRoster),
+                    ),
+                  );
+                },
+                child: Text(newRoster.name),
+              ),
+            )
+          ],
+        );
+      },
+    );
+  }
+}
+
+class WarbandPage extends StatelessWidget {
+  const WarbandPage({super.key, required this.roster, required this.armory});
+  final Roster roster;
+  final Armory armory;
+
+  @override
+  Widget build(BuildContext context) {
+    final title = roster.name;
+    return FutureBuilder(
+      future: loadSaves(roster.name),
       builder: (context, future) {
         if (future.hasError) {
           return const Text("Failed to load roster");
@@ -203,7 +291,7 @@ class WarbandPage extends StatelessWidget {
         if (!future.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
-        var (roster, armory, wb) = future.data!;
+        var (_, wb) = future.data!;
         return ChangeNotifierProvider(
           create: (_) => wb ?? WarbandModel.prefill(roster, armory),
           builder: (context, _) => WarbandView(
@@ -215,28 +303,43 @@ class WarbandPage extends StatelessWidget {
       },
     );
   }
+}
 
-  Future<(Roster, Armory, WarbandModel?)> loadJson(context) async {
-    var data = await DefaultAssetBundle.of(context).loadString(asset);
-    final r = Roster.fromJson(jsonDecode(data));
-
-    data = await DefaultAssetBundle.of(context)
-        .loadString("assets/lists/armory.json");
-    var a = Armory.fromJson(jsonDecode(data));
-    a.extendWithUnique(r);
-
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      if (prefs.containsKey(title)) {
-        final list = prefs.getString(title);
-        final wb = WarbandModel.fromJson(jsonDecode(list!));
-        return (r, a, wb);
-      }
-    } catch (e) {
-      debugPrint("load list dropped");
+Future<(bool, WarbandModel?)> loadSaves(String listName) async {
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey(listName)) {
+      final list = prefs.getString(listName);
+      return (true, WarbandModel.fromJson(jsonDecode(list!)));
     }
-
-    await Future.delayed(const Duration(milliseconds: 500));
-    return (r, a, null);
+  } catch (e) {
+    debugPrint("load list dropped");
   }
+  return (false, null);
+}
+
+Future<(Armory, Roster, List<RosterVariant>)> loadRoster(
+  AssetBundle bundle,
+  Armory armory,
+  String rosterAsset,
+  List<String> variantsAssets,
+) async {
+  var data = await bundle.loadString(rosterAsset);
+  final roster = Roster.fromJson(jsonDecode(data));
+  armory.extendWithUnique(roster);
+
+  final variantsJson = await Stream.fromIterable(variantsAssets)
+      .asyncMap((v) => bundle.loadString(v))
+      .toList();
+
+  final variants = variantsJson
+      .map((json) => RosterVariant.fromJson(jsonDecode(json)))
+      .toList();
+
+  return (armory, roster, variants);
+}
+
+Future<Armory> loadArmory(AssetBundle bundle) async {
+  final data = await bundle.loadString("assets/lists/armory.json");
+  return Armory.fromJson(jsonDecode(data));
 }

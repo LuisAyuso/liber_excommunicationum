@@ -276,6 +276,7 @@ class WarriorBlock extends StatelessWidget {
               meleeWeapons(context, armory),
               armourItems(context, armory),
               equipmentItems(context, armory),
+              upgrades(context),
             ]),
       ],
     );
@@ -752,8 +753,9 @@ class WarriorBlock extends StatelessWidget {
         builder: (BuildContext context) {
           final upgradeWidgets = upgrades.map((u) => TextButton(
               onPressed: () {
-                warrior.type = u.apply(warrior.type, roster);
-                wb.invalidate();
+                if (warrior.apply(u, roster)) {
+                  wb.invalidate();
+                }
                 Navigator.pop(context);
               },
               child: Text(u.toString())));
@@ -771,6 +773,29 @@ class WarriorBlock extends StatelessWidget {
             ]),
           );
         });
+  }
+
+  Widget upgrades(BuildContext context) {
+    if (warrior.appliedUpgrades.isEmpty) return const SizedBox();
+
+    return TableLEX(
+      headers: const ["Keyword", "Edit"],
+      rows: [
+        ...warrior.appliedUpgrades.where((up) => up.keyword != null).map((up) {
+          return <Widget>[
+            Text(up.keyword!.keyword),
+            context.watch<EditingModel>().editing
+                ? IconButton(
+                    onPressed: () {
+                      warrior.appliedUpgrades.remove(up);
+                      context.read<WarbandModel>().invalidate();
+                    },
+                    icon: const Icon(Icons.delete))
+                : const SizedBox(),
+          ];
+        })
+      ],
+    );
   }
 }
 

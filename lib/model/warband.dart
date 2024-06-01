@@ -84,11 +84,18 @@ class WarriorModel {
 
   Sex? sex;
   Sex get getSex => sex ?? Sex.custom;
-
   List<ItemStack> privateItems = [];
+  List<UnitUpgrade> appliedUpgrades = [];
+
   Iterable<ItemUse> get items => privateItems.map((s) => s.value);
   Iterable<WeaponUse> get weapons =>
       privateItems.map((s) => s.value).whereType<WeaponUse>();
+  Iterable<String> get kewordUpgrades =>
+      appliedUpgrades.map<String?>((up) => up.keyword?.keyword).nonNulls;
+  Currency get upgradesCost => appliedUpgrades
+      .map((u) => u.keyword?.cost)
+      .nonNulls
+      .fold(Currency.free(), (a, b) => a + b);
 
   Iterable<WeaponUse> weaponsOrUnarmed(Armory armory) {
     final collection = weapons.toList();
@@ -110,13 +117,14 @@ class WarriorModel {
   Iterable<EquipmentUse> get equipment =>
       privateItems.map((s) => s.value).whereType<EquipmentUse>();
 
-  Currency get totalCost => baseCost + equipmentCost;
+  Currency get totalCost => baseCost + equipmentCost + upgradesCost;
   Currency get baseCost => type.cost;
   Currency get equipmentCost => privateItems
       .map((i) => i.value)
       .fold<Currency>(Currency.free(), (v, w) => w.getCost + v);
 
   UnmodifiableListView<String> get effectiveKeywords => UnmodifiableListView([
+        ...kewordUpgrades,
         ...type.keywords,
         ...items.map((i) => i.addedKeywords).expand((i) => i)
       ]);
@@ -132,10 +140,12 @@ class WarriorModel {
 
   WarriorModel cloneWith({required String name, required int newUid}) {
     var w = WarriorModel(name: name, uid: newUid, type: type, bucket: bucket);
+
     w.privateItems = [];
     for (var it in privateItems) {
       w.privateItems.add(it.copy());
     }
+    w.appliedUpgrades = List.from(appliedUpgrades);
     return w;
   }
 
@@ -354,6 +364,21 @@ class WarriorModel {
           ModifierType.ranged => type.ranged,
           ModifierType.any => 0,
         });
+  }
+
+  bool apply(UnitUpgrade u, Roster roster) {
+    // is a keyword upgrade?
+    if (u.keyword != null) {
+      appliedUpgrades.add(u);
+      return true;
+    }
+    // is a type upgrade?
+    if (u.unit != null) {
+      type = roster.units.firstWhere((unit) => unit.typeName == u.unit!);
+      return true;
+    }
+
+    return false;
   }
 }
 

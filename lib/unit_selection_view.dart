@@ -46,10 +46,10 @@ class _UnitSelectorState extends State<UnitSelector> {
     final warband = context.read<WarbandModel>();
     final elites = UnmodifiableListView(widget.roster.units.where((unit) =>
         makeUnitFilter(unit, onlyElites)
-            .isUnitAllowed(unit, warband.warriors)));
+            .isUnitAllowed(unit, warband.warriors))).toList();
     final troops = UnmodifiableListView(widget.roster.units.where((unit) =>
         makeUnitFilter(unit, onlyTroops)
-            .isUnitAllowed(unit, warband.warriors)));
+            .isUnitAllowed(unit, warband.warriors))).toList();
 
     return ContentLex(
       child: DefaultTabController(

@@ -60,13 +60,13 @@ void main() {
   });
 
   test('test WarriorModel upgrades', () {
-    Unit yolo = Unit(typeName: "yolo warrior", cost: const Currency(ducats: 7));
+    Unit warrrior = Unit(typeName: "warrior", cost: const Currency(ducats: 7));
     Unit yalo = Unit(typeName: "yalo warrior", cost: const Currency(ducats: 7));
     yalo.max = 1;
     Roster roster = Roster();
-    roster.units = [yolo, yalo];
+    roster.units = [warrrior, yalo];
 
-    yolo.upgrades = [
+    warrrior.upgrades = [
       UnitUpgrade(
         keyword: KeywordUpgrade(
           keyword: "YOLO",
@@ -77,22 +77,23 @@ void main() {
       UnitUpgrade(unit: "yalo warrior")
     ];
 
-    final w1 = WarriorModel(name: "test 1", bucket: 0, uid: 0, type: yolo);
-    final w2 = WarriorModel(name: "test 2", bucket: 0, uid: 0, type: yolo);
-    expect(yolo.upgrades, isNotNull);
-    expect(yolo.upgrades!, isNotEmpty);
+    final w1 = WarriorModel(name: "test 1", bucket: 0, uid: 0, type: warrrior);
+    final w2 = WarriorModel(name: "test 2", bucket: 0, uid: 0, type: warrrior);
+    expect(warrrior.upgrades, isNotNull);
+    expect(warrrior.upgrades!, isNotEmpty);
 
-    final yoloUp = yolo.upgrades![0];
+    final yoloUp = warrrior.upgrades![0];
     expect(yoloUp.isAllowed(w1, [w1, w2], roster), isTrue);
     expect(yoloUp.isAllowed(w2, [w1, w2], roster), isTrue);
-    w1.type = yoloUp.apply(w1.type, roster);
+    w1.apply(yoloUp, roster);
     expect(w1.effectiveKeywords, contains("YOLO"));
-    expect(yoloUp.isAllowed(w1, [w1, w2], roster), isTrue); // 1 out of 2
-    expect(yoloUp.isAllowed(w1, [w1, w1], roster), isFalse); // 2 out of 2
+    expect(yoloUp.isAllowed(w1, [w1], roster), isFalse);
+    expect(yoloUp.isAllowed(w2, [w1, w2], roster), isTrue); // 1 out of 2
+    expect(yoloUp.isAllowed(w2, [w1, w1], roster), isFalse); // 2 out of 2
 
-    final yaloUp = yolo.upgrades![1];
+    final yaloUp = warrrior.upgrades![1];
     expect(yaloUp.isAllowed(w1, [w1, w2], roster), isTrue);
-    w1.type = yaloUp.apply(w1.type, roster);
+    w1.apply(yaloUp, roster);
     expect(w1.type.typeName, "yalo warrior");
     expect(yaloUp.isAllowed(w2, [w1, w2], roster), isFalse); // max 1
   });

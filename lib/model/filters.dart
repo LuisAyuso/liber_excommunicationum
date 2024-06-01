@@ -149,7 +149,7 @@ class UnitFilter extends BaseFilter<UnitFilter> {
 
     if (typeName != null) return "typename ${typeName!}";
     if (type != null) return "type ${type!}";
-    if (sameCountAs != null) return "sameCountAs $sameCountAs!}";
+    if (sameCountAs != null) return "sameCountAs $sameCountAs}";
 
     if (noneOf != null) {
       return "noneOf[${noneOf!.map((e) => e.toString()).join(",")}]";
