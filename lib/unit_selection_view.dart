@@ -10,10 +10,21 @@ import 'package:tc_thing/utils/name_generator.dart';
 import 'controls/content_lex.dart';
 import 'controls/unit_description.dart';
 
+Map<String, int> makeBuckets(Roster roster) {
+  var res = <String, int>{};
+  for (var i = 0; i < roster.units.length; i++) {
+    res[roster.units[i].typeName] = i;
+  }
+  return res;
+}
+
 class UnitSelector extends StatefulWidget {
-  const UnitSelector({super.key, required this.roster, required this.armory});
+  UnitSelector({super.key, required this.roster, required this.armory})
+      : buckets = makeBuckets(roster);
+
   final Roster roster;
   final Armory armory;
+  final Map<String, int> buckets;
 
   @override
   State<UnitSelector> createState() => _UnitSelectorState();
@@ -23,17 +34,7 @@ UnitFilter onlyElites = UnitFilter.elites();
 UnitFilter onlyTroops = UnitFilter.troops();
 
 UnitFilter makeUnitFilter(Unit unit, [UnitFilter? extra]) {
-  var filters = <UnitFilter>[];
-  if (extra != null) {
-    filters.add(extra);
-  }
-  if (unit.max != null) {
-    filters.add(UnitFilter.max(unit.max!));
-  }
-  if (unit.unitFilter != null) {
-    filters.add(unit.unitFilter!);
-  }
-  return UnitFilter.allOf(filters);
+  return UnitFilter.allOf([unit.effectiveUnitFilter, extra].nonNulls);
 }
 
 class _UnitSelectorState extends State<UnitSelector> {
@@ -70,13 +71,21 @@ class _UnitSelectorState extends State<UnitSelector> {
             body: TabBarView(
               children: [
                 ListView.separated(
-                    itemBuilder: (context, idx) =>
-                        makeUnitEntry(context, elites[idx], widget.roster, idx),
+                    itemBuilder: (context, idx) => makeUnitEntry(
+                          context,
+                          elites[idx],
+                          widget.roster,
+                          widget.buckets[elites[idx].typeName]!,
+                        ),
                     separatorBuilder: (context, idx) => const Divider(),
                     itemCount: elites.length),
                 ListView.separated(
-                    itemBuilder: (context, idx) =>
-                        makeUnitEntry(context, troops[idx], widget.roster, idx),
+                    itemBuilder: (context, idx) => makeUnitEntry(
+                          context,
+                          troops[idx],
+                          widget.roster,
+                          widget.buckets[troops[idx].typeName]!,
+                        ),
                     separatorBuilder: (context, idx) => const Divider(),
                     itemCount: troops.length),
               ],
@@ -86,7 +95,11 @@ class _UnitSelectorState extends State<UnitSelector> {
   }
 
   Widget makeUnitEntry(
-      BuildContext context, Unit unit, Roster roster, int idx) {
+    BuildContext context,
+    Unit unit,
+    Roster roster,
+    int bucket,
+  ) {
     return Builder(builder: (context) {
       return InkWell(
         onTap: () {
@@ -95,7 +108,7 @@ class _UnitSelectorState extends State<UnitSelector> {
               name: generateName(unit.sex, unit.keywords),
               uid: wb.nextUID(),
               type: unit,
-              bucket: idx,
+              bucket: bucket,
               armory: widget.armory));
           Navigator.pop(context);
         },
