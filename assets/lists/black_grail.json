@@ -1,5 +1,8 @@
 {
     "version": "v1.3.2",
+    "name": "The Cult of the Black Grail",
+    "elites": "The Order of the Fly",
+    "troop": "Servants of the Black Grail",
     "units": [
         {
             "typeName": "Lord of Tumours",

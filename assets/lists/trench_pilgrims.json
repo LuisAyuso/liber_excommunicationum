@@ -1,5 +1,8 @@
 {
     "version": "v1.3.2",
+    "name": "Trench Pilgrims",
+    "elites": "God’s Chosen",
+    "troop": "The Faithful",
     "units": [
         {
             "typeName": "War Prophet",

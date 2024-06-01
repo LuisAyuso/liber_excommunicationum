@@ -1,5 +1,8 @@
 {
     "version": "v1.3.2",
+    "name": "The Principality of New Antioch",
+    "elites": "The officer corps",
+    "troop": "The Soldiery of New Antioch",
     "units": [
         {
             "typeName": "Lieutenant",

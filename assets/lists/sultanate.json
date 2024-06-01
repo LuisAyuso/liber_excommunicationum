@@ -1,5 +1,8 @@
 {
     "version": "v1.3.2",
+    "name": "The Iron Sultanate",
+    "elites": "Sultan’s Elite",
+    "troop": " Those Who Believe",
     "units": [
         {
             "typeName": "Yüzbaşı Captain",

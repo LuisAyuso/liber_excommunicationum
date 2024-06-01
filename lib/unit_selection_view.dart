@@ -60,11 +60,10 @@ class _UnitSelectorState extends State<UnitSelector> {
               title: const Text(
                 "Choose an Unit",
               ),
-              bottom: const TabBar(
+              bottom: TabBar(
                 tabs: [
-                  // FIXME: these have a name in each list
-                  Tab(text: "Elite"),
-                  Tab(text: "Troops"),
+                  Tab(text: widget.roster.elites),
+                  Tab(text: widget.roster.troop),
                 ],
               ),
             ),

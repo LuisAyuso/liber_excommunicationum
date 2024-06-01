@@ -1,5 +1,8 @@
 {
     "version": "v1.3.2",
+    "name": "Heretic Legion",
+    "elites": "Heretic Elites",
+    "troop": "Legionnaires of Hell",
     "units": [
         {
             "typeName": "Heretic Priest",
