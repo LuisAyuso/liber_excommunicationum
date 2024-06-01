@@ -1,0 +1,26 @@
+{
+    "version": "v1.3.2",
+    "name": "Trench Ghosts",
+    "unitVariants": [
+        {
+            "filter": {
+                "typeName": "War Wolf Assault Beast"
+            },
+            "max": 0
+        },
+        {
+            "filter": {
+                "typeName": "Artillery Witches"
+            },
+            "max": 0
+        },
+        {
+            "filter": {
+                "all": true
+            },
+            "keywords": [
+                "FEAR"
+            ]
+        }
+    ]
+}

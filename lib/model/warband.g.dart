@@ -21,9 +21,13 @@ WarriorModel _$WarriorModelFromJson(Map<String, dynamic> json) => WarriorModel(
       type: Unit.fromJson(json['type'] as Map<String, dynamic>),
       bucket: json['bucket'] as int,
       sex: $enumDecodeNullable(_$SexEnumMap, json['sex']),
-    )..privateItems = (json['privateItems'] as List<dynamic>)
-        .map((e) => ItemStack.fromJson(e as Map<String, dynamic>))
-        .toList();
+    )
+      ..privateItems = (json['privateItems'] as List<dynamic>)
+          .map((e) => ItemStack.fromJson(e as Map<String, dynamic>))
+          .toList()
+      ..appliedUpgrades = (json['appliedUpgrades'] as List<dynamic>)
+          .map((e) => UnitUpgrade.fromJson(e as Map<String, dynamic>))
+          .toList();
 
 Map<String, dynamic> _$WarriorModelToJson(WarriorModel instance) =>
     <String, dynamic>{
@@ -33,6 +37,8 @@ Map<String, dynamic> _$WarriorModelToJson(WarriorModel instance) =>
       'bucket': instance.bucket,
       'sex': _$SexEnumMap[instance.sex],
       'privateItems': instance.privateItems.map((e) => e.toJson()).toList(),
+      'appliedUpgrades':
+          instance.appliedUpgrades.map((e) => e.toJson()).toList(),
     };
 
 const _$SexEnumMap = {

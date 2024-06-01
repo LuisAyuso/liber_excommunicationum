@@ -145,6 +145,7 @@ class WarbandChooser extends StatelessWidget {
                   rosterAsset: "assets/lists/heretic_legion.json",
                   variantsAssets: const [
                     "assets/lists/naval_raiding_party.json",
+                    "assets/lists/trench_ghosts.json",
                   ],
                 ),
                 WarbandButton(

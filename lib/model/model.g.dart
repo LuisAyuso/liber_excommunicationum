@@ -86,7 +86,9 @@ UnitVariant _$UnitVariantFromJson(Map<String, dynamic> json) => UnitVariant()
   ..min = json['min'] as int?
   ..upgrades = (json['upgrades'] as List<dynamic>?)
       ?.map((e) => UnitUpgrade.fromJson(e as Map<String, dynamic>))
-      .toList();
+      .toList()
+  ..keywords =
+      (json['keywords'] as List<dynamic>?)?.map((e) => e as String).toList();
 
 Map<String, dynamic> _$UnitVariantToJson(UnitVariant instance) =>
     <String, dynamic>{
@@ -94,6 +96,7 @@ Map<String, dynamic> _$UnitVariantToJson(UnitVariant instance) =>
       'max': instance.max,
       'min': instance.min,
       'upgrades': instance.upgrades?.map((e) => e.toJson()).toList(),
+      'keywords': instance.keywords,
     };
 
 Unit _$UnitFromJson(Map<String, dynamic> json) => Unit(

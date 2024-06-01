@@ -140,19 +140,6 @@ class UnitUpgrade {
     return "ill-formed upgrade";
   }
 
-  //Unit apply(Unit other, Roster r) {
-  //if (keyword != null) {
-  //final u = keyword!.appy(other.clone());
-  //u.upgrades?.remove(this);
-  //return u;
-  //}
-
-  //if (unit != null) {
-  //return r.units.firstWhere((u) => u.typeName == unit);
-  //}
-  //return other;
-  //}
-
   bool isAllowed(WarriorModel me, List<WarriorModel> warriors, Roster roster) {
     if (keyword != null) return keyword!.isAllowed(me, warriors);
     assert(unit != null);
@@ -177,6 +164,7 @@ class UnitVariant {
   int? max;
   int? min;
   List<UnitUpgrade>? upgrades;
+  List<String>? keywords;
 
   Unit apply(Unit u) {
     if (!filter.isUnitAllowed(u, [])) return u;
@@ -185,6 +173,10 @@ class UnitVariant {
     u.upgrades = [
       ...u.upgrades ?? [],
       ...upgrades ?? [],
+    ];
+    u.keywords = [
+      ...u.keywords,
+      ...keywords ?? [],
     ];
     return u;
   }

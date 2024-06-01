@@ -202,6 +202,7 @@ void main() {
   test('load heretic legion list', () async {
     final roster = await testList('assets/lists/heretic_legion.json');
     testVariant(roster.clone(), 'assets/lists/naval_raiding_party.json');
+    testVariant(roster.clone(), 'assets/lists/trench_ghosts.json');
   });
   test('load trench pilgrims list', () async {
     testList('assets/lists/trench_pilgrims.json');
