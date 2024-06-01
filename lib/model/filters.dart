@@ -8,14 +8,14 @@ enum ItemKind { weapon, armour, equipment }
 
 class BaseFilter<T> {
   BaseFilter({
-    this.bypassValue,
+    this.all,
     this.none,
     this.noneOf,
     this.anyOf,
     this.allOf,
     this.not,
   });
-  bool? bypassValue;
+  bool? all;
   bool? none;
   List<T>? noneOf;
   List<T>? anyOf;
@@ -28,9 +28,8 @@ class BaseFilter<T> {
 
   // returns if the filter was used, and it accepted the item
   (bool, bool) applyBaseFilter(bool Function(T) filter) {
-    if (bypassValue != null) return (true, bypassValue!);
-
-    if (none != null) return (true, false);
+    if (all != null) return (true, all!);
+    if (none != null) return (true, !none!);
 
     if (noneOf != null) {
       if (noneOf!.map(filter).where((b) => b).isNotEmpty) {
@@ -70,7 +69,7 @@ enum UnitType { elite, trooper }
 @JsonSerializable()
 class UnitFilter extends BaseFilter<UnitFilter> {
   UnitFilter({
-    super.bypassValue,
+    super.all,
     super.none,
     super.noneOf,
     super.anyOf,
@@ -88,7 +87,7 @@ class UnitFilter extends BaseFilter<UnitFilter> {
   String? sameCountAs;
 
   bool isUnitAllowed(Unit unit, Iterable<WarriorModel> warband) {
-    assert(_count(bypassValue) +
+    assert(_count(all) +
             _count(none) +
             _count(noneOf) +
             _count(anyOf) +
@@ -142,7 +141,7 @@ class UnitFilter extends BaseFilter<UnitFilter> {
   @override
   String toString() {
     if (none ?? false) return "none";
-    if (bypassValue != null) return "$bypassValue";
+    if (all != null) return "all";
 
     if (max != null) return "max: $max";
     if (containsUnit != null) return "containsUnit: $containsUnit";
@@ -167,8 +166,8 @@ class UnitFilter extends BaseFilter<UnitFilter> {
     return "INVALID FILTER!!";
   }
 
-  factory UnitFilter.trueValue() => UnitFilter(bypassValue: true);
-  factory UnitFilter.falseValue() => UnitFilter(bypassValue: false);
+  factory UnitFilter.trueValue() => UnitFilter(all: true);
+  factory UnitFilter.falseValue() => UnitFilter(none: true);
   factory UnitFilter.allOf(Iterable<UnitFilter> all) {
     if (all.isEmpty) return UnitFilter.trueValue();
     if (all.length == 1) return all.first;
@@ -198,7 +197,7 @@ class UnitFilter extends BaseFilter<UnitFilter> {
 @JsonSerializable()
 class ItemFilter extends BaseFilter<ItemFilter> {
   ItemFilter({
-    super.bypassValue,
+    super.all,
     super.none,
     super.noneOf,
     super.anyOf,
@@ -216,8 +215,8 @@ class ItemFilter extends BaseFilter<ItemFilter> {
     this.isShield,
   });
 
-  factory ItemFilter.trueValue() => ItemFilter(bypassValue: true);
-  factory ItemFilter.falseValue() => ItemFilter(bypassValue: false);
+  factory ItemFilter.trueValue() => ItemFilter(all: true);
+  factory ItemFilter.falseValue() => ItemFilter(none: true);
   factory ItemFilter.allOf(Iterable<ItemFilter> all) =>
       ItemFilter(allOf: all.toList());
   factory ItemFilter.noneOf(Iterable<ItemFilter> none) =>
@@ -244,7 +243,7 @@ class ItemFilter extends BaseFilter<ItemFilter> {
   bool? isShield;
 
   bool isItemAllowed(Item item, [WarriorModel? warrior]) {
-    assert(_count(bypassValue) +
+    assert(_count(all) +
             _count(none) +
             _count(noneOf) +
             _count(anyOf) +
@@ -336,7 +335,7 @@ class ItemFilter extends BaseFilter<ItemFilter> {
   @override
   String toString() {
     if (none ?? false) return "none";
-    if (bypassValue != null) return "$bypassValue";
+    if (all != null) return "all";
 
     if (itemKind != null) return "itemKind: $itemKind";
     if (itemName != null) return "itemName: $itemName";

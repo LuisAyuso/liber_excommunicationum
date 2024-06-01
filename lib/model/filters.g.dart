@@ -7,7 +7,7 @@ part of 'filters.dart';
 // **************************************************************************
 
 UnitFilter _$UnitFilterFromJson(Map<String, dynamic> json) => UnitFilter(
-      bypassValue: json['bypassValue'] as bool?,
+      all: json['all'] as bool?,
       none: json['none'] as bool?,
       noneOf: (json['noneOf'] as List<dynamic>?)
           ?.map((e) => UnitFilter.fromJson(e as Map<String, dynamic>))
@@ -29,7 +29,7 @@ UnitFilter _$UnitFilterFromJson(Map<String, dynamic> json) => UnitFilter(
 
 Map<String, dynamic> _$UnitFilterToJson(UnitFilter instance) =>
     <String, dynamic>{
-      'bypassValue': instance.bypassValue,
+      'all': instance.all,
       'none': instance.none,
       'noneOf': instance.noneOf,
       'anyOf': instance.anyOf,
@@ -48,7 +48,7 @@ const _$UnitTypeEnumMap = {
 };
 
 ItemFilter _$ItemFilterFromJson(Map<String, dynamic> json) => ItemFilter(
-      bypassValue: json['bypassValue'] as bool?,
+      all: json['all'] as bool?,
       none: json['none'] as bool?,
       noneOf: (json['noneOf'] as List<dynamic>?)
           ?.map((e) => ItemFilter.fromJson(e as Map<String, dynamic>))
@@ -78,7 +78,7 @@ ItemFilter _$ItemFilterFromJson(Map<String, dynamic> json) => ItemFilter(
 
 Map<String, dynamic> _$ItemFilterToJson(ItemFilter instance) =>
     <String, dynamic>{
-      'bypassValue': instance.bypassValue,
+      'all': instance.all,
       'none': instance.none,
       'noneOf': instance.noneOf,
       'anyOf': instance.anyOf,
