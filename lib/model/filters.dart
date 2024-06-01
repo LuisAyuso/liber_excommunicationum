@@ -83,6 +83,7 @@ class UnitFilter extends BaseFilter<UnitFilter> {
   });
   int? max;
   String? containsUnit;
+  String? typeName;
   UnitType? type;
   String? sameCountAs;
 
@@ -94,6 +95,7 @@ class UnitFilter extends BaseFilter<UnitFilter> {
             _count(allOf) +
             _count(not) +
             _count(max) +
+            _count(typeName) +
             _count(containsUnit) +
             _count(type) +
             _count(sameCountAs) ==
@@ -111,6 +113,10 @@ class UnitFilter extends BaseFilter<UnitFilter> {
         case UnitType.elite:
           return unit.keywords.contains("ELITE");
       }
+    }
+
+    if (typeName != null) {
+      return unit.typeName == typeName;
     }
 
     if (containsUnit != null) {
@@ -135,13 +141,37 @@ class UnitFilter extends BaseFilter<UnitFilter> {
 
   @override
   String toString() {
-    return "";
+    if (none ?? false) return "none";
+    if (bypassValue != null) return "$bypassValue";
+
+    if (max != null) return "max: $max";
+    if (containsUnit != null) return "containsUnit: $containsUnit";
+
+    if (typeName != null) return "typename ${typeName!}";
+    if (type != null) return "type ${type!}";
+    if (sameCountAs != null) return "sameCountAs $sameCountAs!}";
+
+    if (noneOf != null) {
+      return "noneOf[${noneOf!.map((e) => e.toString()).join(",")}]";
+    }
+    if (anyOf != null) {
+      return "anyOf[${anyOf!.map((e) => e.toString()).join(",")}]";
+    }
+    if (allOf != null) {
+      return "allOf[${allOf!.map((e) => e.toString()).join(",")}]";
+    }
+    if (not != null) {
+      return "![$not]";
+    }
+
+    return "INVALID FILTER!!";
   }
 
   factory UnitFilter.trueValue() => UnitFilter(bypassValue: true);
   factory UnitFilter.falseValue() => UnitFilter(bypassValue: false);
   factory UnitFilter.allOf(Iterable<UnitFilter> all) {
     if (all.isEmpty) return UnitFilter.trueValue();
+    if (all.length == 1) return all.first;
     return UnitFilter(allOf: all.toList());
   }
   factory UnitFilter.noneOf(Iterable<UnitFilter> none) {
@@ -150,6 +180,7 @@ class UnitFilter extends BaseFilter<UnitFilter> {
   }
   factory UnitFilter.anyOf(Iterable<UnitFilter> any) {
     if (any.isEmpty) return UnitFilter.trueValue();
+    if (any.length == 1) return any.first;
     return UnitFilter(anyOf: any.toList());
   }
   factory UnitFilter.none() => UnitFilter(none: true);
