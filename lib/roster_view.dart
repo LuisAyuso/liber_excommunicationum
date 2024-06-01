@@ -40,8 +40,8 @@ class RosterPreview extends StatelessWidget {
                 ),
                 ListView.separated(
                   itemBuilder: (context, idx) => ItemDescription(
-                    item: roster.items[idx],
-                    armory: armory,
+                    use: roster.items[idx],
+                    item: armory.findItem(roster.items[idx]),
                   ),
                   separatorBuilder: (context, idx) => const SizedBox(),
                   itemCount: roster.items.length,

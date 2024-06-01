@@ -8,7 +8,7 @@ part of 'warband.dart';
 
 ItemStack _$ItemStackFromJson(Map<String, dynamic> json) => ItemStack()
   ..privateStack = (json['privateStack'] as List<dynamic>)
-      .map((e) => ItemSerializeWrapper.fromJson(e as Map<String, dynamic>))
+      .map((e) => ItemUse.fromJson(e as Map<String, dynamic>))
       .toList();
 
 Map<String, dynamic> _$ItemStackToJson(ItemStack instance) => <String, dynamic>{

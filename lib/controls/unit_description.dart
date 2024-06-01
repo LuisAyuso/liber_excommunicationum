@@ -16,7 +16,7 @@ class UnitDescription extends StatelessWidget {
     final effectiveArmour = unit.defaultItems?.fold(unit.armour, (v, item) {
           if (!armory.isArmour(item.itemName)) return v;
           final def = armory.findArmour(item.itemName);
-          return v + (def.value ?? 0);
+          return v + (def?.value ?? 0);
         }) ??
         unit.armour;
 

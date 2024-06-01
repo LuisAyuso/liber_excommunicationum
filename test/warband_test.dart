@@ -10,8 +10,8 @@ void main() {
 
     Weapon gun1Def = Weapon(typeName: "gun1");
     Weapon gun2Def = Weapon(typeName: "gun2");
-    WeaponUse gun1 = WeaponUse(typeName: "gun1");
-    WeaponUse gun2 = WeaponUse(typeName: "gun2");
+    ItemUse gun1 = ItemUse(typeName: "gun1");
+    ItemUse gun2 = ItemUse(typeName: "gun2");
     WarriorModel wm =
         WarriorModel(name: "test name", bucket: 0, uid: 0, type: unit);
 
@@ -19,44 +19,44 @@ void main() {
     armory.add(gun1Def);
     armory.add(gun2Def);
 
-    expect(wm.weapons, isEmpty);
-    expect(wm.armour, isEmpty);
-    expect(wm.equipment, isEmpty);
+    expect(wm.currentWeapon(armory), isEmpty);
+    expect(wm.currentArmour(armory), isEmpty);
+    expect(wm.currentEquipment(armory), isEmpty);
 
     wm.addItem(gun1, armory);
-    expect(wm.weapons, hasLength(1));
-    expect(wm.weapons, contains(gun1));
-    expect(wm.armour, isEmpty);
-    expect(wm.equipment, isEmpty);
+    expect(wm.currentWeapon(armory), hasLength(1));
+    expect(wm.currentWeapon(armory), contains(gun1));
+    expect(wm.currentArmour(armory), isEmpty);
+    expect(wm.currentEquipment(armory), isEmpty);
 
     wm.removeItem(gun1, armory);
-    expect(wm.weapons, isEmpty);
-    expect(wm.armour, isEmpty);
-    expect(wm.equipment, isEmpty);
+    expect(wm.currentWeapon(armory), isEmpty);
+    expect(wm.currentArmour(armory), isEmpty);
+    expect(wm.currentEquipment(armory), isEmpty);
 
     // remove twice
     wm.removeItem(gun1, armory);
-    expect(wm.weapons, isEmpty);
-    expect(wm.armour, isEmpty);
-    expect(wm.equipment, isEmpty);
+    expect(wm.currentWeapon(armory), isEmpty);
+    expect(wm.currentArmour(armory), isEmpty);
+    expect(wm.currentEquipment(armory), isEmpty);
 
     wm.addItem(gun1, armory);
-    expect(wm.weapons, hasLength(1));
-    expect(wm.weapons, contains(gun1));
-    expect(wm.armour, isEmpty);
-    expect(wm.equipment, isEmpty);
+    expect(wm.currentWeapon(armory), hasLength(1));
+    expect(wm.currentWeapon(armory), contains(gun1));
+    expect(wm.currentArmour(armory), isEmpty);
+    expect(wm.currentEquipment(armory), isEmpty);
 
     wm.replace(gun1, gun2, armory);
-    expect(wm.weapons, hasLength(1));
-    expect(wm.weapons, contains(gun2));
-    expect(wm.armour, isEmpty);
-    expect(wm.equipment, isEmpty);
+    expect(wm.currentWeapon(armory), hasLength(1));
+    expect(wm.currentWeapon(armory), contains(gun2));
+    expect(wm.currentArmour(armory), isEmpty);
+    expect(wm.currentEquipment(armory), isEmpty);
 
     wm.removeItem(gun2, armory);
-    expect(wm.weapons, hasLength(1));
-    expect(wm.weapons, contains(gun1));
-    expect(wm.armour, isEmpty);
-    expect(wm.equipment, isEmpty);
+    expect(wm.currentWeapon(armory), hasLength(1));
+    expect(wm.currentWeapon(armory), contains(gun1));
+    expect(wm.currentArmour(armory), isEmpty);
+    expect(wm.currentEquipment(armory), isEmpty);
   });
 
   test('test WarriorModel upgrades', () {

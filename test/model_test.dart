@@ -165,7 +165,7 @@ void main() {
     boss.abilities = ["special"];
     boss.keywords = ["elite"];
     boss.cost = const Currency(ducats: 60);
-    var w = WeaponUse();
+    var w = ItemUse();
     w.typeName = "gun";
     w.cost = const Currency(ducats: 10);
     r.units = [boss];
@@ -205,7 +205,9 @@ void main() {
     testVariant(roster.clone(), 'assets/lists/trench_ghosts.json');
   });
   test('load trench pilgrims list', () async {
-    testList('assets/lists/trench_pilgrims.json');
+    final roster = await testList('assets/lists/trench_pilgrims.json');
+    testVariant(roster.clone(),
+        'assets/lists/procession_of_the_sacred_affliction.json');
   });
   test('load new antioch list', () async {
     testList('assets/lists/new_antioch.json');

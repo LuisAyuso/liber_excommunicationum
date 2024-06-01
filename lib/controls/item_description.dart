@@ -7,27 +7,26 @@ import 'package:tc_thing/utils/utils.dart';
 class ItemDescription extends StatelessWidget {
   const ItemDescription({
     super.key,
+    required this.use,
     required this.item,
-    required this.armory,
     this.edit,
   });
-  final ItemUse item;
-  final Armory armory;
+  final ItemUse use;
+  final dynamic item;
   final Widget? edit;
 
   @override
   Widget build(BuildContext context) {
-    if (item is WeaponUse) return weaponDescription(context, item as WeaponUse);
-    if (item is ArmourUse) return armorDescription(context, item as ArmourUse);
-    if (item is EquipmentUse) {
-      return equipmentDescription(context, item as EquipmentUse);
+    if (item is Weapon) return weaponDescription(context, use, item as Weapon);
+    if (item is Armour) return armorDescription(context, use, item as Armour);
+    if (item is Equipment) {
+      return equipmentDescription(context, use, item as Equipment);
     }
     assert(false, "unreachable");
     return const SizedBox();
   }
 
-  Widget weaponDescription(BuildContext context, WeaponUse weapon) {
-    final def = armory.findWeapon(weapon.typeName);
+  Widget weaponDescription(BuildContext context, ItemUse use, Weapon weapon) {
     var list = List<
         ({
           String cost,
@@ -35,20 +34,20 @@ class ItemDescription extends StatelessWidget {
           String range,
           String modifiers
         })>.empty(growable: true);
-    if (def.canRanged) {
+    if (weapon.canRanged) {
       list.add((
-        cost: weapon.cost.toString(),
-        type: def.isGrenade ? "Grenades" : "${def.hands}-handed",
-        range: '${def.range}"',
-        modifiers: def.getModifiersString(Modifier(), ModifierType.ranged)
+        cost: use.cost.toString(),
+        type: weapon.isGrenade ? "Grenades" : "${weapon.hands}-handed",
+        range: '${weapon.range}"',
+        modifiers: weapon.getModifiersString(Modifier(), ModifierType.ranged)
       ));
     }
-    if (def.canMelee) {
+    if (weapon.canMelee) {
       list.add((
-        cost: def.canRanged ? "" : weapon.cost.toString(),
+        cost: weapon.canRanged ? "" : use.cost.toString(),
         type: "",
         range: 'Melee',
-        modifiers: def.getModifiersString(Modifier(), ModifierType.melee)
+        modifiers: weapon.getModifiersString(Modifier(), ModifierType.melee)
       ));
     }
     assert(list.isNotEmpty);
@@ -80,24 +79,25 @@ class ItemDescription extends StatelessWidget {
           ],
         ),
         TableLEX(headers: headers, rows: rows),
-        Wrap(children: def.getKeywords.map((s) => ItemChip(item: s)).toList())
+        Wrap(
+            children: weapon.getKeywords.map((s) => ItemChip(item: s)).toList())
       ],
     );
   }
 
-  Widget armorDescription(BuildContext context, ArmourUse item) {
-    final def = armory.findArmour(item);
-    return def.isBodyArmour
-        ? bodyArmorDescription(context, item)
-        : otherArmourDescription(context, item);
+  Widget armorDescription(BuildContext context, ItemUse use, Armour armour) {
+    return armour.isBodyArmour
+        ? bodyArmorDescription(context, use, item)
+        : otherArmourDescription(context, use, item);
   }
 
-  Widget otherArmourDescription(BuildContext context, ArmourUse item) {
+  Widget otherArmourDescription(
+      BuildContext context, ItemUse use, Armour armour) {
     var headers = const [
       "Cost",
     ];
     var rows = [
-      <Widget>[Text("${item.cost}")].toList(growable: true)
+      <Widget>[Text("${use.cost}")].toList(growable: true)
     ];
 
     return Column(
@@ -107,7 +107,7 @@ class ItemDescription extends StatelessWidget {
         Row(
           children: [
             Text(
-              item.typeName,
+              armour.typeName,
               style: Theme.of(context)
                   .textTheme
                   .titleMedium!
@@ -125,8 +125,8 @@ class ItemDescription extends StatelessWidget {
     );
   }
 
-  Widget bodyArmorDescription(BuildContext context, ArmourUse item) {
-    final def = armory.findArmour(item);
+  Widget bodyArmorDescription(
+      BuildContext context, ItemUse use, Armour armour) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -134,7 +134,7 @@ class ItemDescription extends StatelessWidget {
         Row(
           children: [
             Text(
-              item.typeName,
+              armour.typeName,
               style: Theme.of(context)
                   .textTheme
                   .titleMedium!
@@ -148,18 +148,19 @@ class ItemDescription extends StatelessWidget {
           headers: const ["Cost", "Armour"],
           rows: [
             [
-              Text("${item.cost}"),
-              Text("${def.value}"),
+              Text("${use.cost}"),
+              Text("${armour.value}"),
             ]
           ],
         ),
-        Wrap(children: def.getKeywords.map((s) => ItemChip(item: s)).toList())
+        Wrap(
+            children: armour.getKeywords.map((s) => ItemChip(item: s)).toList())
       ],
     );
   }
 
-  Widget equipmentDescription(BuildContext context, EquipmentUse item) {
-    final def = armory.findEquipment(item);
+  Widget equipmentDescription(
+      BuildContext context, ItemUse use, Equipment equipment) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,7 +168,7 @@ class ItemDescription extends StatelessWidget {
         Row(
           children: [
             Text(
-              item.typeName,
+              use.typeName,
               style: Theme.of(context)
                   .textTheme
                   .titleMedium!
@@ -183,11 +184,13 @@ class ItemDescription extends StatelessWidget {
           ],
           rows: [
             [
-              Text("${item.cost}"),
+              Text("${use.cost}"),
             ]
           ],
         ),
-        Wrap(children: def.getKeywords.map((s) => ItemChip(item: s)).toList())
+        Wrap(
+            children:
+                equipment.getKeywords.map((s) => ItemChip(item: s)).toList())
       ],
     );
   }

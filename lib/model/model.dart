@@ -20,7 +20,6 @@ class Currency {
 
   bool get isGlory => _glory != null;
   bool get isDucats => _ducats != null;
-
   int get glory => _glory ?? 0;
   int get ducats => _ducats ?? 0;
 
@@ -238,7 +237,7 @@ class Unit {
 
   int get getHands => hands ?? 2;
   bool get hasBackpack => backpack ?? true;
-  bool get getUnarmedPenalty => unarmedPenalty ?? true;
+  bool get suffersUnarmedPenalty => unarmedPenalty ?? true;
   bool get isElite => keywords.contains("ELITE");
   Sex get sex => defaultSex ?? Sex.male;
   Currency get completeCost =>
@@ -269,19 +268,6 @@ class Unit {
   Map<String, dynamic> toJson() => _$UnitToJson(this);
 }
 
-abstract class ItemUse {
-  String get getName;
-  ItemFilter get getFilter;
-  bool get isRemovable;
-  Currency get getCost;
-  int get getLimit;
-  ItemKind get kind;
-
-  UnmodifiableListView<String> get addedKeywords;
-
-  Map<String, dynamic> toJson();
-}
-
 @JsonSerializable()
 class ItemVariant {
   ItemVariant({this.typeName = ""});
@@ -293,22 +279,10 @@ class ItemVariant {
 
   ItemUse apply(ItemUse i) {
     if (i.getName != typeName) return i;
+    i.cost = cost ?? i.cost;
+    i.filter = filter ?? i.filter;
+    i.limit = limit ?? i.limit;
 
-    if (i is WeaponUse) {
-      i.cost = cost ?? i.cost;
-      i.filter = filter ?? i.filter;
-      i.limit = limit ?? i.limit;
-    }
-    if (i is ArmourUse) {
-      i.cost = cost ?? i.cost;
-      i.filter = filter ?? i.filter;
-      i.limit = limit ?? i.limit;
-    }
-    if (i is EquipmentUse) {
-      i.cost = cost ?? i.cost;
-      i.filter = filter ?? i.filter;
-      i.limit = limit ?? i.limit;
-    }
     return i;
   }
 
@@ -318,49 +292,8 @@ class ItemVariant {
 }
 
 @JsonSerializable(explicitToJson: true)
-class WeaponUse extends ItemUse {
-  WeaponUse({
-    String? typeName,
-    Currency? cost,
-    this.removable,
-    this.filter,
-    this.limit,
-  })  : typeName = typeName ?? "",
-        cost = cost ?? Currency.free();
-
-  String typeName = "";
-  Currency cost = const Currency(ducats: 0);
-  bool? removable;
-  ItemFilter? filter;
-  int? limit;
-
-  @override
-  ItemKind get kind => ItemKind.weapon;
-  @override
-  String get getName => typeName;
-  @override
-  Currency get getCost => cost;
-  @override
-  ItemFilter get getFilter => filter ?? ItemFilter.trueValue();
-  @override
-  bool get isRemovable => removable ?? true;
-  @override
-  int get getLimit => limit ?? double.maxFinite.toInt();
-  @override
-  UnmodifiableListView<String> get addedKeywords => UnmodifiableListView([]);
-
-  factory WeaponUse.fromJson(Map<String, dynamic> json) =>
-      _$WeaponUseFromJson(json);
-  @override
-  Map<String, dynamic> toJson() => _$WeaponUseToJson(this);
-
-  factory WeaponUse.unarmed() =>
-      WeaponUse(typeName: "Unarmed", cost: Currency.free(), removable: false);
-}
-
-@JsonSerializable(explicitToJson: true)
-class ArmourUse extends ItemUse {
-  ArmourUse({
+class ItemUse {
+  ItemUse({
     String? typeName,
     Currency? cost,
     this.removable,
@@ -375,62 +308,16 @@ class ArmourUse extends ItemUse {
   int? limit;
   ItemFilter? filter;
 
-  @override
-  ItemKind get kind => ItemKind.armour;
-  @override
   String get getName => typeName;
-  @override
   ItemFilter get getFilter => filter ?? ItemFilter.trueValue();
-  @override
   bool get isRemovable => removable ?? true;
-  @override
   int get getLimit => limit ?? double.maxFinite.toInt();
-  @override
   Currency get getCost => cost;
-  @override
   UnmodifiableListView<String> get addedKeywords => UnmodifiableListView([]);
 
-  factory ArmourUse.fromJson(Map<String, dynamic> json) =>
-      _$ArmourUseFromJson(json);
-  @override
-  Map<String, dynamic> toJson() => _$ArmourUseToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class EquipmentUse extends ItemUse {
-  EquipmentUse({
-    String? typeName,
-    bool? removable,
-    Currency? cost,
-  })  : typeName = typeName ?? "",
-        removable = removable ?? true,
-        cost = cost ?? Currency.free();
-
-  String typeName = "";
-  Currency cost = Currency.free();
-  bool? removable;
-  int? limit;
-  ItemFilter? filter;
-
-  @override
-  ItemKind get kind => ItemKind.equipment;
-  @override
-  String get getName => typeName;
-  @override
-  ItemFilter get getFilter => filter ?? ItemFilter.trueValue();
-  @override
-  bool get isRemovable => removable ?? true;
-  @override
-  Currency get getCost => cost;
-  @override
-  int get getLimit => limit ?? double.maxFinite.toInt();
-  @override
-  UnmodifiableListView<String> get addedKeywords => UnmodifiableListView([]);
-
-  factory EquipmentUse.fromJson(Map<String, dynamic> json) =>
-      _$EquipmentUseFromJson(json);
-  @override
-  Map<String, dynamic> toJson() => _$EquipmentUseToJson(this);
+  factory ItemUse.fromJson(Map<String, dynamic> json) =>
+      _$ItemUseFromJson(json);
+  Map<String, dynamic> toJson() => _$ItemUseToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -440,6 +327,10 @@ class RosterVariant {
   String name;
   List<UnitVariant>? unitVariants;
   List<ItemVariant>? itemVariants;
+
+//  List<Weapon>? uniqueWeapons = [];
+//  List<Armour>? uniqueArmour = [];
+//  List<Equipment>? uniqueEquipment = [];
 
   factory RosterVariant.fromJson(Map<String, dynamic> json) =>
       _$RosterVariantFromJson(json);
@@ -475,18 +366,15 @@ class Roster {
   String troop = "";
 
   List<Unit> units = [];
-  List<WeaponUse> weapons = [];
-  List<ArmourUse> armour = [];
-  List<EquipmentUse> equipment = [];
+  List<ItemUse> weapons = [];
+  List<ItemUse> armour = [];
+  List<ItemUse> equipment = [];
 
   List<Weapon>? uniqueWeapons = [];
   List<Armour>? uniqueArmour = [];
   List<Equipment>? uniqueEquipment = [];
 
-  List<dynamic> get items =>
-      weapons.map<dynamic>((e) => e).toList() +
-      armour.map<dynamic>((e) => e).toList() +
-      equipment.map<dynamic>((e) => e).toList();
+  List<ItemUse> get items => [...weapons, ...armour, ...equipment];
 
   factory Roster.fromJson(Map<String, dynamic> json) => _$RosterFromJson(json);
   Map<String, dynamic> toJson() => _$RosterToJson(this);
@@ -784,32 +672,43 @@ class Armory {
   factory Armory.fromJson(Map<String, dynamic> json) => _$ArmoryFromJson(json);
   Map<String, dynamic> toJson() => _$ArmoryToJson(this);
 
-  Weapon findWeapon(dynamic w) {
-    if (w is WeaponUse) return findWeapon(w.typeName);
-    if (w == "Unarmed") return Weapon.unarmed();
-    return weapons.firstWhere((def) => def.typeName == w);
+  Weapon? findWeapon(dynamic use) {
+    if (use is ItemUse) return findWeapon(use.typeName);
+    assert(use is String);
+    return weapons
+        .where((other) => other.typeName == use as String)
+        .firstOrNull;
   }
 
-  bool isWeapon(String typeName) {
-    return weapons.where((def) => def.typeName == typeName).length == 1;
+  bool isWeapon(dynamic use) {
+    if (use is ItemUse) return isWeapon(use.typeName);
+    return weapons.where((def) => def.typeName == use).length == 1;
   }
 
-  Armour findArmour(dynamic a) {
-    if (a is ArmourUse) return findArmour(a.typeName);
-    return armours.firstWhere((def) => def.typeName == a);
+  Armour? findArmour(dynamic use) {
+    if (use is ItemUse) return findArmour(use.typeName);
+    assert(use is String);
+    return armours
+        .where((other) => other.typeName == use as String)
+        .firstOrNull;
   }
 
-  bool isArmour(String typeName) {
-    return armours.where((def) => def.typeName == typeName).length == 1;
+  bool isArmour(dynamic use) {
+    if (use is ItemUse) return isArmour(use.typeName);
+    return armours.where((def) => def.typeName == use).length == 1;
   }
 
-  Equipment findEquipment(dynamic e) {
-    if (e is EquipmentUse) return findEquipment(e.typeName);
-    return equipments.firstWhere((def) => def.typeName == e);
+  Equipment? findEquipment(dynamic use) {
+    if (use is ItemUse) return findEquipment(use.typeName);
+    assert(use is String);
+    return equipments
+        .where((other) => other.typeName == use as String)
+        .firstOrNull;
   }
 
-  bool isEquipment(String typeName) {
-    return equipments.where((def) => def.typeName == typeName).length == 1;
+  bool isEquipment(dynamic use) {
+    if (use is ItemUse) return isArmour(use.typeName);
+    return equipments.where((def) => def.typeName == use).length == 1;
   }
 
   void extendWithUnique(Roster roster) {
@@ -818,15 +717,16 @@ class Armory {
     equipments.addAll(roster.uniqueEquipment ?? []);
   }
 
-  Item findItem(ItemUse item) {
-    if (item is WeaponUse) return findWeapon(item);
-    if (item is ArmourUse) return findArmour(item);
-    return findEquipment(item as EquipmentUse);
-  }
-
   void add(Item item) {
     if (item is Weapon) weapons.add(item);
     if (item is Armour) armours.add(item);
     if (item is Equipment) equipments.add(item);
+  }
+
+  Item? findItem(ItemUse use) {
+    if (isWeapon(use)) return findWeapon(use);
+    if (isArmour(use)) return findArmour(use);
+    if (isEquipment(use)) return findEquipment(use);
+    return null;
   }
 }

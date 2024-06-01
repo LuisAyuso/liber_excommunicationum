@@ -8,37 +8,14 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'warband.g.dart';
 
-class ItemSerializeWrapper {
-  ItemSerializeWrapper({required this.item}) : _kind = item.kind;
-  ItemKind _kind;
-  ItemUse item;
-
-  factory ItemSerializeWrapper.fromJson(Map<String, dynamic> json) {
-    ItemUse item = switch (json['_kind'] as String) {
-      "ItemKind.weapon" => WeaponUse.fromJson(json["item"]),
-      "ItemKind.armour" => ArmourUse.fromJson(json["item"]),
-      "ItemKind.equipment" => EquipmentUse.fromJson(json["item"]),
-      _ => throw Exception("Not a serialization wrapper")
-    };
-    return ItemSerializeWrapper(item: item);
-  }
-  Map<String, dynamic> toJson() {
-    return <String, dynamic>{
-      '_kind': _kind.toString(),
-      'item': item.toJson(),
-    };
-  }
-}
-
 @JsonSerializable(explicitToJson: true)
 class ItemStack {
-  ItemStack({ItemUse? item})
-      : privateStack = item != null ? [ItemSerializeWrapper(item: item)] : [];
-  List<ItemSerializeWrapper> privateStack = [];
+  ItemStack({ItemUse? item}) : privateStack = [item].nonNulls.toList();
+  List<ItemUse> privateStack = [];
 
   ItemUse get value {
     assert(privateStack.isNotEmpty, "this can not be empty, ever");
-    return privateStack.last.item;
+    return privateStack.last;
   }
 
   bool get isEmpty => privateStack.isEmpty;
@@ -49,7 +26,7 @@ class ItemStack {
   }
 
   void replace(ItemUse item) {
-    privateStack.add(ItemSerializeWrapper(item: item));
+    privateStack.add(item);
   }
 
   ItemStack copy() {
@@ -61,6 +38,15 @@ class ItemStack {
   factory ItemStack.fromJson(Map<String, dynamic> json) =>
       _$ItemStackFromJson(json);
   Map<String, dynamic> toJson() => _$ItemStackToJson(this);
+}
+
+class UseAndDef<T> {
+  UseAndDef(this.use, T? def) : _def = def;
+  final ItemUse use;
+  final T? _def;
+  T get def => _def!;
+  bool get isValid => _def != null;
+  String get name => use.getName;
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -88,34 +74,37 @@ class WarriorModel {
   List<UnitUpgrade> appliedUpgrades = [];
 
   Iterable<ItemUse> get items => privateItems.map((s) => s.value);
-  Iterable<WeaponUse> get weapons =>
-      privateItems.map((s) => s.value).whereType<WeaponUse>();
-  Iterable<String> get kewordUpgrades =>
-      appliedUpgrades.map<String?>((up) => up.keyword?.keyword).nonNulls;
   Currency get upgradesCost => appliedUpgrades
       .map((u) => u.keyword?.cost)
       .nonNulls
       .fold(Currency.free(), (a, b) => a + b);
+  Iterable<String> get kewordUpgrades =>
+      appliedUpgrades.map<String?>((up) => up.keyword?.keyword).nonNulls;
 
-  Iterable<WeaponUse> weaponsOrUnarmed(Armory armory) {
-    final collection = weapons.toList();
-    if (collection.where((wu) => armory.findWeapon(wu).canMelee).isEmpty) {
-      if (!type.getUnarmedPenalty) {
-        return [];
-      }
+  Iterable<UseAndDef<Weapon>> weaponsOrUnarmed(Armory armory) {
+    final res = currentWeapon(armory).where((w) => w.def.canMelee);
+    if (res.isNotEmpty || !type.suffersUnarmedPenalty) return res;
 
-      return Iterable.generate(weapons.length + 1, (idx) {
-        if (idx == 0) return WeaponUse.unarmed();
-        return collection[idx - 1];
-      });
-    }
-    return collection;
+    return [UseAndDef(ItemUse(typeName: "Unarmed"), Weapon.unarmed())];
   }
 
-  Iterable<ArmourUse> get armour =>
-      privateItems.map((s) => s.value).whereType<ArmourUse>();
-  Iterable<EquipmentUse> get equipment =>
-      privateItems.map((s) => s.value).whereType<EquipmentUse>();
+  Iterable<UseAndDef<Weapon>> currentWeapon(Armory armory) {
+    return privateItems
+        .map((use) => UseAndDef(use.value, armory.findWeapon(use.value)))
+        .where((x) => x.isValid);
+  }
+
+  Iterable<UseAndDef<Armour>> currentArmour(Armory armory) {
+    return privateItems
+        .map((use) => UseAndDef(use.value, armory.findArmour(use.value)))
+        .where((x) => x.isValid);
+  }
+
+  Iterable<UseAndDef<Equipment>> currentEquipment(Armory armory) {
+    return privateItems
+        .map((use) => UseAndDef(use.value, armory.findEquipment(use.value)))
+        .where((x) => x.isValid);
+  }
 
   Currency get totalCost => baseCost + equipmentCost + upgradesCost;
   Currency get baseCost => type.cost;
@@ -169,10 +158,10 @@ class WarriorModel {
     List<ItemUse> toRemove = [];
     for (var s in privateItems) {
       final item = s.value;
-
       final def = armoury.findItem(item);
+      assert(def != null);
       final filter = ItemFilter.allOf(
-          [item.getFilter, def.getFilter, type.effectiveItemFilter]);
+          [item.getFilter, def!.getFilter, type.effectiveItemFilter]);
       if (!filter.isItemAllowed(def, this)) {
         toRemove.add(item);
       }
@@ -194,23 +183,7 @@ class WarriorModel {
     for (var item in type.defaultItems ?? []) {
       if (armory.isWeapon(item.itemName)) {
         addItem(
-            WeaponUse(
-                typeName: item.itemName,
-                removable: item.isRemovable,
-                cost: item.getCost),
-            armory);
-      }
-      if (armory.isArmour(item.itemName)) {
-        addItem(
-            ArmourUse(
-                typeName: item.itemName,
-                removable: item.isRemovable,
-                cost: item.getCost),
-            armory);
-      }
-      if (armory.isEquipment(item.itemName)) {
-        addItem(
-            EquipmentUse(
+            ItemUse(
                 typeName: item.itemName,
                 removable: item.isRemovable,
                 cost: item.getCost),
@@ -221,40 +194,33 @@ class WarriorModel {
 
   int computeArmorValue(Armory armory) {
     return type.armour +
-        armour
-            .map((a) => armory.findArmour(a).value ?? 0)
+        currentArmour(armory)
+            .map((a) => a.def.value ?? 0)
             .fold(0, (a, b) => a + b);
   }
 
   bool get isStrong => type.keywords.contains("STRONG");
 
-  Iterable<Weapon> getWeapons(Armory armory) =>
-      weapons.map((w) => armory.findWeapon(w));
-  Iterable<Armour> getArmours(Armory armory) =>
-      armour.map((w) => armory.findArmour(w));
-  Iterable<Equipment> getEquipment(Armory armory) =>
-      armour.map((w) => armory.findEquipment(w));
-
   int pistolsCount(Armory armory) =>
-      getWeapons(armory).where((w) => w.isPistol).length;
+      currentWeapon(armory).where((w) => w.def.isPistol).length;
   int firearmsCount(Armory armory) =>
-      getWeapons(armory).where((w) => w.isFirearm).length;
+      currentWeapon(armory).where((w) => w.def.isFirearm).length;
   int meleeCount(Armory armory) =>
-      getWeapons(armory).where((w) => w.isMeleeWeapon).length;
+      currentWeapon(armory).where((w) => w.def.isMeleeWeapon).length;
 
   bool allowPistol(Armory armory) =>
       (firearmsCount(armory) == 0 && pistolsCount(armory) < 2) ||
       (firearmsCount(armory) == 1 && pistolsCount(armory) < 1);
   bool allowMelee(Armory armory) =>
-      getArmours(armory).where((a) => a.isShield).isEmpty
+      currentArmour(armory).where((a) => a.def.isShield).isEmpty
           ? meleeCount(armory) <= 2
           : meleeCount(armory) <= 1;
   int freeHands(Armory armory) {
     final strong = isStrong;
     return type.getHands -
-        getWeapons(armory)
-            .where((w) => w.isMeleeWeapon)
-            .fold(0, (v, w) => v + (strong ? 1 : w.hands));
+        currentWeapon(armory)
+            .where((w) => w.def.isMeleeWeapon)
+            .fold(0, (v, w) => v + (strong ? 1 : w.def.hands));
   }
 
 // - One firearm and one pistol OR
@@ -263,14 +229,13 @@ class WarriorModel {
 // - One two-handed melee weapon OR
 // - one single-handed melee weapon and a trench shield OR
 // - two single-handed melee weapons.
-  UnmodifiableListView<WeaponUse> availableWeapons(
-      Roster roster, Armory armory) {
+  UnmodifiableListView<ItemUse> availableWeapons(Roster roster, Armory armory) {
     return UnmodifiableListView(roster.weapons.where((use) {
-      final def = armory.findWeapon(use);
+      final def = armory.findWeapon(use)!;
 
       // no repetitions of greandes
       if (def.isGrenade &&
-          weapons.where((w) => w.getName == use.getName).isNotEmpty) {
+          items.where((i) => i.getName == use.getName).isNotEmpty) {
         return false;
       }
 
@@ -280,9 +245,10 @@ class WarriorModel {
 
       // Bypass of normal algorithm for the Amalgam, as many weapons as hands
       if (!type.hasBackpack) {
-        final handsInUse = getWeapons(armory).fold(0, (v, w) => v + w.hands) +
-            getArmours(armory).where((a) => a.isShield).length +
-            def.hands;
+        final handsInUse =
+            currentWeapon(armory).fold(0, (v, w) => v + w.def.hands) +
+                currentArmour(armory).where((a) => a.def.isShield).length +
+                def.hands;
         return (handsInUse <= type.getHands);
       }
 
@@ -301,18 +267,18 @@ class WarriorModel {
   }
 
   bool wearsBodyArmour(Armory armory) =>
-      getArmours(armory).where((a) => a.isBodyArmour).isNotEmpty;
+      currentArmour(armory).where((a) => a.def.isBodyArmour).isNotEmpty;
   bool wearsShield(Armory armory) =>
-      getArmours(armory).where((a) => a.isShield).isNotEmpty;
+      currentArmour(armory).where((a) => a.def.isShield).isNotEmpty;
 
-  UnmodifiableListView<ArmourUse> availableArmours(
+  UnmodifiableListView<ItemUse> availableArmours(
           Roster roster, Armory armory) =>
       UnmodifiableListView(roster.armour.where((use) {
-        final def = armory.findArmour(use);
+        final def = armory.findArmour(use)!;
 
         // no repetitions
         if (!def.isConsumable &&
-            armour.where((w) => w.getName == use.getName).isNotEmpty) {
+            items.where((i) => i.getName == use.getName).isNotEmpty) {
           return false;
         }
 
@@ -322,8 +288,9 @@ class WarriorModel {
 
         // Bypass of normal algorithm for the Amalgam, as many weapons as hands
         if (!type.hasBackpack && def.isShield) {
-          final handsInUse = getWeapons(armory).fold(0, (v, w) => v + w.hands) +
-              getArmours(armory).where((a) => a.isShield).length;
+          final handsInUse =
+              currentWeapon(armory).fold(0, (v, w) => v + w.def.hands) +
+                  currentArmour(armory).where((a) => a.def.isShield).length;
           return ((handsInUse + 1) <= type.getHands);
         }
 
@@ -333,16 +300,18 @@ class WarriorModel {
         return true;
       }));
 
-  UnmodifiableListView<EquipmentUse> availableEquipment(
+  UnmodifiableListView<ItemUse> availableEquipment(
       Roster roster, Armory armory) {
-    return UnmodifiableListView(roster.equipment.where((equip) {
-      final def = armory.findEquipment(equip);
+    return UnmodifiableListView(roster.equipment.where((use) {
+      if (!armory.isEquipment(use)) return false;
+      final def = armory.findEquipment(use)!;
+
       if (!def.isConsumable &&
-          equipment.where((e) => e.typeName == def.typeName).isNotEmpty) {
+          items.where((i) => i.getName == use.getName).isNotEmpty) {
         return false;
       }
       final filter = ItemFilter.allOf(
-          [equip.getFilter, def.getFilter, type.effectiveItemFilter]);
+          [use.filter, def.getFilter, type.effectiveItemFilter].nonNulls);
       if (!filter.isItemAllowed(def, this)) return false;
       return true;
     }));
