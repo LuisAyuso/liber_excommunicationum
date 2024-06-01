@@ -13,13 +13,22 @@ class UnitDescription extends StatelessWidget {
   Widget build(BuildContext context) {
     final ranged = bonus(unit.ranged);
     final melee = bonus(unit.melee);
-
     final effectiveArmour = unit.defaultItems?.fold(unit.armour, (v, item) {
           if (!armory.isArmour(item.itemName)) return v;
           final def = armory.findArmour(item.itemName);
           return v + (def.value ?? 0);
         }) ??
         unit.armour;
+
+    String countStr = "";
+    if (unit.min != null && unit.max != null && unit.min == unit.max) {
+      countStr = "${unit.min!} ";
+    } else if (unit.min != null && unit.max == null) {
+      countStr = "${unit.min!} ";
+    } else if (unit.max != null) {
+      countStr = "${unit.min ?? 0}-${unit.max!} ";
+    }
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,7 +36,7 @@ class UnitDescription extends StatelessWidget {
         Container(
           padding: const EdgeInsets.only(left: 16),
           child: Text(
-            unit.typeName,
+            "$countStr${unit.typeName}",
             style:
                 Theme.of(context).textTheme.titleMedium!.copyWith(color: tcRed),
           ),
@@ -59,15 +68,5 @@ class UnitDescription extends StatelessWidget {
         Wrap(children: unit.keywords.map((s) => ItemChip(item: s)).toList())
       ],
     );
-  }
-
-  Widget unitCount(Unit unit) {
-    if (unit.max == null) return const SizedBox();
-
-    final min = unit.min ?? 0;
-    final max = unit.max!;
-
-    if (min == max) return Text("$max");
-    return Text("$min-$max");
   }
 }
