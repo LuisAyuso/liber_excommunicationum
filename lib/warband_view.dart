@@ -249,6 +249,13 @@ class WarriorBlock extends StatelessWidget {
                 .map<Widget>((w) => ItemChip(item: w))
                 .toList(),
           ),
+          Wrap(
+            spacing: 8,
+            alignment: WrapAlignment.start,
+            children: warrior.effectiveKeywords
+                .map<Widget>((kw) => ItemChip(item: kw))
+                .toList(),
+          ),
         ],
       ),
       children: [
