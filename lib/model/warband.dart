@@ -73,7 +73,7 @@ class WarriorModel {
 
   Iterable<ItemUse> get items => privateItems.map((s) => s.value);
   Currency get upgradesCost => appliedUpgrades
-      .map((u) => u.keyword?.cost)
+      .map((u) => u.cost)
       .nonNulls
       .fold(Currency.free(), (a, b) => a + b);
   Iterable<String> get kewordUpgrades =>
@@ -333,8 +333,7 @@ class WarriorModel {
   }
 
   bool apply(UnitUpgrade u, Roster roster) {
-    // is a keyword upgrade?
-    if (u.keyword != null) {
+    if (u.keyword != null || u.ability != null) {
       appliedUpgrades.add(u);
       return true;
     }

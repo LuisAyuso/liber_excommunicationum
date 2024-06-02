@@ -23,7 +23,7 @@ Roster management tool for Trench Crusade
 - [ ] Complete units list overhaul
 
 ### Game Logic
-- [ ] List Variants
+- [-] List Variants
 - [x] Unarmed: if no melee equipped, add the "unarmed" weapon profile
 - [x] Edit mode vs play mode
 - [x] List-dependent armory
@@ -60,7 +60,7 @@ Roster management tool for Trench Crusade
 - [x] Move type, infantry/fly
 - [x] Unit flavous that must be all equal (legionaries)
 - [x] Better model silenced gun
-- [ ] Unit upgrade instead of adding a new one
+- [x] Unit upgrade instead of adding a new one
 
 ### Refactors
 - [x] Move filter logic to model, keep frontend business-logic-free

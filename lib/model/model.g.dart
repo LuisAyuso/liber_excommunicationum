@@ -67,16 +67,35 @@ Map<String, dynamic> _$KeywordUpgradeToJson(KeywordUpgrade instance) =>
       'max': instance.max,
     };
 
+AbilityUpgrade _$AbilityUpgradeFromJson(Map<String, dynamic> json) =>
+    AbilityUpgrade(
+      ability: json['ability'] as String? ?? "",
+      cost: json['cost'] == null
+          ? null
+          : Currency.fromJson(json['cost'] as Map<String, dynamic>),
+      max: json['max'] as int?,
+    );
+
+Map<String, dynamic> _$AbilityUpgradeToJson(AbilityUpgrade instance) =>
+    <String, dynamic>{
+      'cost': instance.cost?.toJson(),
+      'ability': instance.ability,
+      'max': instance.max,
+    };
+
 UnitUpgrade _$UnitUpgradeFromJson(Map<String, dynamic> json) => UnitUpgrade(
       keyword: json['keyword'] == null
           ? null
           : KeywordUpgrade.fromJson(json['keyword'] as Map<String, dynamic>),
       unit: json['unit'] as String?,
-    );
+    )..ability = json['ability'] == null
+        ? null
+        : AbilityUpgrade.fromJson(json['ability'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$UnitUpgradeToJson(UnitUpgrade instance) =>
     <String, dynamic>{
       'keyword': instance.keyword?.toJson(),
+      'ability': instance.ability?.toJson(),
       'unit': instance.unit,
     };
 
@@ -236,6 +255,9 @@ RosterVariant _$RosterVariantFromJson(Map<String, dynamic> json) =>
           .toList()
       ..uniqueEquipment = (json['uniqueEquipment'] as List<dynamic>?)
           ?.map((e) => Equipment.fromJson(e as Map<String, dynamic>))
+          .toList()
+      ..uniqueUnits = (json['uniqueUnits'] as List<dynamic>?)
+          ?.map((e) => Unit.fromJson(e as Map<String, dynamic>))
           .toList();
 
 Map<String, dynamic> _$RosterVariantToJson(RosterVariant instance) =>
@@ -250,6 +272,7 @@ Map<String, dynamic> _$RosterVariantToJson(RosterVariant instance) =>
       'uniqueArmour': instance.uniqueArmour?.map((e) => e.toJson()).toList(),
       'uniqueEquipment':
           instance.uniqueEquipment?.map((e) => e.toJson()).toList(),
+      'uniqueUnits': instance.uniqueUnits?.map((e) => e.toJson()).toList(),
     };
 
 Roster _$RosterFromJson(Map<String, dynamic> json) => Roster()

@@ -159,7 +159,9 @@ class WarbandChooser extends StatelessWidget {
                 WarbandButton(
                   armoy: future.data!,
                   rosterAsset: "assets/lists/sultanate.json",
-                  variantsAssets: const [],
+                  variantsAssets: const [
+                    "assets/lists/the_cabal_of_assassins.json",
+                  ],
                 ),
                 WarbandButton(
                   armoy: future.data!,

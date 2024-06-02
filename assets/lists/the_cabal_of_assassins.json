@@ -1,0 +1,197 @@
+{
+    "version": "v1.3.2",
+    "name": "Fida’i of Alamut – The Cabal of Assassins",
+    "unitVariants": [
+        {
+            "typeName": "Sultanate Assassin",
+            "max": 2,
+            "upgrades": [
+                {
+                    "ability": {
+                        "ability": "Hallucinogen Disguise",
+                        "cost": {
+                            "ducats": 15
+                        }
+                    }
+                },
+                {
+                    "ability": {
+                        "ability": "Thunderbolt of Alamut",
+                        "cost": {
+                            "ducats": 20
+                        }
+                    }
+                },
+                {
+                    "ability": {
+                        "ability": "Mirage of Time",
+                        "cost": {
+                            "ducats": 20
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "typeName": "Azebs",
+            "upgrades": [
+                {
+                    "keyword": {
+                        "keyword": "INFILTRATOR",
+                        "cost": {
+                            "ducats": 10
+                        },
+                        "max": 3
+                    }
+                }
+            ]
+        },
+        {
+            "typeName": "Yüzbaşı Captain",
+            "min": 0,
+            "max": 0
+        },
+        {
+            "typeName": "Jabirean Alchemist",
+            "max": 0
+        },
+        {
+            "typeName": "Brazen Bull",
+            "max": 0
+        },
+        {
+            "typeName": "Lions of Jabir",
+            "max": 0
+        },
+        {
+            "typeName": "Janissaries",
+            "max": 0
+        }
+    ],
+    "weapons": [
+        {
+            "typeName": "Golden Khanjar",
+            "cost": {
+                "ducats": 20
+            }
+        },
+        {
+            "typeName": "Bow of Alamut",
+            "cost": {
+                "ducats": 50
+            }
+        }
+    ],
+    "uniqueWeapons": [
+        {
+            "typeName": "Golden Khanjar",
+            "hands": 1,
+            "modifiers": [
+                {
+                    "injury": 1
+                },
+                {
+                    "attacks": 2
+                }
+            ]
+        },
+        {
+            "typeName": "Bow of Alamut",
+            "hands": 2,
+            "range": 60,
+            "modifiers": [
+                {
+                    "extra": "Ignores Armour"
+                }
+            ],
+            "keywords": [
+                "CRITICAL"
+            ]
+        }
+    ],
+    "equipment": [
+        {
+            "typeName": "Hashashin Leaf",
+            "cost": {
+                "ducats": 5
+            }
+        }
+    ],
+    "uniqueEquipment": [
+        {
+            "typeName": "Hashashin Leaf"
+        }
+    ],
+    "uniqueUnits": [
+        {
+            "typeName": "Master Assassin",
+            "min": 1,
+            "max": 1,
+            "movement": "6\"/infantry",
+            "ranged": 1,
+            "melee": 2,
+            "armour": 0,
+            "abilities": [
+                "Time Slip",
+                "Temporal Assassin",
+                "Infiltrator"
+            ],
+            "keywords": [
+                "ELITE",
+                "SULTANATE",
+                "INFILTRATOR",
+                "THOUGH"
+            ],
+            "cost": {
+                "ducats": 95
+            },
+            "base": "32mm",
+            "upgrades": [
+                {
+                    "ability": {
+                        "ability": "Hallucinogen Disguise",
+                        "cost": {
+                            "ducats": 15
+                        }
+                    }
+                },
+                {
+                    "ability": {
+                        "ability": "Thunderbolt of Alamut",
+                        "cost": {
+                            "ducats": 20
+                        }
+                    }
+                },
+                {
+                    "ability": {
+                        "ability": "Mirage of Time",
+                        "cost": {
+                            "ducats": 20
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "typeName": "Dervishes",
+            "max": 6,
+            "movement": "6\"/infantry",
+            "ranged": 1,
+            "melee": 1,
+            "armour": 0,
+            "abilities": [
+                "Strong",
+                "Counter-Charge",
+                "Whirling Dervishe"
+            ],
+            "keywords": [
+                "SULTANATE"
+            ],
+            "cost": {
+                "ducats": 55
+            },
+            "base": "25mm"
+        }
+    ]
+}

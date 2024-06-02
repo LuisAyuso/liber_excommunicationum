@@ -783,6 +783,19 @@ class WarriorBlock extends StatelessWidget {
                     icon: const Icon(Icons.delete))
                 : const SizedBox(),
           ];
+        }),
+        ...warrior.appliedUpgrades.where((up) => up.ability != null).map((up) {
+          return <Widget>[
+            Text(up.ability!.ability),
+            context.watch<EditingModel>().editing
+                ? IconButton(
+                    onPressed: () {
+                      warrior.appliedUpgrades.remove(up);
+                      context.read<WarbandModel>().invalidate();
+                    },
+                    icon: const Icon(Icons.delete))
+                : const SizedBox(),
+          ];
         })
       ],
     );

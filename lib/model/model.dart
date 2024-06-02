@@ -127,21 +127,51 @@ class KeywordUpgrade {
 }
 
 @JsonSerializable(explicitToJson: true)
+class AbilityUpgrade {
+  AbilityUpgrade({this.ability = "", this.cost, this.max});
+
+  Currency? cost;
+  String ability;
+  int? max;
+
+  @override
+  String toString() {
+    final res = "Add $ability";
+    if (cost != null) return "$res for $cost";
+    return res;
+  }
+
+  factory AbilityUpgrade.fromJson(Map<String, dynamic> json) =>
+      _$AbilityUpgradeFromJson(json);
+  Map<String, dynamic> toJson() => _$AbilityUpgradeToJson(this);
+
+  bool isAllowed(WarriorModel me, List<WarriorModel> warriors) {
+    return true;
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
 class UnitUpgrade {
   UnitUpgrade({this.keyword, this.unit});
 
   KeywordUpgrade? keyword;
+  AbilityUpgrade? ability;
   String? unit;
+
+  Currency get cost =>
+      (keyword?.cost ?? Currency.free()) + (ability?.cost ?? Currency.free());
 
   @override
   String toString() {
     if (keyword != null) return keyword.toString();
+    if (ability != null) return ability.toString();
     if (unit != null) return unit.toString();
     return "ill-formed upgrade";
   }
 
   bool isAllowed(WarriorModel me, List<WarriorModel> warriors, Roster roster) {
     if (keyword != null) return keyword!.isAllowed(me, warriors);
+    if (ability != null) return ability!.isAllowed(me, warriors);
     assert(unit != null);
     final def = roster.units.firstWhere((u) => u.typeName == unit!);
     final withoutMe = List<WarriorModel>.from(warriors);
@@ -349,6 +379,8 @@ class RosterVariant {
   List<Armour>? uniqueArmour;
   List<Equipment>? uniqueEquipment;
 
+  List<Unit>? uniqueUnits;
+
   factory RosterVariant.fromJson(Map<String, dynamic> json) =>
       _$RosterVariantFromJson(json);
   Map<String, dynamic> toJson() => _$RosterVariantToJson(this);
@@ -381,6 +413,8 @@ class RosterVariant {
       ...?newRoster.uniqueEquipment,
       ...?uniqueEquipment
     ];
+
+    newRoster.units = [...newRoster.units, ...?uniqueUnits];
 
     return newRoster;
   }

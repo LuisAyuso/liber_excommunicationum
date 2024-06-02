@@ -215,7 +215,8 @@ void main() {
   });
 
   test('load sultanate list', () async {
-    testList('assets/lists/sultanate.json');
+    final roster = await testList('assets/lists/sultanate.json');
+    testVariant(roster.clone(), "assets/lists/the_cabal_of_assassins.json");
   });
 
   test('load black grail', () async {
