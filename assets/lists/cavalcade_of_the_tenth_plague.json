@@ -1,0 +1,39 @@
+{
+    "version": "v1.3.2",
+    "name": "Cavalcade of the Tenth Plague",
+    "unitVariants": [
+        {
+            "typeName": "Martyr Penitent",
+            "max": 0
+        },
+        {
+            "typeName": "Ecclesiastic Prisoners",
+            "max": 2
+        },
+        {
+            "typeName": "Communicant",
+            "cost": {
+                "ducats": 120
+            }
+        }
+    ],
+    "itemVariants": [],
+    "equipment": [
+        {
+            "typeName": "Sacrificial Lamb",
+            "cost": {
+                "ducats": 10
+            },
+            "filter": {
+                "not": {
+                    "unitName": "Ecclesiastic Prisoners"
+                }
+            }
+        }
+    ],
+    "uniqueEquipment": [
+        {
+            "typeName": "Sacrificial Lamb"
+        }
+    ]
+}

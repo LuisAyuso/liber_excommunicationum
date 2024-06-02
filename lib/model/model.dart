@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:tc_thing/model/filters.dart';
 import 'package:tc_thing/model/warband.dart';
+import 'package:tc_thing/utils/utils.dart';
 
 part 'model.g.dart';
 
@@ -159,14 +160,19 @@ enum Sex { male, female, custom }
 class UnitVariant {
   UnitVariant();
 
-  UnitFilter filter = UnitFilter.trueValue();
+  String? typeName;
+  UnitFilter? filter = UnitFilter.trueValue();
+
   int? max;
   int? min;
   List<UnitUpgrade>? upgrades;
   List<String>? keywords;
+  List<DefaultItem>? defaultItems;
 
-  Unit apply(Unit u) {
-    if (!filter.isUnitAllowed(u, [])) return u;
+  Unit apply(Unit old) {
+    if (old.typeName != (typeName ?? "--")) return old;
+    if (!(filter?.isUnitAllowed(old, []) ?? true)) return old;
+    var u = old.clone();
     u.max = max ?? u.max;
     u.min = min ?? u.min;
     u.upgrades = [
@@ -177,6 +183,7 @@ class UnitVariant {
       ...u.keywords,
       ...keywords ?? [],
     ];
+    u.defaultItems = defaultItems ?? u.defaultItems;
     return u;
   }
 
@@ -259,12 +266,7 @@ class Unit {
     return typeName;
   }
 
-  factory Unit.fromJson(Map<String, dynamic> json) {
-    for (var e in json.entries) {
-      debugPrint("${e.key} : ${e.value}");
-    }
-    return _$UnitFromJson(json);
-  }
+  factory Unit.fromJson(Map<String, dynamic> json) => _$UnitFromJson(json);
   Map<String, dynamic> toJson() => _$UnitToJson(this);
 }
 
@@ -277,8 +279,10 @@ class ItemVariant {
   ItemFilter? filter;
   int? limit;
 
-  ItemUse apply(ItemUse i) {
-    if (i.getName != typeName) return i;
+  ItemUse apply(ItemUse old) {
+    if (old.getName != typeName) return old;
+
+    var i = old.clone();
     i.cost = cost ?? i.cost;
     i.filter = filter ?? i.filter;
     i.limit = limit ?? i.limit;
@@ -318,6 +322,15 @@ class ItemUse {
   factory ItemUse.fromJson(Map<String, dynamic> json) =>
       _$ItemUseFromJson(json);
   Map<String, dynamic> toJson() => _$ItemUseToJson(this);
+
+  ItemUse clone() {
+    return ItemUse(
+        typeName: typeName,
+        cost: cost,
+        removable: removable,
+        limit: limit,
+        filter: filter);
+  }
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -328,9 +341,13 @@ class RosterVariant {
   List<UnitVariant>? unitVariants;
   List<ItemVariant>? itemVariants;
 
-//  List<Weapon>? uniqueWeapons = [];
-//  List<Armour>? uniqueArmour = [];
-//  List<Equipment>? uniqueEquipment = [];
+  List<ItemUse>? weapons;
+  List<ItemUse>? armour;
+  List<ItemUse>? equipment;
+
+  List<Weapon>? uniqueWeapons;
+  List<Armour>? uniqueArmour;
+  List<Equipment>? uniqueEquipment;
 
   factory RosterVariant.fromJson(Map<String, dynamic> json) =>
       _$RosterVariantFromJson(json);
@@ -340,18 +357,31 @@ class RosterVariant {
     var newRoster = oldRoster.clone();
     newRoster.name = name;
 
-    for (int i = 0; i < newRoster.units.length; i++) {
-      for (UnitVariant variant in unitVariants ?? []) {
-        newRoster.units[i] = variant.apply(newRoster.units[i]);
-      }
+    for (UnitVariant variant in unitVariants ?? []) {
+      newRoster.units = newRoster.units.map((u) => variant.apply(u)).toList();
     }
     newRoster.units.removeWhere((u) => (u.max ?? 1) <= 0);
 
-    for (int i = 0; i < newRoster.items.length; i++) {
-      for (ItemVariant variant in itemVariants ?? []) {
-        newRoster.items[i] = variant.apply(newRoster.items[i]);
-      }
+    for (ItemVariant variant in itemVariants ?? []) {
+      newRoster.weapons =
+          newRoster.weapons.map((item) => variant.apply(item)).toList();
+      newRoster.armour =
+          newRoster.armour.map((item) => variant.apply(item)).toList();
+      newRoster.equipment =
+          newRoster.equipment.map((item) => variant.apply(item)).toList();
     }
+
+    newRoster.weapons = [...newRoster.weapons, ...?weapons];
+    newRoster.armour = [...newRoster.armour, ...?armour];
+    newRoster.equipment = [...newRoster.equipment, ...?equipment];
+
+    newRoster.uniqueWeapons = [...?newRoster.uniqueWeapons, ...?uniqueWeapons];
+    newRoster.uniqueArmour = [...?newRoster.uniqueArmour, ...?uniqueArmour];
+    newRoster.uniqueEquipment = [
+      ...?newRoster.uniqueEquipment,
+      ...?uniqueEquipment
+    ];
+
     return newRoster;
   }
 }
@@ -376,9 +406,6 @@ class Roster {
 
   List<ItemUse> get items => [...weapons, ...armour, ...equipment];
 
-  factory Roster.fromJson(Map<String, dynamic> json) => _$RosterFromJson(json);
-  Map<String, dynamic> toJson() => _$RosterToJson(this);
-
   Roster clone() {
     var v = Roster();
     v.name = name;
@@ -399,6 +426,48 @@ class Roster {
     }
     return v;
   }
+
+  Iterable<UseAndDef<Weapon>> availableWeapons(Armory armory) {
+    final defs = [...armory.weapons, ...?uniqueWeapons];
+    return weapons
+        .map((use) =>
+            UseAndDef(use, findIn(defs, (i) => i.itemName == use.typeName)))
+        .where((u) => u.isValid);
+  }
+
+  Iterable<UseAndDef<Armour>> availableArmours(Armory armory) {
+    final defs = [...armory.armours, ...?uniqueArmour];
+    return armour
+        .map((use) =>
+            UseAndDef(use, findIn(defs, (i) => i.itemName == use.typeName)))
+        .where((u) => u.isValid);
+  }
+
+  Iterable<UseAndDef<Equipment>> availableEquipment(Armory armory) {
+    final defs = [...armory.equipments, ...?uniqueEquipment];
+    return equipment
+        .map((use) =>
+            UseAndDef(use, findIn(defs, (i) => i.itemName == use.typeName)))
+        .where((u) => u.isValid);
+  }
+
+  Iterable<UseAndDef<Item>> allAvailableItems(Armory armory) {
+    final defs = [
+      ...armory.weapons,
+      ...?uniqueWeapons,
+      ...armory.armours,
+      ...?uniqueArmour,
+      ...armory.equipments,
+      ...?uniqueEquipment,
+    ];
+    return items
+        .map((use) =>
+            UseAndDef(use, findIn(defs, (i) => i.itemName == use.typeName)))
+        .where((u) => u.isValid);
+  }
+
+  factory Roster.fromJson(Map<String, dynamic> json) => _$RosterFromJson(json);
+  Map<String, dynamic> toJson() => _$RosterToJson(this);
 }
 
 abstract class Item {
@@ -412,6 +481,8 @@ abstract class Item {
 enum BonusType { dice, value }
 
 String bonus(int v, {BonusType type = BonusType.dice}) {
+  if (v == 0) return "";
+
   String suffix = "";
   switch (type) {
     case BonusType.dice:
@@ -548,6 +619,10 @@ class Weapon extends Item {
   String get itemName => typeName;
   @override
   bool get isConsumable => keywords?.contains("CONSUMABLE") ?? false;
+  @override
+  String toString() {
+    return typeName;
+  }
 
   UnmodifiableListView<Modifier> get getModifiers =>
       UnmodifiableListView(modifiers ?? []);
@@ -574,9 +649,6 @@ class Weapon extends Item {
     if (canMelee) return "Melee";
     return "Ranged";
   }
-
-  @override
-  String toString() => typeName;
 
   @override
   UnmodifiableListView<String> get getKeywords =>
@@ -626,6 +698,10 @@ class Armour extends Item {
   String get itemName => typeName;
   @override
   bool get isConsumable => keywords?.contains("CONSUMABLE") ?? false;
+  @override
+  String toString() {
+    return typeName;
+  }
 
   bool get isShield => type == ArmourType.shield;
   bool get isBodyArmour => type == ArmourType.bodyArmour;
@@ -654,6 +730,10 @@ class Equipment extends Item {
   @override
   bool get isConsumable =>
       (consumable ?? false) || (keywords?.contains("CONSUMABLE") ?? false);
+  @override
+  String toString() {
+    return typeName;
+  }
 
   factory Equipment.fromJson(Map<String, dynamic> json) =>
       _$EquipmentFromJson(json);
@@ -711,12 +791,6 @@ class Armory {
     return equipments.where((def) => def.typeName == use).length == 1;
   }
 
-  void extendWithUnique(Roster roster) {
-    weapons.addAll(roster.uniqueWeapons ?? []);
-    armours.addAll(roster.uniqueArmour ?? []);
-    equipments.addAll(roster.uniqueEquipment ?? []);
-  }
-
   void add(Item item) {
     if (item is Weapon) weapons.add(item);
     if (item is Armour) armours.add(item);
@@ -727,6 +801,7 @@ class Armory {
     if (isWeapon(use)) return findWeapon(use);
     if (isArmour(use)) return findArmour(use);
     if (isEquipment(use)) return findEquipment(use);
+    debugPrint("not found! ${use.typeName}");
     return null;
   }
 }

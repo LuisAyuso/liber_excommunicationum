@@ -73,7 +73,6 @@ class _UnitSelectorState extends State<UnitSelector> {
                     itemBuilder: (context, idx) => makeUnitEntry(
                           context,
                           elites[idx],
-                          widget.roster,
                           widget.buckets[elites[idx].typeName]!,
                         ),
                     separatorBuilder: (context, idx) => const Divider(),
@@ -82,7 +81,6 @@ class _UnitSelectorState extends State<UnitSelector> {
                     itemBuilder: (context, idx) => makeUnitEntry(
                           context,
                           troops[idx],
-                          widget.roster,
                           widget.buckets[troops[idx].typeName]!,
                         ),
                     separatorBuilder: (context, idx) => const Divider(),
@@ -96,19 +94,20 @@ class _UnitSelectorState extends State<UnitSelector> {
   Widget makeUnitEntry(
     BuildContext context,
     Unit unit,
-    Roster roster,
     int bucket,
   ) {
     return Builder(builder: (context) {
       return InkWell(
         onTap: () {
           var wb = context.read<WarbandModel>();
-          wb.add(WarriorModel(
-              name: generateName(unit.sex, unit.keywords),
-              uid: wb.nextUID(),
-              type: unit,
-              bucket: bucket,
-              armory: widget.armory));
+          final newWarrior = WarriorModel(
+            name: generateName(unit.sex, unit.keywords),
+            uid: wb.nextUID(),
+            type: unit,
+            bucket: bucket,
+          );
+          newWarrior.populateBuiltIn(widget.roster, widget.armory);
+          wb.add(newWarrior);
           Navigator.pop(context);
         },
         child: UnitDescription(

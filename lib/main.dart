@@ -151,7 +151,10 @@ class WarbandChooser extends StatelessWidget {
                 WarbandButton(
                   armoy: future.data!,
                   rosterAsset: "assets/lists/trench_pilgrims.json",
-                  variantsAssets: const [],
+                  variantsAssets: const [
+                    "assets/lists/procession_of_the_sacred_affliction.json",
+                    "assets/lists/cavalcade_of_the_tenth_plague.json"
+                  ],
                 ),
                 WarbandButton(
                   armoy: future.data!,
@@ -327,7 +330,6 @@ Future<(Armory, Roster, List<RosterVariant>)> loadRoster(
 ) async {
   var data = await bundle.loadString(rosterAsset);
   final roster = Roster.fromJson(jsonDecode(data));
-  armory.extendWithUnique(roster);
 
   final variantsJson = await Stream.fromIterable(variantsAssets)
       .asyncMap((v) => bundle.loadString(v))

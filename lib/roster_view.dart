@@ -12,6 +12,8 @@ class RosterPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final items = roster.allAvailableItems(armory).toList();
+
     return ContentLex(
       child: DefaultTabController(
         length: 2,
@@ -40,11 +42,11 @@ class RosterPreview extends StatelessWidget {
                 ),
                 ListView.separated(
                   itemBuilder: (context, idx) => ItemDescription(
-                    use: roster.items[idx],
-                    item: armory.findItem(roster.items[idx]),
+                    use: items[idx].use,
+                    item: items[idx].def,
                   ),
                   separatorBuilder: (context, idx) => const SizedBox(),
-                  itemCount: roster.items.length,
+                  itemCount: items.length,
                 ),
               ],
             )),

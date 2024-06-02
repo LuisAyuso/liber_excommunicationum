@@ -1,0 +1,48 @@
+{
+    "version": "v1.3.2",
+    "name": "Procession of the Sacred Affliction",
+    "unitVariants": [
+        {
+            "typeName": "Ecclesiastic Prisoners",
+            "defaultItems": [
+                {
+                    "itemName": "Martyrdom Device",
+                    "removable": false,
+                    "cost": {
+                        "ducats": 35
+                    }
+                }
+            ]
+        }
+    ],
+    "itemVariants": [
+        {
+            "typeName": "Iron Capirote",
+            "limit": 0
+        },
+        {
+            "typeName": "Machine Gun",
+            "limit": 0
+        },
+        {
+            "typeName": "Holy Icon Shield",
+            "cost": {
+                "ducats": 20
+            },
+            "filter": {
+                "all": true
+            }
+        }
+    ],
+    "armour": [
+        {
+            "typeName": "Holy Icon Armour",
+            "cost": {
+                "ducats": 20
+            },
+            "filter": {
+                "unitKeyword": "ELITE"
+            }
+        }
+    ]
+}

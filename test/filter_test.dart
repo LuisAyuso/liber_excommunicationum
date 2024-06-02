@@ -27,8 +27,8 @@ void main() {
     armory.add(shield);
 
     WarriorModel wm = WarriorModel(uid: 1, type: u, bucket: 2);
-    wm.addItem(ItemUse(typeName: "Gun"), armory);
-    wm.addItem(ItemUse(typeName: "Armour"), armory);
+    wm.addItem(ItemUse(typeName: "Gun"));
+    wm.addItem(ItemUse(typeName: "Armour"));
 
     expect(ItemFilter.none().isItemAllowed(gun, wm), false);
     expect(ItemFilter(unitKeyword: "AAAA").isItemAllowed(gun, wm), true);

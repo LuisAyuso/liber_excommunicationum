@@ -410,6 +410,9 @@
             "typeName": "Holy Icon Shield",
             "cost": {
                 "glory": 2
+            },
+            "filter": {
+                "unitKeyword": "ELITE"
             }
         }
     ],

@@ -176,9 +176,8 @@ class WarriorBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final unitCount = context
-        .read<WarbandModel>()
-        .warriors
+    final wb = context.read<WarbandModel>();
+    final unitCount = wb.warriors
         .where((other) => other.type.typeName == warrior.type.typeName)
         .length;
 
@@ -270,9 +269,12 @@ class WarriorBlock extends StatelessWidget {
                 children: editControls(
                     context,
                     warrior,
-                    warrior.availableWeapons(roster, armory),
-                    warrior.availableArmours(roster, armory),
-                    warrior.availableEquipment(roster, armory),
+                    warrior.availableWeapons(
+                        roster.availableWeapons(armory), armory),
+                    warrior.availableArmours(
+                        roster.availableArmours(armory), armory),
+                    warrior.availableEquipment(
+                        roster.availableEquipment(armory), armory),
                     unitCount),
               ),
               rangedWeapons(context, armory),
@@ -295,9 +297,9 @@ class WarriorBlock extends StatelessWidget {
   UnmodifiableListView<Widget> editControls(
     BuildContext context,
     WarriorModel warrior,
-    UnmodifiableListView<ItemUse> availableWeapons,
-    UnmodifiableListView<ItemUse> availableArmours,
-    UnmodifiableListView<ItemUse> availableEquipment,
+    Iterable<UseAndDef<Weapon>> availableWeapons,
+    Iterable<UseAndDef<Armour>> availableArmours,
+    Iterable<UseAndDef<Equipment>> availableEquipment,
     int unitCount,
   ) {
     var wb = context.read<WarbandModel>();
@@ -323,14 +325,13 @@ class WarriorBlock extends StatelessWidget {
                       builder: (BuildContext context) {
                         return ItemChooser(
                             elements: availableWeapons.toList(),
-                            armory: armory,
                             filter: ItemChooserFilterDelegate(filters: {
                               "Ranged": onlyRanged,
                               "Grenades": onlyGrenades,
                               "Melee": onlyMelee,
                             }),
                             callback: (use) {
-                              wb.getUID(warrior.uid).addItem(use, armory);
+                              wb.getUID(warrior.uid).addItem(use);
                               wb.invalidate();
                               Navigator.pop(context);
                             });
@@ -350,9 +351,8 @@ class WarriorBlock extends StatelessWidget {
                       builder: (BuildContext context) {
                         return ItemChooser(
                             elements: availableArmours.toList(),
-                            armory: armory,
                             callback: (use) {
-                              wb.getUID(warrior.uid).addItem(use, armory);
+                              wb.getUID(warrior.uid).addItem(use);
                               wb.invalidate();
                               Navigator.pop(context);
                             });
@@ -372,9 +372,8 @@ class WarriorBlock extends StatelessWidget {
                       builder: (BuildContext context) {
                         return ItemChooser(
                             elements: availableEquipment.toList(),
-                            armory: armory,
                             callback: (use) {
-                              wb.getUID(warrior.uid).addItem(use, armory);
+                              wb.getUID(warrior.uid).addItem(use);
                               wb.invalidate();
                               Navigator.pop(context);
                             });
@@ -604,25 +603,23 @@ class WarriorBlock extends StatelessWidget {
               alterEgo.removeItem(oldWeapon, armory);
               final candidates = alterEgo
                   .availableWeapons(
-                roster,
+                roster.availableWeapons(armory),
                 armory,
               )
                   .where((item) {
-                if (item.getName == oldWeapon.getName) return false;
-                if (!replacements.isAllowed(armory.findItem(item)!)) {
+                if (item.name == oldWeapon.getName) return false;
+                if (!replacements.isAllowed(item.def)) {
                   return false;
                 }
-                final defA = armory.findWeapon(oldWeapon)!;
-                final defB = armory.findWeapon(item)!;
-                return defA.canRanged == defB.canRanged;
-              }).map((use) {
+                final oldDef = armory.findWeapon(oldWeapon)!;
+                return oldDef.canRanged == item.def.canRanged;
+              }).map((item) {
                 final offsetCost = replacements.offsetCost ?? oldWeapon.getCost;
-                use.cost = offsetCost.offset(use.cost);
-                return use;
+                item.use.cost = offsetCost.offset(item.use.cost);
+                return item;
               }).toList();
               return ItemChooser(
                   elements: candidates,
-                  armory: armory,
                   callback: (newWeapon) {
                     warrior.replace(oldWeapon, newWeapon, armory);
                     wb.invalidate();
@@ -689,24 +686,19 @@ class WarriorBlock extends StatelessWidget {
               alterEgo.removeItem(oldArmour, armory);
               final newCandidates = alterEgo
                   .availableArmours(
-                roster,
+                roster.availableArmours(armory),
                 armory,
               )
                   .where((item) {
-                if (item.getName == oldArmour.getName) return false;
-                return replacements.isAllowed(armory.findItem(item)!);
-              }).map((use) {
-                final offsetCost = replacements.offsetCost ?? oldArmour.cost;
-                return ItemUse(
-                    typeName: use.typeName,
-                    cost: offsetCost.offset(use.cost),
-                    removable: use.removable,
-                    filter: use.filter,
-                    limit: use.limit);
+                if (item.name == oldArmour.getName) return false;
+                return replacements.isAllowed(item.def);
+              }).map((item) {
+                final offsetCost = replacements.offsetCost ?? oldArmour.getCost;
+                item.use.cost = offsetCost.offset(item.use.cost);
+                return item;
               }).toList();
               return ItemChooser(
                   elements: newCandidates,
-                  armory: armory,
                   callback: (newArmour) {
                     warrior.replace(oldArmour, newArmour, armory);
                     wb.invalidate();
@@ -930,18 +922,16 @@ class ItemChooserFilterDelegate {
           .toList());
 }
 
-class ItemChooser extends StatefulWidget {
+class ItemChooser<T> extends StatefulWidget {
   const ItemChooser({
     super.key,
     required this.callback,
     required this.elements,
-    required this.armory,
     this.priceOffset = const Currency(),
     this.filter,
   });
   final void Function(ItemUse) callback;
-  final List<ItemUse> elements;
-  final Armory armory;
+  final Iterable<UseAndDef<T>> elements;
   final Currency priceOffset;
   final ItemChooserFilterDelegate? filter;
 
@@ -952,14 +942,6 @@ class ItemChooser extends StatefulWidget {
 class _ItemChooserState extends State<ItemChooser> {
   late Set<ItemFilter> _currentFilter;
 
-  ItemFilter get asFilter => ItemFilter.anyOf(_currentFilter.toList());
-  UnmodifiableListView<ItemUse> get items {
-    final filter = asFilter;
-    return UnmodifiableListView(widget.elements
-        .where((item) => filter.isItemAllowed(widget.armory.findItem(item)!))
-        .toList());
-  }
-
   @override
   void initState() {
     _currentFilter =
@@ -969,7 +951,12 @@ class _ItemChooserState extends State<ItemChooser> {
 
   @override
   Widget build(BuildContext context) {
-    final list = items;
+    final choice = ItemFilter.anyOf(_currentFilter.toList());
+    final list = UnmodifiableListView(widget.elements.where((item) {
+      final filter2 = ItemFilter.allOf([item.use.filter, choice].nonNulls);
+      return filter2.isItemAllowed(item.def);
+    }).toList());
+
     return Container(
       height: MediaQuery.of(context).size.height * 0.5,
       color: Colors.white,
@@ -989,10 +976,10 @@ class _ItemChooserState extends State<ItemChooser> {
           Expanded(
             child: ListView.separated(
               itemBuilder: (ctx, idx) => InkWell(
-                onTap: () => widget.callback(list[idx]),
+                onTap: () => widget.callback(list[idx].use),
                 child: ItemDescription(
-                  use: list[idx],
-                  item: widget.armory.findItem(list[idx]),
+                  use: list[idx].use,
+                  item: list[idx].def,
                 ),
               ),
               separatorBuilder: (ctx, idx) => const Divider(),

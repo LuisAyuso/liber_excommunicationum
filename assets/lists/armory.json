@@ -444,6 +444,11 @@
             }
         },
         {
+            "typeName": "Holy Icon Shield",
+            "value": -1,
+            "type": "shield"
+        },
+        {
             "typeName": "Standard Armour",
             "value": -1,
             "type": "bodyArmour"
@@ -464,18 +469,6 @@
                     },
                     {
                         "containsItem": "Holy Icon Shield"
-                    }
-                ]
-            }
-        },
-        {
-            "typeName": "Holy Icon Shield",
-            "value": -1,
-            "type": "shield",
-            "filter": {
-                "noneOf": [
-                    {
-                        "containsItem": "Machine Armour"
                     }
                 ]
             }

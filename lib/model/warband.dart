@@ -56,11 +56,9 @@ class WarriorModel {
       required this.uid,
       required this.type,
       required this.bucket,
-      Sex? sex,
-      Armory? armory})
+      Sex? sex})
       : name = name ?? "Generated" {
     sex = sex ?? type.sex;
-    if (armory != null) populateBuiltIn(armory);
   }
 
   String name = "Generated name?";
@@ -85,7 +83,10 @@ class WarriorModel {
     final res = currentWeapon(armory).where((w) => w.def.canMelee);
     if (res.isNotEmpty || !type.suffersUnarmedPenalty) return res;
 
-    return [UseAndDef(ItemUse(typeName: "Unarmed"), Weapon.unarmed())];
+    return [
+      UseAndDef(
+          ItemUse(typeName: "Unarmed", removable: false), Weapon.unarmed())
+    ];
   }
 
   Iterable<UseAndDef<Weapon>> currentWeapon(Armory armory) {
@@ -138,7 +139,7 @@ class WarriorModel {
     return w;
   }
 
-  void addItem(ItemUse item, Armory armoury) {
+  void addItem(ItemUse item) {
     privateItems.add(ItemStack(item: item));
   }
 
@@ -159,9 +160,9 @@ class WarriorModel {
     for (var s in privateItems) {
       final item = s.value;
       final def = armoury.findItem(item);
-      assert(def != null);
+      if (def == null) continue;
       final filter = ItemFilter.allOf(
-          [item.getFilter, def!.getFilter, type.effectiveItemFilter]);
+          [item.getFilter, def.getFilter, type.effectiveItemFilter]);
       if (!filter.isItemAllowed(def, this)) {
         toRemove.add(item);
       }
@@ -179,16 +180,14 @@ class WarriorModel {
     removeInvalid(armory);
   }
 
-  void populateBuiltIn(Armory armory) {
+  void populateBuiltIn(Roster roster, Armory armory) {
     for (var item in type.defaultItems ?? []) {
-      if (armory.isWeapon(item.itemName)) {
-        addItem(
-            ItemUse(
-                typeName: item.itemName,
-                removable: item.isRemovable,
-                cost: item.getCost),
-            armory);
-      }
+      addItem(
+        ItemUse(
+            typeName: item.itemName,
+            removable: item.isRemovable,
+            cost: item.getCost),
+      );
     }
   }
 
@@ -215,13 +214,10 @@ class WarriorModel {
       currentArmour(armory).where((a) => a.def.isShield).isEmpty
           ? meleeCount(armory) <= 2
           : meleeCount(armory) <= 1;
-  int freeHands(Armory armory) {
-    final strong = isStrong;
-    return type.getHands -
-        currentWeapon(armory)
-            .where((w) => w.def.isMeleeWeapon)
-            .fold(0, (v, w) => v + (strong ? 1 : w.def.hands));
-  }
+  int handsInUse(Armory armory) => currentWeapon(armory)
+      .where((w) => w.def.isMeleeWeapon)
+      .fold(0, (v, w) => v + (isStrong ? 1 : w.def.hands));
+  int freeHands(Armory armory) => type.getHands - handsInUse(armory);
 
 // - One firearm and one pistol OR
 // - two pistols.
@@ -229,41 +225,39 @@ class WarriorModel {
 // - One two-handed melee weapon OR
 // - one single-handed melee weapon and a trench shield OR
 // - two single-handed melee weapons.
-  UnmodifiableListView<ItemUse> availableWeapons(Roster roster, Armory armory) {
-    return UnmodifiableListView(roster.weapons.where((use) {
-      final def = armory.findWeapon(use)!;
-
+  Iterable<UseAndDef<Weapon>> availableWeapons(
+      Iterable<UseAndDef<Weapon>> weapons, Armory armory) {
+    return weapons.where((weapon) {
       // no repetitions of greandes
-      if (def.isGrenade &&
-          items.where((i) => i.getName == use.getName).isNotEmpty) {
+      if (weapon.def.isGrenade &&
+          items.where((i) => i.getName == weapon.use.getName).isNotEmpty) {
         return false;
       }
 
-      final filter = ItemFilter.allOf(
-          [use.getFilter, def.getFilter, type.effectiveItemFilter]);
-      if (!filter.isItemAllowed(def, this)) return false;
+      final filter = ItemFilter.allOf([
+        weapon.use.getFilter,
+        weapon.def.getFilter,
+        type.effectiveItemFilter
+      ]);
+      if (!filter.isItemAllowed(weapon.def, this)) return false;
 
       // Bypass of normal algorithm for the Amalgam, as many weapons as hands
       if (!type.hasBackpack) {
-        final handsInUse =
-            currentWeapon(armory).fold(0, (v, w) => v + w.def.hands) +
-                currentArmour(armory).where((a) => a.def.isShield).length +
-                def.hands;
-        return (handsInUse <= type.getHands);
+        return (handsInUse(armory) <= type.getHands);
       }
 
-      if (def.isGrenade) return true;
-      if (def.isPistol && allowPistol(armory)) return true;
-      if (def.isFirearm && firearmsCount(armory) < 1) {
+      if (weapon.def.isGrenade) return true;
+      if (weapon.def.isPistol && allowPistol(armory)) return true;
+      if (weapon.def.isFirearm && firearmsCount(armory) < 1) {
         return true;
       }
 
-      if (def.isMeleeWeapon && allowMelee(armory)) {
-        return freeHands(armory) >= def.hands;
+      if (weapon.def.isMeleeWeapon && allowMelee(armory)) {
+        return freeHands(armory) >= weapon.def.hands;
       }
 
       return false;
-    }));
+    });
   }
 
   bool wearsBodyArmour(Armory armory) =>
@@ -271,50 +265,53 @@ class WarriorModel {
   bool wearsShield(Armory armory) =>
       currentArmour(armory).where((a) => a.def.isShield).isNotEmpty;
 
-  UnmodifiableListView<ItemUse> availableArmours(
-          Roster roster, Armory armory) =>
-      UnmodifiableListView(roster.armour.where((use) {
-        final def = armory.findArmour(use)!;
-
+  Iterable<UseAndDef<Armour>> availableArmours(
+          Iterable<UseAndDef<Armour>> armours, Armory armory) =>
+      armours.where((armour) {
         // no repetitions
-        if (!def.isConsumable &&
-            items.where((i) => i.getName == use.getName).isNotEmpty) {
+        if (!armour.def.isConsumable &&
+            items.where((i) => i.getName == armour.use.getName).isNotEmpty) {
           return false;
         }
 
-        final filter = ItemFilter.allOf(
-            [use.getFilter, def.getFilter, type.effectiveItemFilter]);
-        if (!filter.isItemAllowed(def, this)) return false;
+        final filter = ItemFilter.allOf([
+          armour.use.getFilter,
+          armour.def.getFilter,
+          type.effectiveItemFilter,
+        ]);
+        if (!filter.isItemAllowed(armour.def, this)) return false;
 
         // Bypass of normal algorithm for the Amalgam, as many weapons as hands
-        if (!type.hasBackpack && def.isShield) {
+        if (!type.hasBackpack && armour.def.isShield) {
           final handsInUse =
               currentWeapon(armory).fold(0, (v, w) => v + w.def.hands) +
                   currentArmour(armory).where((a) => a.def.isShield).length;
           return ((handsInUse + 1) <= type.getHands);
         }
 
-        if (def.isBodyArmour && wearsBodyArmour(armory)) return false;
-        if (def.isShield && wearsShield(armory)) return false;
+        if (armour.def.isBodyArmour && wearsBodyArmour(armory)) return false;
+        if (armour.def.isShield && wearsShield(armory)) return false;
 
         return true;
-      }));
+      });
 
-  UnmodifiableListView<ItemUse> availableEquipment(
-      Roster roster, Armory armory) {
-    return UnmodifiableListView(roster.equipment.where((use) {
-      if (!armory.isEquipment(use)) return false;
-      final def = armory.findEquipment(use)!;
+  Iterable<UseAndDef<Equipment>> availableEquipment(
+      Iterable<UseAndDef<Equipment>> equipment, Armory armory) {
+    return equipment.where((equ) {
+      if (!armory.isEquipment(equ.use)) return false;
 
-      if (!def.isConsumable &&
-          items.where((i) => i.getName == use.getName).isNotEmpty) {
+      if (!equ.def.isConsumable &&
+          items.where((i) => i.getName == equ.use.getName).isNotEmpty) {
         return false;
       }
-      final filter = ItemFilter.allOf(
-          [use.filter, def.getFilter, type.effectiveItemFilter].nonNulls);
-      if (!filter.isItemAllowed(def, this)) return false;
+      final filter = ItemFilter.allOf([
+        equ.use.filter,
+        equ.def.getFilter,
+        type.effectiveItemFilter
+      ].nonNulls);
+      if (!filter.isItemAllowed(equ.def, this)) return false;
       return true;
-    }));
+    });
   }
 
   @override
@@ -396,12 +393,14 @@ class WarbandModel extends ChangeNotifier {
     int bucket = 0;
     for (var unit in roster.units) {
       for (var i = 0; i < (unit.min ?? 0); i++) {
-        wm.add(WarriorModel(
-            name: generateName(unit.sex, unit.keywords),
-            uid: wm.nextUID(),
-            type: unit,
-            bucket: bucket,
-            armory: armory));
+        final newWarrior = WarriorModel(
+          name: generateName(unit.sex, unit.keywords),
+          uid: wm.nextUID(),
+          type: unit,
+          bucket: bucket,
+        );
+        newWarrior.populateBuiltIn(roster, armory);
+        wm.add(newWarrior);
       }
       bucket++;
     }

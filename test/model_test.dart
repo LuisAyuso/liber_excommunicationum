@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tc_thing/model/filters.dart';
 
@@ -17,7 +16,6 @@ Future<Roster> testList(String listJson) async {
   data = await rootBundle.loadString(listJson);
   var roster = Roster.fromJson(jsonDecode(data));
 
-  armory.extendWithUnique(roster);
   validateArmory(armory);
 
   expect(roster.weapons, isNotEmpty);
@@ -26,25 +24,28 @@ Future<Roster> testList(String listJson) async {
   expect(roster.equipment, isNotEmpty);
 
   for (var w in roster.weapons) {
-    debugPrint(w.getName);
-    Weapon? found = armory.weapons
-        .map<Weapon?>((w) => w)
-        .firstWhere((def) => def!.typeName == w.typeName, orElse: () => null);
-    expect(found, isNotNull, reason: w.typeName);
+    expect(
+        roster
+            .availableWeapons(armory)
+            .where((e) => e.name == w.getName && e.isValid),
+        hasLength(1),
+        reason: w.typeName);
   }
   for (var a in roster.armour) {
-    debugPrint(a.typeName);
-    Armour? found = armory.armours
-        .map<Armour?>((b) => b)
-        .firstWhere((b) => b!.typeName == a.typeName, orElse: () => null);
-    expect(found, isNotNull, reason: a.typeName);
+    expect(
+        roster
+            .availableArmours(armory)
+            .where((e) => e.name == a.getName && e.isValid),
+        hasLength(1),
+        reason: a.typeName);
   }
-  for (var a in roster.equipment) {
-    debugPrint(a.typeName);
-    Equipment? found = armory.equipments
-        .map<Equipment?>((b) => b)
-        .firstWhere((b) => b!.typeName == a.typeName, orElse: () => null);
-    expect(found, isNotNull, reason: a.typeName);
+  for (var equ in roster.equipment) {
+    expect(
+        roster
+            .availableEquipment(armory)
+            .where((e) => e.name == equ.getName && e.isValid),
+        hasLength(1),
+        reason: equ.typeName);
   }
   return roster;
 }
@@ -60,8 +61,7 @@ void main() {
 
   test('currency', () {
     var d = Currency.ducats(1);
-    var str = jsonEncode(d.toJson());
-    debugPrint(str);
+    var _ = jsonEncode(d.toJson());
 
     var s1 = '{"ducats": 43}';
     var d1 = Currency.fromJson(jsonDecode(s1));
@@ -171,8 +171,7 @@ void main() {
     r.units = [boss];
     r.weapons = [w];
 
-    var str = jsonEncode(r.toJson());
-    debugPrint(str);
+    var _ = jsonEncode(r.toJson());
   });
 
   test('Replacements', () {
@@ -189,9 +188,9 @@ void main() {
   test('load armory', () async {
     String data = await rootBundle.loadString('assets/lists/armory.json');
     var armory = Armory.fromJson(jsonDecode(data));
-    debugPrint(armory.weapons.map((w) => w.typeName).toList().toString());
-    debugPrint(armory.armours.map((w) => w.typeName).toList().toString());
-    debugPrint(armory.equipments.map((w) => w.typeName).toList().toString());
+    //debugPrint(armory.weapons.map((w) => w.typeName).toList().toString());
+    //debugPrint(armory.armours.map((w) => w.typeName).toList().toString());
+    //debugPrint(armory.equipments.map((w) => w.typeName).toList().toString());
     expect(armory.weapons, isNotEmpty);
     expect(armory.armours, isNotEmpty);
     expect(armory.equipments, isNotEmpty);
@@ -208,6 +207,8 @@ void main() {
     final roster = await testList('assets/lists/trench_pilgrims.json');
     testVariant(roster.clone(),
         'assets/lists/procession_of_the_sacred_affliction.json');
+    testVariant(
+        roster.clone(), "assets/lists/cavalcade_of_the_tenth_plague.json");
   });
   test('load new antioch list', () async {
     testList('assets/lists/new_antioch.json');
@@ -225,33 +226,38 @@ void main() {
 void validateArmory(Armory armory) {
   for (var w in armory.weapons) {
     expect(armory.weapons.where((elem) => elem.typeName == w.typeName),
-        hasLength(1));
+        hasLength(1),
+        reason: w.itemName);
   }
   for (var weapon in armory.weapons) {
-    debugPrint(weapon.typeName);
-    expect(armory.isArmour(weapon.typeName), false);
-    expect(armory.isWeapon(weapon.typeName), true);
-    expect(armory.isEquipment(weapon.typeName), false);
+    expect(armory.isArmour(weapon.typeName), false, reason: weapon.typeName);
+    expect(armory.isWeapon(weapon.typeName), true, reason: weapon.typeName);
+    expect(armory.isEquipment(weapon.typeName), false, reason: weapon.typeName);
     for (var mod in weapon.getModifiers) {
       expect(mod.cat(), predicate((v) => v != ModifierCategory.unknown));
     }
   }
   for (var a in armory.armours) {
     expect(armory.armours.where((elem) => elem.typeName == a.typeName),
-        hasLength(1));
+        hasLength(1),
+        reason: a.typeName);
   }
   for (var armour in armory.armours) {
-    expect(armory.isArmour(armour.typeName), true);
-    expect(armory.isWeapon(armour.typeName), false);
-    expect(armory.isEquipment(armour.typeName), false);
+    expect(armory.isArmour(armour.typeName), true, reason: armour.itemName);
+    expect(armory.isWeapon(armour.typeName), false, reason: armour.itemName);
+    expect(armory.isEquipment(armour.typeName), false, reason: armour.itemName);
   }
   for (var e in armory.equipments) {
     expect(armory.equipments.where((elem) => elem.typeName == e.typeName),
-        hasLength(1));
+        hasLength(1),
+        reason: e.typeName);
   }
   for (var equipment in armory.equipments) {
-    expect(armory.isArmour(equipment.typeName), false);
-    expect(armory.isWeapon(equipment.typeName), false);
-    expect(armory.isEquipment(equipment.typeName), true);
+    expect(armory.isArmour(equipment.typeName), false,
+        reason: equipment.itemName);
+    expect(armory.isWeapon(equipment.typeName), false,
+        reason: equipment.itemName);
+    expect(armory.isEquipment(equipment.typeName), true,
+        reason: equipment.itemName);
   }
 }
