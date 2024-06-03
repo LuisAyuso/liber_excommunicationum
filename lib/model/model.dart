@@ -200,7 +200,7 @@ class UnitVariant {
   List<DefaultItem>? defaultItems;
 
   Unit apply(Unit old) {
-    if (old.typeName != (typeName ?? "--")) return old;
+    if (old.typeName != (typeName ?? old.typeName)) return old;
     if (!(filter?.isUnitAllowed(old, []) ?? true)) return old;
     var u = old.clone();
     u.max = max ?? u.max;
