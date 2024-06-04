@@ -1,0 +1,82 @@
+{
+    "version": "v1.3.2",
+    "name": "Stoßtruppen of the Free State of Prussia",
+    "unitVariants": [
+        {
+            "typeName": "Shocktroopers",
+            "upgrades": [
+                {
+                    "keyword": {
+                        "keywords": [
+                            "INFILTRATOR"
+                        ],
+                        "cost": {
+                            "ducats": 10
+                        },
+                        "max": 2
+                    }
+                }
+            ]
+        },
+        {
+            "filter": {
+                "anyOf": [
+                    {
+                        "typeName": "Shocktroopers"
+                    },
+                    {
+                        "typeName": "Lieutenant"
+                    }
+                ]
+            },
+            "upgrades": [
+                {
+                    "ability": {
+                        "ability": " Rapid Assault",
+                        "cost": {
+                            "ducats": 5
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "typeName": "Mechanised Heavy Infantry",
+            "max": 1
+        },
+        {
+            "typeName": "Shocktroopers",
+            "min": 2,
+            "max": 8
+        },
+        {
+            "typeName": "Sniper Priests",
+            "max": 1
+        },
+        {
+            "typeName": "Trench Mole",
+            "max": 0
+        }
+    ],
+    "itemVariants": [
+        {
+            "typeName": "Submachine Gun",
+            "cost": {
+                "ducats": 30
+            },
+            "limit": 4
+        },
+        {
+            "typeName": "Automatic Pistol",
+            "filter": {
+                "all": true
+            }
+        }
+    ],
+    "weapons": [],
+    "armour": [],
+    "equipment": [],
+    "uniqueWeapons": [],
+    "uniqueArmour": [],
+    "uniqueEquipment": []
+}

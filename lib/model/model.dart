@@ -96,15 +96,19 @@ class DefaultItem {
 
 @JsonSerializable(explicitToJson: true)
 class KeywordUpgrade {
-  KeywordUpgrade({this.keyword = "", this.cost, this.max});
+  KeywordUpgrade({
+    this.keywords = const <String>[],
+    this.cost,
+    this.max,
+  });
 
   Currency? cost;
-  String keyword;
+  List<String> keywords;
   int? max;
 
   @override
   String toString() {
-    final res = "Add $keyword";
+    final res = "Add ${keywords.join(",")}";
     if (cost != null) return "$res for $cost";
     return res;
   }
@@ -114,15 +118,18 @@ class KeywordUpgrade {
   Map<String, dynamic> toJson() => _$KeywordUpgradeToJson(this);
 
   bool isAllowed(WarriorModel me, List<WarriorModel> warriors) {
-    if (me.effectiveKeywords.contains(keyword)) return false;
-    final uses = warriors
-        .map((w) => w.appliedUpgrades
-            .map((up) => up.keyword)
-            .nonNulls
-            .map((kup) => kup.keyword))
-        .where((ups) => ups.contains(keyword))
-        .length;
-    return uses < (max ?? double.infinity);
+    //FIXME: only if upgrade is not applied, and max in complete list
+    return true;
+
+    // if (me.appliedUpgrades.contains(this)) return false;
+    // final uses = warriors
+    //     .map((w) => w.appliedUpgrades
+    //         .map((up) => up.keyword)
+    //         .nonNulls
+    //         .map((kup) => kup.keyword))
+    //     .where((ups) => ups.contains(keyword))
+    //     .length;
+    // return uses < (max ?? double.infinity);
   }
 }
 
@@ -195,6 +202,8 @@ class UnitVariant {
 
   int? max;
   int? min;
+  int? ranged = 0;
+  int? melee = 0;
   List<UnitUpgrade>? upgrades;
   List<String>? keywords;
   List<DefaultItem>? defaultItems;
@@ -203,6 +212,8 @@ class UnitVariant {
     if (old.typeName != (typeName ?? old.typeName)) return old;
     if (!(filter?.isUnitAllowed(old, []) ?? true)) return old;
     var u = old.clone();
+    u.ranged = ranged ?? u.ranged;
+    u.melee = melee ?? u.melee;
     u.max = max ?? u.max;
     u.min = min ?? u.min;
     u.upgrades = [

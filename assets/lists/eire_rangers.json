@@ -1,0 +1,71 @@
+{
+    "version": "v1.3.2",
+    "name": "Eire Rangers",
+    "unitVariants": [
+        {
+            "typeName": "Shocktroopers",
+            "upgrades": [
+                {
+                    "keyword": {
+                        "keywords": [
+                            "INFILTRATOR",
+                            "SKIRMISHER"
+                        ],
+                        "cost": {
+                            "ducats": 60
+                        },
+                        "max": 4
+                    }
+                }
+            ]
+        },
+        {
+            "filter": {
+                "all": true
+            },
+            "upgrades": [
+                {
+                    "ability": {
+                        "ability": "Bersherk",
+                        "cost": {
+                            "ducats": 15
+                        },
+                        "max": 1
+                    }
+                }
+            ]
+        },
+        {
+            "typeName": "Trench Cleric",
+            "max": 2
+        },
+        {
+            "typeName": "Lieutenant",
+            "keywords": [
+                "SKIRMISHER"
+            ]
+        },
+        {
+            "typeName": "Mechanised Heavy Infantry",
+            "max": 1
+        }
+    ],
+    "itemVariants": [],
+    "weapons": [],
+    "armour": [],
+    "equipment": [
+        {
+            "typeName": "Carnyx",
+            "cost": {
+                "ducats": 15
+            }
+        }
+    ],
+    "uniqueWeapons": [],
+    "uniqueArmour": [],
+    "uniqueEquipment": [
+        {
+            "typeName": "Carnyx"
+        }
+    ]
+}

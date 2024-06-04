@@ -69,7 +69,7 @@ void main() {
     warrrior.upgrades = [
       UnitUpgrade(
         keyword: KeywordUpgrade(
-          keyword: "YOLO",
+          keywords: ["YOLO"],
           cost: const Currency(ducats: 23),
           max: 2,
         ),

@@ -53,7 +53,10 @@ Map<String, dynamic> _$DefaultItemToJson(DefaultItem instance) =>
 
 KeywordUpgrade _$KeywordUpgradeFromJson(Map<String, dynamic> json) =>
     KeywordUpgrade(
-      keyword: json['keyword'] as String? ?? "",
+      keywords: (json['keywords'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const <String>[],
       cost: json['cost'] == null
           ? null
           : Currency.fromJson(json['cost'] as Map<String, dynamic>),
@@ -63,7 +66,7 @@ KeywordUpgrade _$KeywordUpgradeFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$KeywordUpgradeToJson(KeywordUpgrade instance) =>
     <String, dynamic>{
       'cost': instance.cost?.toJson(),
-      'keyword': instance.keyword,
+      'keywords': instance.keywords,
       'max': instance.max,
     };
 
@@ -106,6 +109,8 @@ UnitVariant _$UnitVariantFromJson(Map<String, dynamic> json) => UnitVariant()
       : UnitFilter.fromJson(json['filter'] as Map<String, dynamic>)
   ..max = json['max'] as int?
   ..min = json['min'] as int?
+  ..ranged = json['ranged'] as int?
+  ..melee = json['melee'] as int?
   ..upgrades = (json['upgrades'] as List<dynamic>?)
       ?.map((e) => UnitUpgrade.fromJson(e as Map<String, dynamic>))
       .toList()
@@ -121,6 +126,8 @@ Map<String, dynamic> _$UnitVariantToJson(UnitVariant instance) =>
       'filter': instance.filter?.toJson(),
       'max': instance.max,
       'min': instance.min,
+      'ranged': instance.ranged,
+      'melee': instance.melee,
       'upgrades': instance.upgrades?.map((e) => e.toJson()).toList(),
       'keywords': instance.keywords,
       'defaultItems': instance.defaultItems?.map((e) => e.toJson()).toList(),

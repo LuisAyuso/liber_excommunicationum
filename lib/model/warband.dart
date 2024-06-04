@@ -76,8 +76,9 @@ class WarriorModel {
       .map((u) => u.cost)
       .nonNulls
       .fold(Currency.free(), (a, b) => a + b);
-  Iterable<String> get kewordUpgrades =>
-      appliedUpgrades.map<String?>((up) => up.keyword?.keyword).nonNulls;
+  Iterable<String> get kewordUpgrades => appliedUpgrades
+      .map((up) => up.keyword?.keywords ?? <String>[])
+      .expand((l) => l);
 
   Iterable<UseAndDef<Weapon>> weaponsOrUnarmed(Armory armory) {
     final res = currentWeapon(armory).where((w) => w.def.canMelee);

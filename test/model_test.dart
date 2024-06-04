@@ -211,7 +211,23 @@ void main() {
         roster.clone(), "assets/lists/cavalcade_of_the_tenth_plague.json");
   });
   test('load new antioch list', () async {
-    testList('assets/lists/new_antioch.json');
+    final roster = await testList('assets/lists/new_antioch.json');
+    testVariant(
+      roster.clone(),
+      "assets/lists/papal_states_intervention_force.json",
+    );
+    testVariant(
+      roster.clone(),
+      "assets/lists/eire_rangers.json",
+    );
+    testVariant(
+      roster.clone(),
+      "assets/lists/stoßtruppen_of_the_free_state_of_prussia.json",
+    );
+    testVariant(
+      roster.clone(),
+      "assets/lists/kingdom_of_alba_assault_detachment.json",
+    );
   });
 
   test('load sultanate list', () async {

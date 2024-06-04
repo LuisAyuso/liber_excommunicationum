@@ -37,7 +37,9 @@
             "upgrades": [
                 {
                     "keyword": {
-                        "keyword": "INFILTRATOR",
+                        "keywords": [
+                            "INFILTRATOR"
+                        ],
                         "cost": {
                             "ducats": 10
                         },

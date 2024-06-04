@@ -1,0 +1,51 @@
+{
+    "version": "v1.3.2",
+    "name": "Papal States Intervention Force",
+    "unitVariants": [
+        {
+            "filter": {
+                "not": {
+                    "type": "elite"
+                }
+            },
+            "upgrades": [
+                {
+                    "ability": {
+                        "ability": "Swiss Guard",
+                        "cost": {
+                            "ducats": 5
+                        },
+                        "max": 4
+                    }
+                }
+            ]
+        },
+        {
+            "filter": {
+                "all": true
+            },
+            "upgrades": [
+                {
+                    "ability": {
+                        "ability": "Supreme Blessing",
+                        "max": 1
+                    }
+                }
+            ]
+        },
+        {
+            "typeName": "Trench Cleric",
+            "min": 1
+        },
+        {
+            "typeName": "Lieutenant",
+            "min": 0
+        },
+        {
+            "typeName": "Trench Mole",
+            "max": 0
+        }
+    ],
+    "itemVariants": [],
+    "armour": []
+}

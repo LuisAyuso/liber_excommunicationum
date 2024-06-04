@@ -166,7 +166,12 @@ class WarbandChooser extends StatelessWidget {
                 WarbandButton(
                   armoy: future.data!,
                   rosterAsset: "assets/lists/new_antioch.json",
-                  variantsAssets: const [],
+                  variantsAssets: const [
+                    "assets/lists/papal_states_intervention_force.json",
+                    "assets/lists/eire_rangers.json",
+                    "assets/lists/stoßtruppen_of_the_free_state_of_prussia.json",
+                    "assets/lists/kingdom_of_alba_assault_detachment.json",
+                  ],
                 ),
                 WarbandButton(
                   armoy: future.data!,

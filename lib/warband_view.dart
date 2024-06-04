@@ -773,7 +773,7 @@ class WarriorBlock extends StatelessWidget {
       rows: [
         ...warrior.appliedUpgrades.where((up) => up.keyword != null).map((up) {
           return <Widget>[
-            Text(up.keyword!.keyword),
+            Text(up.keyword!.keywords.join(", ")),
             context.watch<EditingModel>().editing
                 ? IconButton(
                     onPressed: () {

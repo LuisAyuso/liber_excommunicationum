@@ -1,0 +1,57 @@
+{
+    "version": "v1.3.2",
+    "name": "Kingdom of Alba Assault Detachment",
+    "unitVariants": [
+        {
+            "typeName": "Mechanised Heavy Infantry",
+            "ranged": 0,
+            "melee": 1
+        }
+    ],
+    "itemVariants": [
+        {
+            "typeName": "Grenade Launcher",
+            "limit": 1
+        },
+        {
+            "typeName": "Submachine Gun",
+            "limit": 1
+        },
+        {
+            "typeName": "Machine Gun",
+            "limit": 1
+        },
+        {
+            "typeName": "Automatic Shotgun",
+            "limit": 1
+        },
+        {
+            "typeName": "Sniper Rifle",
+            "limit": 1
+        }
+    ],
+    "weapons": [],
+    "armour": [],
+    "equipment": [
+        {
+            "typeName": "Bagpipes",
+            "cost": {
+                "ducats": 15
+            },
+            "filter": {
+                "not": {
+                    "unitKeyword": "ELITE"
+                }
+            }
+        },
+        {
+            "typeName": "Machine Armour",
+            "filter": {
+                "none": true
+            }
+        }
+    ],
+    "uniqueWeapons": [],
+    "uniqueArmour": [],
+    "uniqueEquipment": []
+}
