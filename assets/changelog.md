@@ -1,4 +1,6 @@
 
+## Beta 0.8:
+    - First list variants version. Expect errors!
 ## Beta 0.7:
     - More compact items view per model.
     - Offset weapon modifiers by unit base modifiers.

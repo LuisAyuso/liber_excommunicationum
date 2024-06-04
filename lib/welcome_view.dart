@@ -42,7 +42,7 @@ class _WelcomeState extends State<Welcome> {
                                 .apply(fontSizeFactor: 1.3),
                             textAlign: TextAlign.center,
                           ),
-                          const Text("Beta 0.7"),
+                          const Text("Beta 0.8"),
                         ],
                       ),
                       FutureBuilder(

@@ -23,7 +23,7 @@ Roster management tool for Trench Crusade
 - [ ] Complete units list overhaul
 
 ### Game Logic
-- [-] List Variants
+- [x] List Variants
 - [x] Unarmed: if no melee equipped, add the "unarmed" weapon profile
 - [x] Edit mode vs play mode
 - [x] List-dependent armory
@@ -66,11 +66,14 @@ Roster management tool for Trench Crusade
 - [x] Move filter logic to model, keep frontend business-logic-free
 - [x] Merge filterItem and replacements? Somehow? Otherwise, use same patterns
 - [ ] Be idiomatic with null: https://stackoverflow.com/questions/17006664/what-is-the-dart-null-checking-idiom-or-best-practice
+- [ ] Upgrade system: add replaces and extends flavours.
+
 
 ### Known bugs:
 - [x] Items are not serialized. This is a big baustelle.
 - [x] No double weapons.
 - [ ] Heretic comando silenced pistol, +2 from cover... but +1 out of cover
+- [ ] It is possible to clone upgraded units to more that the limit of the upgrade
 
 
 ### Questions about playtest 1.3.2

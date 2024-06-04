@@ -32,21 +32,27 @@ class RosterPreview extends StatelessWidget {
             ),
             body: TabBarView(
               children: [
-                ListView.separated(
-                  itemBuilder: (context, idx) => UnitDescription(
-                    unit: roster.units[idx],
-                    armory: armory,
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  child: ListView.separated(
+                    itemBuilder: (context, idx) => UnitDescription(
+                      unit: roster.units[idx],
+                      armory: armory,
+                    ),
+                    separatorBuilder: (context, idx) => const Divider(),
+                    itemCount: roster.units.length,
                   ),
-                  separatorBuilder: (context, idx) => const Divider(),
-                  itemCount: roster.units.length,
                 ),
-                ListView.separated(
-                  itemBuilder: (context, idx) => ItemDescription(
-                    use: items[idx].use,
-                    item: items[idx].def,
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  child: ListView.separated(
+                    itemBuilder: (context, idx) => ItemDescription(
+                      use: items[idx].use,
+                      item: items[idx].def,
+                    ),
+                    separatorBuilder: (context, idx) => const SizedBox(),
+                    itemCount: items.length,
                   ),
-                  separatorBuilder: (context, idx) => const SizedBox(),
-                  itemCount: items.length,
                 ),
               ],
             )),

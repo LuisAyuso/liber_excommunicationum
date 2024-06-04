@@ -118,18 +118,16 @@ class KeywordUpgrade {
   Map<String, dynamic> toJson() => _$KeywordUpgradeToJson(this);
 
   bool isAllowed(WarriorModel me, List<WarriorModel> warriors) {
-    //FIXME: only if upgrade is not applied, and max in complete list
-    return true;
+    if (me.appliedUpgrades
+        .where((u) => u.keyword != null && u.keyword!.keywords == keywords)
+        .isNotEmpty) return false;
 
-    // if (me.appliedUpgrades.contains(this)) return false;
-    // final uses = warriors
-    //     .map((w) => w.appliedUpgrades
-    //         .map((up) => up.keyword)
-    //         .nonNulls
-    //         .map((kup) => kup.keyword))
-    //     .where((ups) => ups.contains(keyword))
-    //     .length;
-    // return uses < (max ?? double.infinity);
+    final uses = warriors
+        .map((warrior) => warrior.appliedUpgrades
+            .where((u) => u.keyword != null && u.keyword!.keywords == keywords)
+            .length)
+        .fold(0, (a, b) => a + b);
+    return uses < (max ?? double.infinity);
   }
 }
 

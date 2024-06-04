@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:tc_thing/model/model.dart';
 import 'package:tc_thing/model/warband.dart';
+import 'package:tc_thing/roster_view.dart';
 import 'package:tc_thing/utils/utils.dart';
 
 import 'controls/content_lex.dart';
@@ -242,7 +243,7 @@ class WarbandButton extends StatelessWidget {
 
   void onTap(
     BuildContext context,
-    Armory armoy,
+    Armory armory,
     Roster roster,
     List<RosterVariant> variants,
   ) {
@@ -252,7 +253,7 @@ class WarbandButton extends StatelessWidget {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (ctx) => WarbandPage(armory: armoy, roster: lists.first),
+          builder: (ctx) => WarbandPage(armory: armory, roster: lists.first),
         ),
       );
       return;
@@ -262,23 +263,48 @@ class WarbandButton extends StatelessWidget {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       context: context,
       builder: (BuildContext context) {
-        return Column(
-          children: [
-            ...lists.map<Widget>(
-              (newRoster) => TextButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (ctx) =>
-                          WarbandPage(armory: armoy, roster: newRoster),
-                    ),
-                  );
-                },
-                child: Text(newRoster.name),
+        return Container(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            children: [
+              Text(
+                "List Variants:",
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
-            )
-          ],
+              const Divider(),
+              ...lists.map<Widget>(
+                (newRoster) => Row(
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (ctx) =>
+                                WarbandPage(armory: armory, roster: newRoster),
+                          ),
+                        );
+                      },
+                      child: Text(newRoster.name),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  RosterPreview(roster: roster, armory: armory),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.note))
+                  ],
+                ),
+              )
+            ],
+          ),
         );
       },
     );
