@@ -830,7 +830,7 @@ class Armory {
   }
 
   bool isEquipment(dynamic use) {
-    if (use is ItemUse) return isArmour(use.typeName);
+    if (use is ItemUse) return isEquipment(use.typeName);
     return equipments.where((def) => def.typeName == use).length == 1;
   }
 
