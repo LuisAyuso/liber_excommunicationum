@@ -11,7 +11,7 @@ final strong = [
   "Robust",
   "Hardy",
   "Resilient",
-  "Tough",
+  "Though",
   "Valiant",
   "Gallant",
   "Strapping",

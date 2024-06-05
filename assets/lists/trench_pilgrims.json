@@ -68,7 +68,7 @@
                 "PILGRIM",
                 "ELITE",
                 "STRONG",
-                "TOUGH"
+                "THOUGH"
             ],
             "cost": {
                 "ducats": 100
@@ -195,14 +195,14 @@
             "melee": 1,
             "armour": -1,
             "abilities": [
-                "Tough",
+                "Though",
                 "Fear",
                 "Broken on the Wheel"
             ],
             "keywords": [
                 "PILGRIM",
                 "FEAR",
-                "TOUGH"
+                "THOUGH"
             ],
             "cost": {
                 "ducats": 140

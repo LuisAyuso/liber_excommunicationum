@@ -1,4 +1,8 @@
 
+## Beta 0.8.1:
+    - Master assasin can now equip assasin's dagger
+    - Fix typos in keywords
+    - Fix bug that prevented from assigning equipment
 ## Beta 0.8:
     - First list variants version. Expect errors!
 ## Beta 0.7:
@@ -6,7 +10,7 @@
     - Offset weapon modifiers by unit base modifiers.
 ## Beta 0.6:
     - Rework of name generator algorithm.
-    - Fixed limits of legionaries, prevent ilegal lists on remove.
+    - Fixed limits of legionaries, prevent illegal lists on remove.
 ## Beta 0.5:
     - Rework of name generator algorithm.
     - Lists are persistent, they are saved automatically.

@@ -15,7 +15,7 @@
             "abilities": [
                 "Beelzebub’s Touch",
                 "Undead Fortitude",
-                "Tough",
+                "Though",
                 "Fear",
                 "Strong"
             ],
@@ -189,7 +189,7 @@
             "backpack": false,
             "abilities": [
                 "Corpulent",
-                "Tough",
+                "Though",
                 "Toxic",
                 "Trample",
                 "Unstoppable",

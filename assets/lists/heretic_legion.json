@@ -14,7 +14,7 @@
             "armour": 0,
             "abilities": [
                 "Puppet Master",
-                "Tough"
+                "Though"
             ],
             "keywords": [
                 "HERETIC",
@@ -196,7 +196,7 @@
             "melee": 0,
             "armour": -3,
             "abilities": [
-                "Tough",
+                "Though",
                 "Loping Dash",
                 "Terrifying",
                 "Chainmaw",

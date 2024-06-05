@@ -82,6 +82,19 @@
             "cost": {
                 "ducats": 50
             }
+        },
+        {
+            "typeName": "Assassin’s Dagger",
+            "filter": {
+                "anyOf": [
+                    {
+                        "unitName": "Sultanate Assassin"
+                    },
+                    {
+                        "unitName": "Master Assassin"
+                    }
+                ]
+            }
         }
     ],
     "uniqueWeapons": [

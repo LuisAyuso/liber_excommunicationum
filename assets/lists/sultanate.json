@@ -13,7 +13,7 @@
             "melee": 2,
             "armour": 0,
             "abilities": [
-                "Tough",
+                "Though",
                 "Mubarizun"
             ],
             "keywords": [
@@ -149,7 +149,7 @@
             "melee": 2,
             "armour": 0,
             "abilities": [
-                "Tough",
+                "Though",
                 "Strong",
                 "Artificial Body",
                 "Trample",
