@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tc_thing/model/filters.dart';
 import 'package:tc_thing/model/model.dart';
 import 'package:tc_thing/model/warband.dart';
+import 'package:tc_thing/print.dart';
 import 'package:tc_thing/roster_view.dart';
 import 'package:tc_thing/utils/name_generator.dart';
 import 'package:tc_thing/utils/utils.dart';
@@ -16,6 +17,15 @@ import 'unit_selection_view.dart';
 import 'controls/table_lex.dart';
 import 'controls/item_chip.dart';
 import 'controls/content_lex.dart';
+
+class EditingModel extends ChangeNotifier {
+  bool _editing = true;
+  bool get editing => _editing;
+  set editing(bool v) {
+    _editing = v;
+    notifyListeners();
+  }
+}
 
 class WarbandView extends StatefulWidget {
   const WarbandView(
@@ -29,15 +39,6 @@ class WarbandView extends StatefulWidget {
 
   @override
   State<WarbandView> createState() => _WarbandViewState();
-}
-
-class EditingModel extends ChangeNotifier {
-  bool _editing = true;
-  bool get editing => _editing;
-  set editing(bool v) {
-    _editing = v;
-    notifyListeners();
-  }
 }
 
 class _WarbandViewState extends State<WarbandView> {
@@ -72,6 +73,10 @@ class _WarbandViewState extends State<WarbandView> {
                 onPressed: () => openRosterPreview(context),
                 icon: const Icon(Icons.note),
               ),
+              IconButton(
+                  onPressed: () =>
+                      printWarband(context, widget.roster, widget.armory),
+                  icon: const Icon(Icons.print)),
               context.watch<EditingModel>().editing
                   ? IconButton(
                       onPressed: () =>
@@ -551,7 +556,7 @@ class WarriorBlock extends StatelessWidget {
           "Edit"
         ],
         rows: warrior
-            .weaponsOrUnarmed(armory)
+            .meleeWeaponsOrUnarmed(armory)
             .where((weapon) => weapon.def.canMelee)
             .map((weapon) {
           final defaultItem = (warrior.type.defaultItems ?? [])

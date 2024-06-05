@@ -1,4 +1,6 @@
 
+## Beta 0.9:
+    - PDF printer!
 ## Beta 0.8.1:
     - Master assasin can now equip assasin's dagger
     - Fix typos in keywords

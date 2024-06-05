@@ -143,7 +143,7 @@ class WarbandChooser extends StatelessWidget {
               crossAxisCount: 2, // Number of columns in the grid
               children: <Widget>[
                 WarbandButton(
-                  armoy: future.data!,
+                  armory: future.data!,
                   rosterAsset: "assets/lists/heretic_legion.json",
                   variantsAssets: const [
                     "assets/lists/naval_raiding_party.json",
@@ -151,7 +151,7 @@ class WarbandChooser extends StatelessWidget {
                   ],
                 ),
                 WarbandButton(
-                  armoy: future.data!,
+                  armory: future.data!,
                   rosterAsset: "assets/lists/trench_pilgrims.json",
                   variantsAssets: const [
                     "assets/lists/procession_of_the_sacred_affliction.json",
@@ -159,14 +159,14 @@ class WarbandChooser extends StatelessWidget {
                   ],
                 ),
                 WarbandButton(
-                  armoy: future.data!,
+                  armory: future.data!,
                   rosterAsset: "assets/lists/sultanate.json",
                   variantsAssets: const [
                     "assets/lists/the_cabal_of_assassins.json",
                   ],
                 ),
                 WarbandButton(
-                  armoy: future.data!,
+                  armory: future.data!,
                   rosterAsset: "assets/lists/new_antioch.json",
                   variantsAssets: const [
                     "assets/lists/papal_states_intervention_force.json",
@@ -176,7 +176,7 @@ class WarbandChooser extends StatelessWidget {
                   ],
                 ),
                 WarbandButton(
-                  armoy: future.data!,
+                  armory: future.data!,
                   rosterAsset: "assets/lists/black_grail.json",
                   variantsAssets: const [],
                 ),
@@ -192,27 +192,27 @@ class WarbandChooser extends StatelessWidget {
 class WarbandButton extends StatelessWidget {
   const WarbandButton({
     super.key,
-    required this.armoy,
+    required this.armory,
     required this.rosterAsset,
     required this.variantsAssets,
   });
   final String rosterAsset;
-  final Armory armoy;
+  final Armory armory;
   final List<String> variantsAssets;
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: loadRoster(
-            DefaultAssetBundle.of(context), armoy, rosterAsset, variantsAssets),
+        future: loadRoster(DefaultAssetBundle.of(context), armory, rosterAsset,
+            variantsAssets),
         builder: (context, future) {
           if (future.hasError) return const Text("Failed to load armory");
           if (!future.hasData) return const CircularProgressIndicator();
 
-          final (armoy, roster, variants) = future.data!;
+          final (armory, roster, variants) = future.data!;
 
           return InkWell(
-            onTap: () => onTap(context, armoy, roster, variants),
+            onTap: () => onTap(context, armory, roster, variants),
             child: Container(
               decoration: BoxDecoration(
                 borderRadius:

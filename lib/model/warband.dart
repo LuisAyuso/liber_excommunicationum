@@ -80,7 +80,7 @@ class WarriorModel {
       .map((up) => up.keyword?.keywords ?? <String>[])
       .expand((l) => l);
 
-  Iterable<UseAndDef<Weapon>> weaponsOrUnarmed(Armory armory) {
+  Iterable<UseAndDef<Weapon>> meleeWeaponsOrUnarmed(Armory armory) {
     final res = currentWeapon(armory).where((w) => w.def.canMelee);
     if (res.isNotEmpty || !type.suffersUnarmedPenalty) return res;
 
@@ -390,6 +390,7 @@ class WarbandModel extends ChangeNotifier {
 
   factory WarbandModel.prefill(Roster roster, Armory armory) {
     var wm = WarbandModel();
+    wm.name = roster.name;
     int bucket = 0;
     for (var unit in roster.units) {
       for (var i = 0; i < (unit.min ?? 0); i++) {
