@@ -75,7 +75,8 @@ class _SavedListsManagerState extends State<SavedListsManager> {
             child: ListView(children: [
               Text(
                 "Stored Warbands",
-                style: Theme.of(context).textTheme.titleMedium,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               const Divider(),
               ...x.map<Widget>(
