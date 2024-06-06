@@ -23,6 +23,7 @@ class Currency {
   bool get isDucats => _ducats != null;
   int get glory => _glory ?? 0;
   int get ducats => _ducats ?? 0;
+  bool get isBoth => isDucats && isGlory;
 
   factory Currency.free() => const Currency(ducats: 0);
   factory Currency.ducats(int v) => Currency(ducats: v);
@@ -48,6 +49,7 @@ class Currency {
 
   @override
   String toString() {
+    if (isBoth) return "$_ducats Ducats + $_glory Glory";
     return isDucats ? "$_ducats Ducats" : "$_glory Glory";
   }
 

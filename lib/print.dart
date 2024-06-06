@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,16 @@ import 'package:tc_thing/model/warband.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:web/web.dart' as web;
+
+String multilineCost(Currency cost) {
+  if (cost.isBoth) {
+    return "${cost.ducats} Ducats\n${cost.glory} Glory";
+  }
+  if (cost.isGlory) {
+    return "${cost.glory} Glory";
+  }
+  return "${cost.ducats} Ducats";
+}
 
 Future<pw.Document> renderPdf(
   WarbandModel warband,
@@ -22,33 +33,8 @@ Future<pw.Document> renderPdf(
       build: (pw.Context context) {
         return [
           pw.Center(child: pw.Center(child: pw.Text(warband.name))),
-
-          pw.Row(
-            children: [
-              pw.Container(
-                decoration: pw.BoxDecoration(border: pw.Border.all()),
-                padding: const pw.EdgeInsets.only(
-                    left: 16, top: 8, right: 16, bottom: 40),
-                child: pw.Text("Pay Chest"),
-              ),
-              pw.Spacer(),
-              pw.Container(
-                constraints: const pw.BoxConstraints(minWidth: 240),
-                decoration: pw.BoxDecoration(border: pw.Border.all()),
-                padding: const pw.EdgeInsets.only(
-                    left: 16, top: 80, right: 16, bottom: 8),
-                child: pw.Center(child: pw.Text("Insignia")),
-              ),
-              pw.Spacer(),
-              pw.Container(
-                decoration: pw.BoxDecoration(border: pw.Border.all()),
-                padding: const pw.EdgeInsets.only(
-                    left: 16, top: 8, right: 16, bottom: 40),
-                child: pw.Text("Glory Points"),
-              ),
-              pw.Divider(),
-            ],
-          ),
+          pw.Center(
+              child: pw.Center(child: pw.Text("Band Cost: ${warband.cost}"))),
 
           pw.Divider(),
           pw.Center(child: pw.Text(roster.elites)), // Elites
@@ -79,6 +65,7 @@ pw.Container warriorBlock(WarriorModel warrior, Armory armory) {
   final melee = warrior.meleeWeaponsOrUnarmed(armory).toList();
   final armour = warrior.currentArmour(armory).toList();
   final equipment = warrior.currentEquipment(armory).toList();
+  final upgrades = warrior.appliedUpgrades;
 
   return pw.Container(
     decoration: pw.BoxDecoration(border: pw.Border.all()),
@@ -108,7 +95,7 @@ pw.Container warriorBlock(WarriorModel warrior, Armory armory) {
             pw.Text("${warrior.type.ranged}"),
             pw.Text("${warrior.type.melee}"),
             pw.Text("${warrior.computeArmorValue(armory)}"),
-            pw.Text("${warrior.totalCost}"),
+            pw.Text(multilineCost(warrior.totalCost)),
           ])
         ]),
 
@@ -124,16 +111,13 @@ pw.Container warriorBlock(WarriorModel warrior, Armory armory) {
                       pw.Text("Keywords"),
                       pw.Text("Cost"),
                     ]),
-                    ...warrior
-                        .currentWeapon(armory)
-                        .where((w) => w.def.canRanged)
-                        .map((weapon) {
+                    ...ranged.map((weapon) {
                       return pw.TableRow(children: [
                         pw.Text(weapon.name),
                         pw.Text("${weapon.def.range}"),
                         pw.Text(weapon.def.modifiers?.join("\n") ?? ""),
                         pw.Text(weapon.def.keywords?.join("\n") ?? ""),
-                        pw.Text("${weapon.use.cost}"),
+                        pw.Text(multilineCost(weapon.use.cost)),
                       ]);
                     }),
                   ],
@@ -153,13 +137,13 @@ pw.Container warriorBlock(WarriorModel warrior, Armory armory) {
                       pw.Text("Keywords"),
                       pw.Text("Cost"),
                     ]),
-                    ...warrior.meleeWeaponsOrUnarmed(armory).map((weapon) {
+                    ...melee.map((weapon) {
                       return pw.TableRow(children: [
                         pw.Text(weapon.name),
                         pw.Text("${weapon.def.hands}"),
                         pw.Text(weapon.def.modifiers?.join("\n") ?? ""),
                         pw.Text(weapon.def.keywords?.join("\n") ?? ""),
-                        pw.Text("${weapon.use.cost}"),
+                        pw.Text(multilineCost(weapon.use.cost)),
                       ]);
                     }),
                   ],
@@ -178,7 +162,7 @@ pw.Container warriorBlock(WarriorModel warrior, Armory armory) {
                       pw.Text("Value"),
                       pw.Text("Cost"),
                     ]),
-                    ...warrior.currentArmour(armory).map((armour) {
+                    ...armour.map((armour) {
                       return pw.TableRow(children: [
                         pw.Text(armour.name),
                         pw.Text(armour.def.isBodyArmour
@@ -187,7 +171,7 @@ pw.Container warriorBlock(WarriorModel warrior, Armory armory) {
                                 ? "Shield"
                                 : "-"),
                         pw.Text("${armour.def.value ?? ""}"),
-                        pw.Text("${armour.use.cost}"),
+                        pw.Text(multilineCost(armour.use.cost)),
                       ]);
                     }),
                   ],
@@ -204,11 +188,31 @@ pw.Container warriorBlock(WarriorModel warrior, Armory armory) {
                       pw.Text("Equipment"),
                       pw.Text("Cost"),
                     ]),
-                    ...warrior.currentEquipment(armory).map((equipment) {
+                    ...equipment.map((equipment) {
                       return pw.TableRow(
                         children: [
                           pw.Text(equipment.name),
-                          pw.Text("${equipment.use.cost}"),
+                          pw.Text(multilineCost(equipment.use.cost)),
+                        ],
+                      );
+                    }),
+                  ],
+                ),
+              ]
+            : []), // equipment
+
+        ...(upgrades.isNotEmpty
+            ? [
+                pw.Divider(),
+                pw.Table(
+                  children: [
+                    pw.TableRow(children: [
+                      pw.Text("Upgrades"),
+                    ]),
+                    ...upgrades.map((upgrade) {
+                      return pw.TableRow(
+                        children: [
+                          pw.Text(upgrade.toString()),
                         ],
                       );
                     }),
