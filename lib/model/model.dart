@@ -19,8 +19,8 @@ class Currency {
   final int? _ducats;
   final int? _glory;
 
-  bool get isGlory => _glory != null;
-  bool get isDucats => _ducats != null;
+  bool get isGlory => _glory != null && _glory != 0;
+  bool get isDucats => _ducats != null || _glory == null;
   int get glory => _glory ?? 0;
   int get ducats => _ducats ?? 0;
   bool get isBoth => isDucats && isGlory;

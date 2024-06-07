@@ -7,10 +7,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tc_thing/model/filters.dart';
 import 'package:tc_thing/model/model.dart';
 import 'package:tc_thing/model/warband.dart';
-import 'package:tc_thing/print.dart';
 import 'package:tc_thing/roster_view.dart';
 import 'package:tc_thing/utils/name_generator.dart';
 import 'package:tc_thing/utils/utils.dart';
+import 'package:tc_thing/print.dart'
+    if (dart.library.html) 'print_web.dart'
+    if (dart.library.io) 'print_io.dart';
 
 import 'controls/item_description.dart';
 import 'unit_selection_view.dart';
