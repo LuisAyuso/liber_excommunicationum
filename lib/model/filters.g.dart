@@ -72,6 +72,7 @@ ItemFilter _$ItemFilterFromJson(Map<String, dynamic> json) => ItemFilter(
       isGrenade: json['isGrenade'] as bool?,
       isBodyArmour: json['isBodyArmour'] as bool?,
       isShield: json['isShield'] as bool?,
+      itemNameContains: json['itemNameContains'] as String?,
     )
       ..maxRepetitions = json['maxRepetitions'] as int?
       ..itemKeyword = json['itemKeyword'] as String?;
@@ -96,6 +97,7 @@ Map<String, dynamic> _$ItemFilterToJson(ItemFilter instance) =>
       'isGrenade': instance.isGrenade,
       'isBodyArmour': instance.isBodyArmour,
       'isShield': instance.isShield,
+      'itemNameContains': instance.itemNameContains,
     };
 
 const _$ItemKindEnumMap = {

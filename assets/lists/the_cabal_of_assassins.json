@@ -134,7 +134,12 @@
     ],
     "uniqueEquipment": [
         {
-            "typeName": "Hashashin Leaf"
+            "typeName": "Hashashin Leaf",
+            "consumable": true,
+            "keywords": [
+                "CONSUMABLE"
+            ],
+            "rules": "Gives the model consuming the potion Keyword STRONG for the duration of a single battle."
         }
     ],
     "uniqueUnits": [

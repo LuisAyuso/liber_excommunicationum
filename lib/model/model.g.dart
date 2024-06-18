@@ -413,13 +413,15 @@ Equipment _$EquipmentFromJson(Map<String, dynamic> json) => Equipment()
       (json['keywords'] as List<dynamic>?)?.map((e) => e as String).toList()
   ..filter = json['filter'] == null
       ? null
-      : ItemFilter.fromJson(json['filter'] as Map<String, dynamic>);
+      : ItemFilter.fromJson(json['filter'] as Map<String, dynamic>)
+  ..rules = json['rules'] as String?;
 
 Map<String, dynamic> _$EquipmentToJson(Equipment instance) => <String, dynamic>{
       'typeName': instance.typeName,
       'consumable': instance.consumable,
       'keywords': instance.keywords,
       'filter': instance.filter?.toJson(),
+      'rules': instance.rules,
     };
 
 Armory _$ArmoryFromJson(Map<String, dynamic> json) => Armory()

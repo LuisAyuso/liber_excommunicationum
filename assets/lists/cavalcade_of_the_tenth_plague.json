@@ -33,7 +33,12 @@
     ],
     "uniqueEquipment": [
         {
-            "typeName": "Sacrificial Lamb"
+            "typeName": "Sacrificial Lamb",
+            "consumable": true,
+            "keywords": [
+                "CONSUMABLE"
+            ],
+            "rules": "Before the battle, this lamb is sacrificed to God's glory and the pilgrim then anoints themselves with its blood, averting the wrath of Yahweh while fighting for His cause. The model ignores the first BLOOD MARKER or INFECTION MARKER it suffers in combat."
         }
     ]
 }

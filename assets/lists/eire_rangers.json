@@ -65,7 +65,11 @@
     "uniqueArmour": [],
     "uniqueEquipment": [
         {
-            "typeName": "Carnyx"
+            "typeName": "Carnyx",
+            "keywords": [
+                "FEAR"
+            ],
+            "rules": "Any friendly models within 8” of the musician who is not Down can add +1 DICE to their Dash ACTIONS.  Musical Instruments take one hand to use at all times as if it were a weapon.  In addition to the normal Musical Instrument rules, the musician causes FEAR"
         }
     ]
 }

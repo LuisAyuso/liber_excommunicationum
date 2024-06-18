@@ -67,6 +67,7 @@ Roster management tool for Trench Crusade
 - [x] Merge filterItem and replacements? Somehow? Otherwise, use same patterns
 - [ ] Be idiomatic with null: https://stackoverflow.com/questions/17006664/what-is-the-dart-null-checking-idiom-or-best-practice
 - [ ] Upgrade system: add replaces and extends flavours.
+- [ ] unique armory in lists and extend global armory
 
 
 ### Known bugs:
@@ -74,6 +75,8 @@ Roster management tool for Trench Crusade
 - [x] No double weapons.
 - [ ] Heretic comando silenced pistol, +2 from cover... but +1 out of cover
 - [ ] It is possible to clone upgraded units to more that the limit of the upgrade
+- [ ] Communicant does not show cross
+- [ ] Communicant can equip capirote and gas mask
 
 
 ### Questions about playtest 1.3.2

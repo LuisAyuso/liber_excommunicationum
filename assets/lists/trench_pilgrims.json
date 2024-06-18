@@ -61,9 +61,6 @@
             "ranged": -3,
             "melee": 2,
             "armour": 0,
-            "abilities": [
-                "The Communicant Cross"
-            ],
             "keywords": [
                 "PILGRIM",
                 "ELITE",
@@ -531,10 +528,22 @@
     ],
     "uniqueEquipment": [
         {
-            "typeName": "Loudspeakers"
+            "typeName": "Loudspeakers",
+            "rules": "The Prophet can take a RISKY ACTION with +2 DICE once during each Activation. If the action is successful, all friendly models (Including the Prophet) within 8” of the Prophet can immediately move up to 3” towards the closest enemy model they can see. This move allows them to enter combat as if they charged the enemy"
         },
         {
-            "typeName": "The Communicant Cross"
+            "typeName": "The Communicant Cross",
+            "rules": "This counts as an Iron Capirote, Combat Helmet and a Gas Mask",
+            "filter": {
+                "noneOf": [
+                    {
+                        "containsItem": "Iron Capirote"
+                    },
+                    {
+                        "containsItem": "Gas Mask"
+                    }
+                ]
+            }
         }
     ]
 }

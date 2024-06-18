@@ -481,26 +481,42 @@
     ],
     "equipments": [
         {
-            "typeName": "Combat Helmet"
+            "typeName": "Combat Helmet",
+            "rules": "Ignores additional BLOOD MARKERS caused by weapons with Keyword SHRAPNEL."
         },
         {
-            "typeName": "Iron Capirote"
+            "typeName": "Iron Capirote",
+            "rules": "Negates the additional BLOOD MARKERS from weapons with SHRAPNEL Keyword. Makes the model immune to the effects of FEAR"
         },
         {
-            "typeName": "Medi-Kit"
+            "typeName": "Medi-Kit",
+            "rules": "Models with a Medi-kit can take a RISKY ACTION to remove one BLOOD MARKER from any one friendly model (including themselves) within 1” range or allow one friendly model (including themselves) who is Down to regain their footing."
         },
         {
-            "typeName": "Gas Mask"
+            "typeName": "Gas Mask",
+            "rules": "Models with Gas Masks ignore all damage from weapons and other sources that have the keyword GAS"
         },
         {
-            "typeName": "Holy Relic"
+            "typeName": "Holy Relic",
+            "rules": "This model starts each game with +1 BLESSING MARKER"
         },
         {
             "typeName": "Armour-Piercing Bullets",
             "consumable": true,
             "keywords": [
                 "CONSUMABLE"
-            ]
+            ],
+            "rules": "Only usable in rifles and pistols (i.e. weapons which have the word pistol or rifle in their name). Attacks by a weapon equipped with Armour-Piercing Bullets reduce the injury roll penalty from Armour and Shields by 1.",
+            "filter": {
+                "anyOf": [
+                    {
+                        "itemNameContains": "Pistol"
+                    },
+                    {
+                        "itemNameContains": "Rifle"
+                    }
+                ]
+            }
         },
         {
             "typeName": "Dum-Dum Bullets",
@@ -508,7 +524,18 @@
             "keywords": [
                 "CONSUMABLE",
                 "CRITICAL"
-            ]
+            ],
+            "rules": "Only usable in rifles and pistols (i.e. weapons which have the Keyword pistol or rifle in their name). Attacks by a weapon equipped with Dum-Dum Bullets have the keyword CRITICAL.",
+            "filter": {
+                "anyOf": [
+                    {
+                        "itemNameContains": "Pistol"
+                    },
+                    {
+                        "itemNameContains": "Rifle"
+                    }
+                ]
+            }
         },
         {
             "typeName": "Incendiary Bullets",
@@ -516,51 +543,92 @@
             "keywords": [
                 "CONSUMABLE",
                 "FIRE"
-            ]
+            ],
+            "rules": "Only usable in rifles and pistols (i.e. weapons which have the Keyword pistol or rifle in their name). Adds the Keyword FIRE to the weapon that uses the Incendiary ammunition.",
+            "filter": {
+                "anyOf": [
+                    {
+                        "itemNameContains": "Pistol"
+                    },
+                    {
+                        "itemNameContains": "Rifle"
+                    }
+                ]
+            }
         },
         {
             "typeName": "Tracer Bullets",
             "consumable": true,
             "keywords": [
                 "CONSUMABLE"
-            ]
+            ],
+            "rules": "Can be used with any rifle or pistol. Models using Tracer Bullets gain +1 DICE to hit enemies with Ranged Attacks.",
+            "filter": {
+                "anyOf": [
+                    {
+                        "itemNameContains": "Pistol"
+                    },
+                    {
+                        "itemNameContains": "Rifle"
+                    }
+                ]
+            }
         },
         {
-            "typeName": "Sniper Scope"
+            "typeName": "Sniper Scope",
+            "rules": "Negates the penalty for Long Range if the model has not moved during this Activation. Only usable with rifles (i.e. weapons which have the Keyword rifle in their name).",
+            "filter": {
+                "itemNameContains": "Rifle"
+            }
         },
         {
-            "typeName": "Shovel"
+            "typeName": "Shovel",
+            "rules": "A model equipped with a Shovel always starts the game in Cover, even if placed in open terrain. As soon as the model moves, it is no longer in Cover. It also acts exactly as a Trench Club in Melee, except it requires two hands to use"
         },
         {
-            "typeName": "Troop Flag"
+            "typeName": "Troop Flag",
+            "rules": "Grants +1 DICE for all Morale tests as long as the model with the flag is not Down or Out of Action.  Requires one hand to use."
         },
         {
-            "typeName": "Martyrdom Pills"
+            "typeName": "Martyrdom Pills",
+            "rules": "Add -1 DICE for all injury rolls against this model. The model is immune to FEAR. If taken Out of Action, roll twice on the Permanent Injury Chart and your opponent gets to choose the result."
         },
         {
             "typeName": "Unholy Trinket",
-            "consumable": true
+            "consumable": true,
+            "rules": "When a model fails in a RISKY ACTION, this does not end the Activation."
         },
         {
-            "typeName": "Unholy Relic"
+            "typeName": "Unholy Relic",
+            "rules": "A model equipped with an Unholy relic radiates a truly malignant aura and causes FEAR."
         },
         {
-            "typeName": "Blessed Icon"
+            "typeName": "Blessed Icon",
+            "consumable": true,
+            "keywords": [
+                "CONSUMABLE"
+            ],
+            "rules": "When a model equipped with the Blessed Icon fails in a RISKY ACTION, this does not end the Activation. "
         },
         {
-            "typeName": "Infernal Brand Mark"
+            "typeName": "Infernal Brand Mark",
+            "rules": "This model suffers no damage from attacks with the Keyword FIRE."
         },
         {
-            "typeName": "Field Shrine"
+            "typeName": "Field Shrine",
+            "rules": "Can be placed on the battlefield in your deployment zone. Can be destroyed if any type of attack hits it. Acts as three models for Morale Tests"
         },
         {
-            "typeName": "Hellbound Soul Contract"
+            "typeName": "Hellbound Soul Contract",
+            "rules": "When this model is taken Out of Action, any model in melee combat with them immediately suffers +1 BLOOD MARKER unless the model ignores damage from sources with the Keyword FIRE"
         },
         {
-            "typeName": "Binoculars"
+            "typeName": "Binoculars",
+            "rules": "Any enemy Infiltrator cannot be placed closer than 16” of this model"
         },
         {
-            "typeName": "Musician's Instrument"
+            "typeName": "Musician's Instrument",
+            "rules": "Any friendly models within 8” of the musician who is not Down can add +1 DICE to their Dash ACTIONS.  Musical Instruments take one hand to use at all times as if it were a weapon"
         }
     ]
 }

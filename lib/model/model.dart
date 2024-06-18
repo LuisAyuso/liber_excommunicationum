@@ -762,6 +762,7 @@ class Equipment extends Item {
   bool? consumable;
   List<String>? keywords = [];
   ItemFilter? filter;
+  String? rules;
 
   @override
   ItemKind get kind => ItemKind.equipment;

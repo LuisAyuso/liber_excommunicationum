@@ -188,6 +188,25 @@ class ItemDescription extends StatelessWidget {
             ]
           ],
         ),
+        equipment.rules == null
+            ? const SizedBox()
+            : RichText(
+                text: TextSpan(
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: 'rules: ',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.w600),
+                    ),
+                    TextSpan(
+                      text: equipment.rules,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+              ),
         Wrap(
             children:
                 equipment.getKeywords.map((s) => ItemChip(item: s)).toList())

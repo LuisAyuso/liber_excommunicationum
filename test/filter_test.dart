@@ -8,7 +8,7 @@ import 'package:tc_thing/model/model.dart';
 import 'package:tc_thing/model/warband.dart';
 
 void main() {
-  test('filters', () {
+  test('item filters', () {
     Unit u = Unit();
     u.typeName = "warrior 1";
     u.keywords = ["AAAA", "BBBB"];
@@ -123,9 +123,13 @@ void main() {
       expect(f.isItemAllowed(grenade), false);
       expect(f.isItemAllowed(shield), true);
     }
+
+    expect(ItemFilter(itemNameContains: "Gu").isItemAllowed(gun, wm), true);
+    expect(ItemFilter(itemNameContains: "Gun").isItemAllowed(gun, wm), true);
+    expect(ItemFilter(itemNameContains: "XX").isItemAllowed(gun, wm), false);
   });
 
-  test('filters', () {
+  test('unit filters', () {
     Unit u1 = Unit(typeName: "one");
     Unit u2 = Unit(typeName: "two");
     Unit u3 = Unit(typeName: "none");

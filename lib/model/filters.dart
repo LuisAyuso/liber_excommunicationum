@@ -213,6 +213,7 @@ class ItemFilter extends BaseFilter<ItemFilter> {
     this.isGrenade,
     this.isBodyArmour,
     this.isShield,
+    this.itemNameContains,
   });
 
   factory ItemFilter.trueValue() => ItemFilter(all: true);
@@ -241,6 +242,7 @@ class ItemFilter extends BaseFilter<ItemFilter> {
   bool? isGrenade;
   bool? isBodyArmour;
   bool? isShield;
+  String? itemNameContains;
 
   bool isItemAllowed(Item item, [WarriorModel? warrior]) {
     assert(_count(all) +
@@ -260,6 +262,7 @@ class ItemFilter extends BaseFilter<ItemFilter> {
             _count(meleeWeapon) +
             _count(isGrenade) +
             _count(isBodyArmour) +
+            _count(itemNameContains) +
             _count(isShield) ==
         1);
 
@@ -291,6 +294,14 @@ class ItemFilter extends BaseFilter<ItemFilter> {
     if (isGrenade != null) {
       if (item is! Weapon) return false;
       return item.isGrenade;
+    }
+    if (itemNameContains != null) {
+      return warrior?.items
+              .where((item) => item.getName
+                  .toLowerCase()
+                  .contains(itemNameContains!.toLowerCase()))
+              .isNotEmpty ??
+          false;
     }
 
     if (isBodyArmour != null) {

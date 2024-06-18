@@ -551,13 +551,16 @@
                         "containsItem": "Siege Jezzail"
                     }
                 ]
-            }
+            },
+            "rules": "Adds +1 DICE to Ranged Attack rolls on the Action Success Chart. Can only be used with Jezzails and Siege Jezzails"
         },
         {
-            "typeName": "Cloak of Alamut"
+            "typeName": "Cloak of Alamut",
+            "rules": "All ranged attacks against a model that is in cover suffer -2 DICE penalty instead of -1 DICE. All the normal rules for cover apply otherwise."
         },
         {
-            "typeName": "Wind Amulet"
+            "typeName": "Wind Amulet",
+            "rules": "After the deployment, a model with the Wind Amulet may move up to 3” in any direction, though this move may not take them into melee combat or from the battlefield."
         }
     ]
 }
